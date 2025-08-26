@@ -1,6 +1,17 @@
 "use client";
-import KITransformation from "../../src/components/KITransformation";
+import React, { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+// Dynamischer Import der KITransformation-Komponente mit SSR deaktiviert
+const KITransformation = dynamic(
+  () => import("../../src/components/KITransformation"),
+  { ssr: false }
+);
 
 export default function KITransformationPage() {
-  return <KITransformation />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <KITransformation />
+    </Suspense>
+  );
 }

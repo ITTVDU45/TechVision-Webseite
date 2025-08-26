@@ -1,7 +1,17 @@
 "use client";
-import React from "react";
-import Tools from "../../src/components/Tools";
+import React, { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+// Dynamischer Import der Tools-Komponente mit SSR deaktiviert
+const Tools = dynamic(
+  () => import("../../src/components/Tools"),
+  { ssr: false }
+);
 
 export default function ToolsPage() {
-  return <Tools />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Tools />
+    </Suspense>
+  );
 }

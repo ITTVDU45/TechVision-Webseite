@@ -1,7 +1,17 @@
 "use client";
-import React from "react";
-import WebDevelopment from "../../src/components/WebDevelopment";
+import React, { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+// Dynamischer Import der WebDevelopment-Komponente mit SSR deaktiviert
+const WebDevelopment = dynamic(
+  () => import("../../src/components/WebDevelopment"),
+  { ssr: false }
+);
 
 export default function WebDevelopmentPage() {
-  return <WebDevelopment />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <WebDevelopment />
+    </Suspense>
+  );
 }
