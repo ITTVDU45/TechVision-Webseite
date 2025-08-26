@@ -1,0 +1,9 @@
+"use client";
+import React from "react";
+import Original from "../../src/components/ITInfrastructure";
+
+export default function ITInfrastructure(props: any) {
+  return <Original {...props} />;
+}
+
+

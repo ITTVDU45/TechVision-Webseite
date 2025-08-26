@@ -1,0 +1,9 @@
+"use client";
+import React from "react";
+import Original from "../../src/components/Tools";
+
+export default function Tools(props: any) {
+  return <Original {...props} />;
+}
+
+

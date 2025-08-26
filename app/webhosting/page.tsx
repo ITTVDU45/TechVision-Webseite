@@ -4,8 +4,8 @@ import dynamic from "next/dynamic";
 
 // Dynamischer Import der WebHosting-Komponente mit SSR deaktiviert
 const WebHosting = dynamic(
-  () => import("../../src/components/WebHosting"),
-  { 
+  () => import("../components/WebHosting"),
+  {
     ssr: false,
     loading: () => (
       <div className="min-h-screen bg-black flex items-center justify-center">

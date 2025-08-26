@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Datenschutz from "../../src/components/Datenschutz.tsx";
+import Datenschutz from "../components/Datenschutz";
 
 export default function DatenschutzPage() {
   return <Datenschutz />;

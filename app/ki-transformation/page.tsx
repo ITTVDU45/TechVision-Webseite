@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 // Dynamischer Import der KITransformation-Komponente mit SSR deaktiviert
 const KITransformation = dynamic(
-  () => import("../../src/components/KITransformation"),
+  () => import("../components/KITransformation"),
   { ssr: false }
 );
 

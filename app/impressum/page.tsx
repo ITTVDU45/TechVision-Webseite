@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Impressum from "../../src/components/Impressum.tsx";
+import Impressum from "../components/Impressum";
 
 export default function ImpressumPage() {
   return <Impressum />;

@@ -1,16 +1,16 @@
 "use client";
 import { useState } from "react";
-import Header from "../../src/components/Header";
-import LoadingScreen from "../../src/components/LoadingScreen";
-import HeroSection from "../../src/components/HeroSection";
-import Services from "../../src/components/Services";
+import Header from "../components/Header";
+import LoadingScreen from "../components/LoadingScreen";
+import HeroSection from "../components/HeroSection";
+import Services from "../components/Services";
 import EfficiencySection from "../../app/EfficiencySection";
-import Technologies from "../../src/components/Technologies";
+import Technologies from "../components/Technologies";
 import ProcessSection from "./ProcessSection";
-import CaseStudies from "../../src/components/CaseStudies";
-import Testimonials from "../../src/components/Testimonials";
-import CTA from "../../src/components/CTA";
-import Footer from "../../src/components/Footer";
+import CaseStudies from "../components/CaseStudies";
+import Testimonials from "../components/Testimonials";
+import CTA from "../components/CTA";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   const [isLoading] = useState(true);

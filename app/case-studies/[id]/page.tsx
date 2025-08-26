@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
 import { useParams } from "next/navigation";
-import Header from "../../../src/components/Header";
-import Footer from "../../../src/components/Footer";
-import { categorizedCases } from "../../../src/components/CaseStudies";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
+import { categorizedCases } from "../../components/CaseStudies";
 
 export default function CaseStudyDetailPage() {
   const params = useParams();

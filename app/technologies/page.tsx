@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import Technologies from "../../src/components/Technologies.tsx";
+import Technologies from "../components/Technologies";
 
 export default function TechnologiesPage() {
   return <Technologies />;
