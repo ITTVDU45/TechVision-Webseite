@@ -21,6 +21,7 @@
     "@splinetool/react-spline": "^4.0.0",
     "@tabler/icons-react": "^3.34.1",
     "autoprefixer": "^10.4.21",
+    "caniuse-lite": "^1.0.30001737",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.18.2",
@@ -47,6 +48,5 @@
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.10"
-    "caniuse-lite": "^1.0.30001731"
   }
 }
