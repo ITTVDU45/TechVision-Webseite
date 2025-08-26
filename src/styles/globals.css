@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: black;
+  color: white;
+}
+
+/* Optional: Für bessere Lesbarkeit */
+* {
+  box-sizing: border-box;
+} 
