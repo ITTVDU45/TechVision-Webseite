@@ -19,7 +19,9 @@ const services: Service[] = [
   { icon: '☁️', title: 'Hosting', description: 'Zuverlässiges Hosting für Ihre Webseiten und Softwarelösungen mit erstklassigem Support.', gradient: 'from-blue-400 via-indigo-500 to-purple-500', link: '/webhosting' },
 ];
 
-export default function Services(): JSX.Element {
+type ServicesProps = {};
+
+export default function Services(_props: ServicesProps): JSX.Element {
   const sectionRef = useRef<HTMLElement | null>(null);
   const cardsRef = useRef<Array<HTMLElement | null>>([]);
 

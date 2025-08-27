@@ -14,7 +14,9 @@ const processSteps = [
   { icon: '🛠️', title: 'Support', description: 'Laufende Unterstützung und Optimierung nach der Implementierung.', gradient: 'from-purple-400 via-indigo-500 to-blue-500', delay: 1.0 },
 ];
 
-export default function Testimonials(): JSX.Element {
+type TestimonialsProps = {};
+
+export default function Testimonials(_props: TestimonialsProps): JSX.Element {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);

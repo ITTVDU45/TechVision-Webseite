@@ -20,7 +20,9 @@ const moreItems = [
   { name: "Kontakt", href: "/contact", icon: "✉️", description: "Nehmen Sie Kontakt mit uns auf" },
 ];
 
-export default function Header(): JSX.Element {
+type HeaderProps = {};
+
+export default function Header(_props: HeaderProps): JSX.Element {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [showSolutions, setShowSolutions] = useState(false);

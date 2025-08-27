@@ -25,7 +25,9 @@ const faqs = [
   // ... (shortened)
 ];
 
-export default function CTA(): JSX.Element {
+type CTAProps = {};
+
+export default function CTA(_props: CTAProps): JSX.Element {
   const [currentBlogIndex, setCurrentBlogIndex] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
