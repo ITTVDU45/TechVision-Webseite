@@ -1,12 +1,12 @@
 
-import type { GenericFormState } from '../../types/forms'
+import type { ToolsFormState } from '../../types/forms'
 
 
 const ToolsForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
 
-  const [formData, setFormData] = useState<GenericFormState>({
+  const [formData, setFormData] = useState<ToolsFormState>({
     openSourceTools: [],
     aiAgents: [],
     contactName: '',

@@ -1,12 +1,12 @@
 
-import type { GenericFormState } from '../../types/forms'
+import type { WorkflowAutomationFormState } from '../../types/forms'
 
 
 const WorkflowAutomationForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   
-  const [formData, setFormData] = useState<GenericFormState>({
+  const [formData, setFormData] = useState<WorkflowAutomationFormState>({
     automationType: '',
     currentProcess: '',
     processComplexity: '',

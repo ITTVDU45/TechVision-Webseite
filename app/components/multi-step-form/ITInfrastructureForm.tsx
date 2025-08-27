@@ -1,12 +1,12 @@
 
-import type { GenericFormState } from '../../types/forms'
+import type { ITInfrastructureFormState } from '../../types/forms'
 
 
 const ITInfrastructureForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
 
-  const [formData, setFormData] = useState<GenericFormState>({
+  const [formData, setFormData] = useState<ITInfrastructureFormState>({
     infrastructureType: '',
     currentSetup: '',
     services: [],

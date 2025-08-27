@@ -1,12 +1,12 @@
 
-import type { GenericFormState } from '../../types/forms'
+import type { CyberSecurityFormState } from '../../types/forms'
 
 
 const CyberSecurityForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
 
-  const [formData, setFormData] = useState<GenericFormState>({
+  const [formData, setFormData] = useState<CyberSecurityFormState>({
     securityConcept: '',
     industry: '',
     standard: '',

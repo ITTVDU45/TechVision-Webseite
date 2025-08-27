@@ -1,12 +1,12 @@
 
-import type { GenericFormState } from '../../types/forms'
+import type { WebDevelopmentFormState } from '../../types/forms'
 
 
 const WebDevelopmentForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   
-  const [formData, setFormData] = useState<GenericFormState>({
+  const [formData, setFormData] = useState<WebDevelopmentFormState>({
     websiteGoal: '',
     services: [],
     websiteType: '',
