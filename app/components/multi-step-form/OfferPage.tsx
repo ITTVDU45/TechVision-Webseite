@@ -1,9 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import Vortex from '@/components/ui/vortex';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+
+import type { GenericFormState } from '../../types/forms'
 
 const OfferPage = () => {
   return (

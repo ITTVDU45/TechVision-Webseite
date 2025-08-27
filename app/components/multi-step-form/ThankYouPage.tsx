@@ -1,5 +1,5 @@
-import React from 'react';
-import { useRouter } from 'next/navigation';
+
+import type { GenericFormState } from '../../types/forms'
 
 const ThankYouPage = () => {
   const router = useRouter();

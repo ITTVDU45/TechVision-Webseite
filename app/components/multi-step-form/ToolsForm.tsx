@@ -1,23 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import emailjs from '@emailjs/browser';
-
-export interface FormState {
-  openSourceTools: string[];
-  aiAgents: string[];
-  contactName: string;
-  contactEmail: string;
-  contactPhone: string;
-  companyName: string;
-  message: string;
-}
+
+import type { GenericFormState } from '../../types/forms'
 
 
 const ToolsForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
 
-  const [formData, setFormData] = useState<FormState>({
+  const [formData, setFormData] = useState<GenericFormState>({
     openSourceTools: [],
     aiAgents: [],
     contactName: '',
