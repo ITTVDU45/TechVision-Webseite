@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 // Dynamischer Import der WebDevelopment-Komponente mit SSR deaktiviert
 const WebDevelopment = dynamic(
-  () => import("../../src/components/WebDevelopment"),
+  () => import("../components/WebDevelopment"),
   { ssr: false }
 );
 

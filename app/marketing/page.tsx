@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import LoadingScreen from "../components/LoadingScreen";
 import HeroSection from "../components/HeroSection";
 import Services from "../components/Services";
-import EfficiencySection from "../../app/EfficiencySection";
+import EfficiencySection from "../EfficiencySection";
 import Technologies from "../components/Technologies";
 import ProcessSection from "./ProcessSection";
 import CaseStudies from "../components/CaseStudies";
@@ -13,7 +13,7 @@ import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 
 export default function HomePage() {
-  const [isLoading] = useState(true);
+  const [isLoading] = useState(false);
 
   return (
     <div className="min-h-screen w-full bg-black text-white">

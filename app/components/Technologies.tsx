@@ -84,10 +84,4 @@ export default function Technologies(): JSX.Element {
   );
 }
 
-"use client";
-import React from "react";
-import Original from "../../src/components/Technologies";
-
-export default function Technologies(props: any) {
-  return <Original {...props} />;
-}
+// wrapper removed; local implementation above is the source of truth

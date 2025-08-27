@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 // Dynamischer Import der WorkflowAutomation-Komponente mit SSR deaktiviert
 const WorkflowAutomation = dynamic(
-  () => import("../../src/components/WorkflowAutomation"),
+  () => import("../components/WorkflowAutomation"),
   { ssr: false }
 );
 

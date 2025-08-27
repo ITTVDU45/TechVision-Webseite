@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 // Dynamischer Import der Tools-Komponente mit SSR deaktiviert
 const Tools = dynamic(
-  () => import("../../src/components/Tools"),
+  () => import("../components/Tools"),
   { ssr: false }
 );
 

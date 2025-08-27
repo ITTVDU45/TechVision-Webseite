@@ -48,7 +48,7 @@ export default function Services(): JSX.Element {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <motion.div key={service.title} ref={el => (cardsRef.current[index] = el)} className="relative group h-full" whileHover={{ scale: 1.02 }}>
+            <motion.div key={service.title} ref={el => { cardsRef.current[index] = el; }} className="relative group h-full" whileHover={{ scale: 1.02 }}>
               <div className={`absolute inset-0 bg-gradient-to-r ${service.gradient} rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
 
               <div className="relative p-8 bg-gray-900/90 backdrop-blur-sm rounded-xl h-full flex flex-col transform group-hover:-translate-x-2 group-hover:-translate-y-2 transition-transform duration-300">

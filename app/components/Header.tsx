@@ -3,17 +3,6 @@ import React, { useState, useEffect } from "react";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
-const navigationItems = [
-  { name: "Home", href: "/", icon: "🏠" },
-  { name: "Case Studies", href: "/case-studies", icon: "📊" },
-];
-
-const moreItems = [
-  { name: "Top Themen und News", href: "/blog", icon: "📰", description: "Aktuelle Themen und Neuigkeiten" },
-  { name: "FAQ", href: "/faq", icon: "❓", description: "Häufig gestellte Fragen" },
-  { name: "Kontakt", href: "/contact", icon: "✉️", description: "Nehmen Sie Kontakt mit uns auf" },
-];
-
 const solutions = [
   { name: "KI Transformation", href: "/ki-transformation", icon: "🤖", description: "Digitale Transformation mit KI" },
   { name: "Softwareentwicklung", href: "/software-development", icon: "💻", description: "Maßgeschneiderte Softwarelösungen" },
@@ -23,6 +12,12 @@ const solutions = [
   { name: "Webhosting", href: "/webhosting", icon: "☁️", description: "Schnelles und sicheres Hosting" },
   { name: "IT Infrastruktur", href: "/it-infrastructure", icon: "🔧", description: "Optimierung Ihrer IT-Systeme" },
   { name: "Branchenlösungen", href: "/industry-solutions", icon: "🏢", description: "Maßgeschneiderte Lösungen für Ihre Branche" },
+];
+
+const moreItems = [
+  { name: "Top Themen und News", href: "/blog", icon: "📰", description: "Aktuelle Themen und Neuigkeiten" },
+  { name: "FAQ", href: "/faq", icon: "❓", description: "Häufig gestellte Fragen" },
+  { name: "Kontakt", href: "/contact", icon: "✉️", description: "Nehmen Sie Kontakt mit uns auf" },
 ];
 
 export default function Header(): JSX.Element {

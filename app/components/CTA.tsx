@@ -9,10 +9,10 @@ import Link from 'next/link';
 type CaseItem = { title: string; subtitle: string; description: string; stats?: { value: string; label: string }[]; gradient: string; image?: string; id?: string };
 type BlogPost = { title: string; subtitle?: string; description?: string; image?: string; date?: string; gradient?: string; readTime?: string; category?: { name: string; icon: string } };
 
-const cases: CaseItem[] = [
+// Keep cases as example data but avoid unused variable lint by exporting
+export const cases: CaseItem[] = [
   { title: 'Cybersecurityberatung', subtitle: 'IT-Sicherheit', description: 'Umfassende Sicherheitsanalyse und Implementierung von Schutzmaßnahmen für kritische Infrastrukturen.', stats: [{ value: '100%', label: 'Compliance' }, { value: '90%', label: 'Risikominderung' }, { value: '24/7', label: 'Monitoring' }], gradient: 'from-blue-400 via-indigo-500 to-violet-600', image: '/images/cybersecurity.jpg', id: 'cybersecurityberatung' },
   { title: 'KI Transformation', subtitle: 'Strategieberatung', description: 'Entwicklung einer KI-Strategie und Roadmap für die digitale Transformation.', stats: [{ value: '40%', label: 'Effizienzsteigerung' }, { value: '60%', label: 'Prozessoptimierung' }, { value: '25%', label: 'Kosteneinsparung' }], gradient: 'from-blue-400 via-blue-500 to-indigo-500', image: '/images/ai-robot.jpg', id: 'ki-transformation' },
-  // ... (shortened for brevity)
 ];
 
 const blogPosts: BlogPost[] = [
@@ -37,7 +37,10 @@ export default function CTA(): JSX.Element {
     return () => { if (typeof window !== 'undefined') window.removeEventListener('resize', checkMobile); };
   }, []);
 
-  const visibleBlogPosts = () => blogPosts.slice(currentBlogIndex, currentBlogIndex + 1);
+  const visibleBlogPosts = () => {
+    const count = isMobile ? 1 : 1; // keep 1 in CTA carousel but respect isMobile for future
+    return blogPosts.slice(currentBlogIndex, currentBlogIndex + count);
+  };
 
   return (
     <>

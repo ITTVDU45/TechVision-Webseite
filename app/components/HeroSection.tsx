@@ -76,10 +76,4 @@ export default function HeroSection({ isLoading = false }: Props) {
   );
 }
 
-"use client";
-import React from "react";
-import Original from "../../src/components/HeroSection";
-
-export default function HeroSection(props: any) {
-  return <Original {...props} />;
-}
+// wrapper removed; local implementation above is the source of truth

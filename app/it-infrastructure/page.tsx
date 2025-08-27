@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 
 // Dynamischer Import der ITInfrastructure-Komponente mit SSR deaktiviert
 const ITInfrastructure = dynamic(
-  () => import("../../src/components/ITInfrastructure"),
+  () => import("../components/ITInfrastructure"),
   { ssr: false }
 );
 

@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import IndustrySolutionDetail from "../../../src/components/IndustrySolutionDetail.tsx";
+import IndustrySolutionDetail from "../../components/IndustrySolutionDetail";
 import { useParams } from "next/navigation";
 
 export default function IndustrySolutionDetailPage() {
   const params = useParams();
-  const id = params.id as string;
-  
+  const id = (params as any)?.id as string;
+
   return <IndustrySolutionDetail id={id} />;
 }

@@ -12,8 +12,8 @@ import {
   PresentationChartBarIcon,
   CloudIcon
 } from '@heroicons/react/24/outline';
-import Lottie from 'lottie-react';
 import { useState, useEffect } from 'react';
+import LottieSequence from '../components/LottieSequence';
 import { useRouter } from 'next/navigation';
 
 export default function ProcessSection() {
@@ -279,31 +279,4 @@ export default function ProcessSection() {
   );
 }
 
-// Neue Komponente für die Sequenz von Lottie-Animationen
-const LottieSequence: React.FC<{ animations: string[] }> = ({ animations }: { animations: string[] }) => {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [animationData, setAnimationData] = useState<any>(null);
-
-  useEffect(() => {
-    // Lade die aktuelle Animation
-    fetch(animations[currentIndex])
-      .then(response => response.json())
-      .then(data => setAnimationData(data));
-  }, [currentIndex, animations]);
-
-  const handleComplete = () => {
-    // Wechsle zur nächsten Animation oder starte von vorne
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % animations.length);
-  };
-
-  if (!animationData) return null;
-
-  return (
-    <Lottie
-      animationData={animationData}
-      loop={false}
-      onComplete={handleComplete}
-      className="w-full h-full object-cover"
-    />
-  );
-}; 
+// LottieSequence is provided from app/components to keep client-only behaviour
