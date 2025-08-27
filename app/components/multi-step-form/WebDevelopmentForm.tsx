@@ -2,11 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import emailjs from '@emailjs/browser';
 
+export interface FormState {
+  websiteGoal: string;
+  services: string[];
+  websiteType: string;
+  design: string;
+  features: string[];
+  budget: string;
+  timeline: string;
+  pages: string;
+  languages: string;
+  maintenance: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  companyName: string;
+  message: string;
+}
+
+
 const WebDevelopmentForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormState>({
     websiteGoal: '',
     services: [],
     websiteType: '',

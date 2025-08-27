@@ -2,11 +2,28 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import emailjs from '@emailjs/browser';
 
+export interface FormState {
+  automationType: string;
+  currentProcess: string;
+  processComplexity: string;
+  integration: string[];
+  features: string[];
+  dataVolume: string;
+  timeline: string;
+  budget: string;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  companyName: string;
+  message: string;
+}
+
+
 const WorkflowAutomationForm = () => {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormState>({
     automationType: '',
     currentProcess: '',
     processComplexity: '',
