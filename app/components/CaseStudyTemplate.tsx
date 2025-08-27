@@ -37,6 +37,13 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Skip link for keyboard users */}
+      <a
+        href="#main-content"
+        className="absolute left-[-999px] top-4 z-50 bg-white text-black px-3 py-2 rounded-md focus:left-4 focus:shadow-lg"
+      >
+        Zum Hauptinhalt springen
+      </a>
       {/* JSON-LD Schema for CaseStudy */}
       <Script id={`cs-schema-${data.id}`} type="application/ld+json">
         {JSON.stringify({
@@ -52,10 +59,10 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
           }
         })}
       </Script>
-      <section className="pt-32 pb-16">
+      <section className="pt-32 pb-16" aria-labelledby="cs-hero-title">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">{data.title}</h1>
+            <h1 id="cs-hero-title" className="text-4xl md:text-6xl font-bold mb-4">{data.title}</h1>
             {data.subtitle && <p className="text-xl text-gray-400 mb-6">{data.subtitle}</p>}
             {data.heroImage && (
               <div className="w-full h-80 relative rounded-2xl overflow-hidden mb-8 glass">
@@ -67,10 +74,11 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
         </div>
       </section>
 
-      <section className="py-16">
+      <main id="main-content" tabIndex={-1}>
+        <section className="py-16" aria-labelledby="cs-summary-title">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto prose prose-invert">
-            <h2>Zusammenfassung</h2>
+            <h2 id="cs-summary-title">Zusammenfassung</h2>
             <p>{data.summary}</p>
 
             {data.challenges && (
@@ -98,20 +106,22 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
             {renderGallery()}
           </div>
         </div>
-      </section>
+        </section>
+      </main>
 
       {/* Weitere Projekte - horizontal slider showing 2 cards approx */}
       {others.length > 0 && (
-        <section className="py-20 bg-neutral-900/10">
+        <section className="py-20 bg-neutral-900/10" aria-labelledby="cs-more-title" role="region">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-8">Weitere Projekte</h2>
+            <h2 id="cs-more-title" className="text-3xl font-bold mb-8">Weitere Projekte</h2>
             <div className="-mx-4 overflow-x-auto">
               <div className="flex gap-6 px-4">
                 {others.map((o: any) => (
                   <Link
                     key={o.id}
                     href={`/case-studies/${o.id}`}
-                    className="min-w-[320px] max-w-xs bg-neutral-900 p-6 rounded-2xl border border-white/6 hover:scale-105 transform transition glass"
+                    className="min-w-[320px] max-w-xs bg-neutral-900 p-6 rounded-2xl border border-white/6 hover:scale-105 transform transition glass animate-float"
+                    aria-label={`Öffne Case Study ${o.title}`}
                   >
                     <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
                       {o.heroImage && <Image src={o.heroImage} alt={o.title} fill className="object-cover" />}
