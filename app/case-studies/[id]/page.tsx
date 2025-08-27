@@ -1,5 +1,5 @@
-import CaseStudyTemplate from '@/components/CaseStudyTemplate';
-import { caseStudies } from '@/data/caseStudies';
+import CaseStudyTemplate from '../../components/CaseStudyTemplate';
+import { caseStudies } from '../../data/caseStudies';
 import type { Metadata } from 'next';
 
 type Params = { params: { id: string } };
