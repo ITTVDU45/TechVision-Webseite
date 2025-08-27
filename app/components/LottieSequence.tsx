@@ -4,7 +4,7 @@ import Lottie from "lottie-react";
 
 const LottieSequence: React.FC<{ animations: string[] }> = ({ animations }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [animationData, setAnimationData] = useState<any>(null);
+  const [animationData, setAnimationData] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     let mounted = true;

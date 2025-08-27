@@ -15,7 +15,7 @@ export interface SoftwareDevelopmentFormState {
   message: string;
 }
 
-export type GenericFormState = Record<string, any>;
+export type GenericFormState = Record<string, unknown>;
 export interface WebDevelopmentFormState {
   websiteGoal: string;
   services: string[];

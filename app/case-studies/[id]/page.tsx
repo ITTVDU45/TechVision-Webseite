@@ -9,7 +9,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const data = (caseStudies as Record<string, any>)[params.id];
+  const data = caseStudies[params.id as keyof typeof caseStudies];
   return {
     title: data?.title ?? 'Case Study',
     description: data?.summary ?? undefined,
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default function CaseStudyByIdPage({ params }: Params) {
-  const data = (caseStudies as Record<string, any>)[params.id];
+  const data = caseStudies[params.id as keyof typeof caseStudies];
   if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center">

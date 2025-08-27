@@ -117,7 +117,22 @@ export default function Header(): JSX.Element {
               <AnimatePresence>
                 {showMore && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute right-0 mt-2 w-72 rounded-xl bg-gray-900/90 backdrop-blur-xl border border-white/10 shadow-xl" onMouseEnter={() => setShowMore(true)} onMouseLeave={() => setShowMore(false)}>
-                    <div className="p-2">{moreItems.map((item) => (<Link key={item.name} href={item.href} onClick={(e) => handleNavClick(e as any, item.href)} className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors group"><span className="text-2xl p-2 bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors">{item.icon}</span><div><div className="font-medium text-white group-hover:text-blue-400 transition-colors">{item.name}</div><div className="text-sm text-gray-400 mt-0.5">{item.description}</div></div></Link>))}</div>
+                    <div className="p-2">
+                      {moreItems.map((item) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={(e: React.MouseEvent) => handleNavClick(e, item.href)}
+                          className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors group"
+                        >
+                          <span className="text-2xl p-2 bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors">{item.icon}</span>
+                          <div>
+                            <div className="font-medium text-white group-hover:text-blue-400 transition-colors">{item.name}</div>
+                            <div className="text-sm text-gray-400 mt-0.5">{item.description}</div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

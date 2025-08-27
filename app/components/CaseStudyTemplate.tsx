@@ -17,7 +17,7 @@ type CaseStudy = {
 };
 
 export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
-  const others = Object.values(caseStudies).filter((c: any) => c.id !== data.id);
+  const others = Object.values(caseStudies).filter((c) => c.id !== data.id) as CaseStudy[];
 
   // helper: render gallery - special layout for cms-webentwicklung (2x2)
   const renderGallery = () => {
@@ -116,7 +116,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
             <h2 id="cs-more-title" className="text-3xl font-bold mb-8">Weitere Projekte</h2>
             <div className="-mx-4 overflow-x-auto">
               <div className="flex gap-6 px-4">
-                {others.map((o: any) => (
+                {others.map((o) => (
                   <Link
                     key={o.id}
                     href={`/case-studies/${o.id}`}

@@ -1,8 +1,9 @@
 "use client";
+import type React from "react";
 import IndustrySolutionDetail from "../industry-solutions/[id]/page";
 
-export default function IndustrySolutionDetailWrapper(props: any) {
-  return <IndustrySolutionDetail {...props} /> as any;
+export default function IndustrySolutionDetailWrapper(): JSX.Element {
+  return <IndustrySolutionDetail />;
 }
 
 

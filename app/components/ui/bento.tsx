@@ -11,7 +11,7 @@ type BentoCardProps = {
   name: string;
   className?: string;
   background?: React.ReactNode;
-  Icon?: React.ComponentType<any>;
+  Icon?: React.ComponentType<Record<string, unknown>>;
   description?: React.ReactNode;
   href?: string;
   cta?: React.ReactNode;

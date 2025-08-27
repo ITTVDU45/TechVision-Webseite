@@ -42,8 +42,8 @@ const GlowingEffect = memo(({ blur = 0, glow = true, borderWidth = 1, spread = 2
   useEffect(() => {
     const container = containerRef.current;
     if (!container || disabled) return;
-    container.addEventListener('mousemove', handleMouseMove as any);
-    return () => container.removeEventListener('mousemove', handleMouseMove as any);
+    container.addEventListener('mousemove', handleMouseMove as EventListener);
+    return () => container.removeEventListener('mousemove', handleMouseMove as EventListener);
   }, [handleMouseMove, disabled]);
 
   return (
