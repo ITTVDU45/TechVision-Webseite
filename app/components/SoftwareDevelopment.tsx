@@ -9,7 +9,9 @@ import Header from './Header';
 import Footer from './Footer';
 import { useRouter } from 'next/navigation';
 
-export default function SoftwareDevelopment(): JSX.Element {
+type SoftwareDevelopmentProps = {};
+
+export default function SoftwareDevelopment(_props: SoftwareDevelopmentProps): JSX.Element {
   const blogPosts = [
     { title: 'Aktuelle Trends in der Softwareentwicklung', excerpt: 'Entdecken Sie die neuesten Trends und Technologien, die die Softwareentwicklung revolutionieren.', image: '/images/blog/trends.jpg', category: 'Trends', date: '20. März 2024', link: '/blog/trends' },
   ];
