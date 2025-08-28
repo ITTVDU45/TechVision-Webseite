@@ -15,8 +15,24 @@ import Lottie from 'lottie-react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function ProcessSection() {
-  const processes = [
+type Process = {
+  step: string;
+  title: string;
+  description: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  gradient: string;
+};
+
+type Advantage = {
+  title: string;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  gradient: string;
+};
+
+type ProcessSectionProps = {};
+
+export default function ProcessSection(_props: ProcessSectionProps): JSX.Element {
+  const processes: Process[] = [
     {
       step: "1️⃣",
       title: "Analyse & Strategie",
@@ -54,7 +70,7 @@ export default function ProcessSection() {
     }
   ];
 
-  const advantages = [
+  const advantages: Advantage[] = [
     {
       title: "Experten für KI, Automatisierung & IT-Sicherheit",
       icon: SparklesIcon,
@@ -279,19 +295,27 @@ export default function ProcessSection() {
 }
 
 // Neue Komponente für die Sequenz von Lottie-Animationen
-const LottieSequence = ({ animations }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [animationData, setAnimationData] = useState(null);
-
+const LottieSequence: React.FC<{ animations: string[] }> = ({ animations }) => {
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [animationData, setAnimationData] = useState<Record<string, unknown> | null>(null);
   useEffect(() => {
-    // Lade die aktuelle Animation
-    fetch(animations[currentIndex])
-      .then(response => response.json())
-      .then(data => setAnimationData(data));
+    let mounted = true;
+    async function load() {
+      try {
+        const res = await fetch(animations[currentIndex]);
+        const data = await res.json();
+        if (mounted) setAnimationData(data as Record<string, unknown>);
+      } catch (e) {
+        // ignore
+      }
+    }
+    load();
+    return () => {
+      mounted = false;
+    };
   }, [currentIndex, animations]);
 
   const handleComplete = () => {
-    // Wechsle zur nächsten Animation oder starte von vorne
     setCurrentIndex((prevIndex) => (prevIndex + 1) % animations.length);
   };
 
@@ -305,4 +329,4 @@ const LottieSequence = ({ animations }) => {
       className="w-full h-full object-cover"
     />
   );
-}; 
+};
