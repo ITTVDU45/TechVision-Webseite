@@ -6,7 +6,8 @@ export async function generateStaticParams() {
   return Object.keys(caseStudies).map((id) => ({ id }));
 }
 
-export async function generateMetadata({ params }: any): Promise<Metadata> {
+export async function generateMetadata(props: any): Promise<Metadata> {
+  const { params } = await props;
   const data = caseStudies[(params?.id ?? '') as keyof typeof caseStudies];
   return {
     title: data?.title ?? 'Case Study',
@@ -14,9 +15,9 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   };
 }
 
-export default function CaseStudyByIdPage(props: unknown) {
-  const params = ((props as any)?.params ?? {}) as { id?: string };
-  const data = caseStudies[params.id as keyof typeof caseStudies];
+export default async function CaseStudyByIdPage(props: any) {
+  const { params } = await props;
+  const data = caseStudies[(params?.id ?? '') as keyof typeof caseStudies];
   if (!data) {
     return (
       <div className="min-h-screen flex items-center justify-center">

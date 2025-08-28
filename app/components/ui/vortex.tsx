@@ -10,7 +10,17 @@ interface VortexCustomProps extends React.HTMLAttributes<HTMLDivElement> {
 
 type VortexProps = React.PropsWithChildren<VortexCustomProps>;
 
-const Vortex: React.FC<VortexProps> = ({ children, backgroundColor, style, className, ...rest }) => {
+const Vortex: React.FC<VortexProps> = ({
+  children,
+  backgroundColor,
+  rangeY,
+  particleCount,
+  baseHue,
+  style,
+  className,
+  ...rest
+}) => {
+  // Do not forward custom props (rangeY, particleCount, baseHue) to the DOM
   const mergedStyle = { ...(style as React.CSSProperties), backgroundColor } as React.CSSProperties;
   return (
     <div {...(rest as React.HTMLAttributes<HTMLDivElement>)} style={mergedStyle} className={`relative overflow-hidden ${className ?? ''}`}>
