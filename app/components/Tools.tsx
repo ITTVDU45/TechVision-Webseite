@@ -11,10 +11,12 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import Header from './Header';
 import Footer from './Footer';
 
-export default function Tools(): JSX.Element {
-  const [currentAgentIndex, setCurrentAgentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+type ToolsProps = {};
+
+export default function Tools(_props: ToolsProps): JSX.Element {
+  const [currentAgentIndex, setCurrentAgentIndex] = useState<number>(0);
+  const [direction, setDirection] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
   
   useEffect(() => {
     if (typeof window !== 'undefined') setIsMobile(window.innerWidth < 768);
