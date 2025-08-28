@@ -1,6 +1,8 @@
 const { FlatCompat } = require('@eslint/eslintrc');
 
-const compat = new FlatCompat({ baseDirectory: __dirname });
+// Provide a minimal recommendedConfig to satisfy FlatCompat's constructor
+// (an empty object is sufficient for our usage here)
+const compat = new FlatCompat({ baseDirectory: __dirname, recommendedConfig: {} });
 
 module.exports = [
   ...compat.extends('eslint:recommended', 'plugin:@typescript-eslint/recommended', 'next'),

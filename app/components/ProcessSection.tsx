@@ -11,8 +11,9 @@ import {
   PresentationChartBarIcon,
   CloudIcon
 } from '@heroicons/react/24/outline';
-import Lottie from 'lottie-react';
+import dynamic from 'next/dynamic';
 import { useState, useEffect } from 'react';
+const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 import { useRouter } from 'next/navigation';
 
 type Process = {

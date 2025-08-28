@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 type CaseStudy = { title: string; description: string; image?: string; gradient?: string; stats?: { value: string; label: string }[] };
 
-const webDevBlogPosts = [
+const webDevBlogPosts: { title: string; excerpt: string; image?: string; category?: string; date?: string; gradient?: string; link?: string }[] = [
   { title: 'Modern Web Development', excerpt: 'Die neuesten Trends in der Webentwicklung mit React und Next.js', image: '/images/blog/web-dev.jpg', category: 'Development', date: '20. März 2024', gradient: 'from-blue-500 to-indigo-500', link: '/blog/web-development' },
   { title: 'Performance Optimierung', excerpt: 'Strategien zur Verbesserung der Website-Performance und Core Web Vitals', image: '/images/blog/performance.jpg', category: 'Optimierung', date: '18. März 2024', gradient: 'from-indigo-500 to-purple-500', link: '/blog/performance-optimization' }
 ];
@@ -23,7 +23,7 @@ const CaseCard: React.FC<{ cs: CaseStudy }> = ({ cs }) => (
 );
 
 export default function WebDevelopment(): JSX.Element {
-  const [activeIndex, setActiveIndex] = useState(-1);
+  const [activeIndex, setActiveIndex] = useState<number>(-1);
 
   const caseStudies: CaseStudy[] = [
     { title: 'E-Commerce Platform', description: 'Entwicklung eines modernen Online-Shops mit Next.js und Shopify', image: '/images/case-study-1.jpg', gradient: 'from-blue-500 via-indigo-500 to-violet-600' },

@@ -13,6 +13,25 @@ import Footer from './Footer';
 
 type ToolsProps = {};
 
+interface Agent {
+  name: string;
+  icon?: string;
+  description?: string;
+  features?: string[];
+  subAgents?: { name: string; description?: string }[];
+}
+
+interface BlogPost {
+  title: string;
+  subtitle?: string;
+  description?: string;
+  image?: string;
+  category?: { name: string; icon?: string };
+  readTime?: string;
+  date?: string;
+  link?: string;
+}
+
 export default function Tools(_props: ToolsProps): JSX.Element {
   const [currentAgentIndex, setCurrentAgentIndex] = useState<number>(0);
   const [direction, setDirection] = useState<number>(0);
@@ -24,22 +43,22 @@ export default function Tools(_props: ToolsProps): JSX.Element {
   
   const slideCount = isMobile ? 1 : 3;
 
-  const agents = [
+  const agents: Agent[] = [
     { name: 'Personal Assistant', icon: '👤', description: 'Automatisierte Unterstützung für Terminplanung, E-Mails, Aufgaben und persönliche Organisation.', features: ['Intelligente Kalenderverwaltung', 'E-Mail-Priorisierung', 'Task-Management'] },
     { name: 'Juristische KI-Agenten', icon: '⚖️', description: 'Spezialisierte KI für Anwaltskanzleien & rechtliche Prozesse.', features: ['Fallanalyse & Dokumentengenerierung', 'Automatisierte Vertragsprüfung', 'Rechtsauskunft & Mandantenkommunikation'] },
     { name: 'Unternehmensberater-KI', icon: '📊', description: 'Unterstützt Berater bei Datenanalysen, Strategieentwicklung & Prozessoptimierung.', subAgents: [{ name: 'Finanz-KI', description: 'Automatische Kosten-Nutzen-Analysen' }] },
     { name: 'Telefonbesprechungs-KI', icon: '📞', description: 'Automatisierte Kundenservice-KI für Telefonsupport, Terminvereinbarungen & Beschwerden.', features: ['Sprach- und Textanalyse', 'CRM-Integration', 'Automatische Ticketerstellung'] },
   ];
 
-  const visibleAgents = () => agents.slice(currentAgentIndex, currentAgentIndex + slideCount);
+  const visibleAgents = (): Agent[] => agents.slice(currentAgentIndex, currentAgentIndex + slideCount);
 
   const [currentBlogIndex, setCurrentBlogIndex] = useState(0);
 
-  const blogPosts = [
+  const blogPosts: BlogPost[] = [
     { title: 'KI-Tools im Unternehmenseinsatz', subtitle: 'Effizienzsteigerung durch moderne Technologie', description: 'Wie moderne Tools die Effizienz in Unternehmen steigern können.', image: '/images/blog/ki-tools.jpg', category: { name: 'Best Practices', icon: '💡' }, readTime: '5 min', date: '20. März 2024', link: '/blog/ki-tools' },
   ];
 
-  const visibleBlogPosts = () => blogPosts.slice(currentBlogIndex, currentBlogIndex + 3);
+  const visibleBlogPosts = (): BlogPost[] => blogPosts.slice(currentBlogIndex, currentBlogIndex + 3);
 
   const router = useRouter();
 
@@ -53,7 +72,7 @@ export default function Tools(_props: ToolsProps): JSX.Element {
   const pageCount = Math.ceil(blogPosts.length / postsPerPage);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const visiblePosts = () => { const start = currentIndex; const end = start + postsPerPage; return blogPosts.slice(start, end); };
+  const visiblePosts = (): BlogPost[] => { const start = currentIndex; const end = start + postsPerPage; return blogPosts.slice(start, end); };
 
   const nextSlide = () => { if (currentIndex + postsPerPage < blogPosts.length) setCurrentIndex(prev => prev + postsPerPage); };
   const prevSlide = () => { if (currentIndex > 0) setCurrentIndex(prev => prev - postsPerPage); };
