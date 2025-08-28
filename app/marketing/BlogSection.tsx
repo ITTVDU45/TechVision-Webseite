@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import blogPostsData from '../../src/data/blogPosts';
+import blogPostsData from '../../data/blogPosts';
 
 type BlogPost = {
   title: string;
