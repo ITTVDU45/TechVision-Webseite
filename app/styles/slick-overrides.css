@@ -1,0 +1,45 @@
+/* Slick Carousel Overrides */
+
+.slick-dots {
+    bottom: -40px !important;
+}
+
+.slick-dots li {
+    margin: 0 4px !important;
+}
+
+.slick-dots li div {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background-color: #404040;
+    transition: all 0.3s ease;
+}
+
+.slick-dots li.slick-active div {
+    background-color: #2563eb !important;
+    width: 24px !important;
+}
+
+.slick-list {
+    margin: 0 -16px !important;
+    overflow: visible !important;
+}
+
+.slick-slide > div {
+    padding: 0 16px !important;
+}
+
+/* Ensure images fill space correctly */
+.slick-track {
+    display: flex !important;
+    align-items: stretch !important;
+}
+
+.slick-slide {
+    height: inherit !important;
+}
+
+.slick-slide > div {
+    height: 100% !important;
+}

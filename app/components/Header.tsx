@@ -141,7 +141,7 @@ export default function Header(_props: HeaderProps): JSX.Element {
             </div>
           </nav>
 
-          <Link href="/offer" className="px-6 py-2.5 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 rounded-lg text-sm font-medium relative overflow-hidden group"><motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative z-10">Jetzt Angebot einholen</motion.span><div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300" /></Link>
+          <Link href="/offer" className="px-6 py-2.5 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 rounded-full text-sm font-medium relative overflow-hidden group"><motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative z-10">Termin buchen</motion.span><div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300" /></Link>
 
           <button className="md:hidden w-10 h-10 flex items-center justify-center" onClick={toggleSidebar}><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg></button>
         </div>

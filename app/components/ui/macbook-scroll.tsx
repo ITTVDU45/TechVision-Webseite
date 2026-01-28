@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 import {
   IconBrightnessDown,
   IconBrightnessUp,
@@ -24,12 +24,21 @@ import {
   IconCaretDownFilled,
 } from "@tabler/icons-react";
 
+interface MacbookScrollProps {
+  src?: string;
+  videoSrc?: string;
+  showGradient?: boolean;
+  title?: string | React.ReactNode;
+  badge?: React.ReactNode;
+}
+
 export const MacbookScroll = ({
   src,
+  videoSrc,
   showGradient,
   title,
   badge
-}) => {
+}: MacbookScrollProps) => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -39,21 +48,22 @@ export const MacbookScroll = ({
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (window && window.innerWidth < 768) {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
       setIsMobile(true);
     }
   }, []);
 
-  const scaleX = useTransform(scrollYProgress, [0.3, 0.5], [1.2, isMobile ? 1 : 1.5]);
-  const scaleY = useTransform(scrollYProgress, [0.3, 0.5], [0.6, isMobile ? 1 : 1.5]);
-  const translate = useTransform(scrollYProgress, [0.3, 0.5], [0, 500]);
-  const rotate = useTransform(scrollYProgress, [0.3, 0.35, 0.5], [-28, -28, 0]);
+  const scaleX = useTransform(scrollYProgress, [0.1, 0.4], [1.2, isMobile ? 1 : 1.5]);
+  const scaleY = useTransform(scrollYProgress, [0.1, 0.4], [0.6, isMobile ? 1 : 1.5]);
+  const translate = useTransform(scrollYProgress, [0.1, 0.4], [0, 400]);
+  const rotate = useTransform(scrollYProgress, [0.1, 0.2, 0.4], [-40, -40, 0]);
 
   return (
     <div
       ref={ref}
       className="min-h-[150vh] flex flex-col items-center justify-start flex-shrink-0"
     >
+      {title && <Header title={title} badge={badge} />}
       <div className="sticky top-[15vh] flex items-center justify-center [perspective:800px]">
         <motion.div
           style={{
@@ -67,21 +77,32 @@ export const MacbookScroll = ({
           className="relative h-80 w-[32rem] bg-[#010101] rounded-2xl p-2"
         >
           <div className="absolute inset-0 bg-[#272729] rounded-lg" />
-          <img
-            src={src}
-            alt="Screen content"
-            className="object-cover rounded-lg w-full h-full"
-          />
+          {videoSrc ? (
+            <video
+              src={videoSrc}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="object-cover rounded-lg w-full h-full absolute inset-0"
+            />
+          ) : (
+            <img
+              src={src}
+              alt="Screen content"
+              className="object-cover rounded-lg w-full h-full absolute inset-0"
+            />
+          )}
         </motion.div>
       </div>
     </div>
   );
 };
 
-const Header = ({ title, badge }) => {
+const Header = ({ title, badge }: { title: string | React.ReactNode; badge?: React.ReactNode }) => {
   return (
-    <div className="relative z-10 flex flex-col items-center justify-center w-full h-64">
-      <h1 className="text-4xl font-bold text-center text-white mb-4 mt-12">
+    <div className="relative z-10 flex flex-col items-center justify-center w-full h-48 mb-10">
+      <h1 className="text-4xl md:text-6xl font-bold text-center text-white mb-4 mt-12">
         {title}
       </h1>
       {badge && <div className="flex justify-center">{badge}</div>}
@@ -89,7 +110,7 @@ const Header = ({ title, badge }) => {
   );
 };
 
-const Macbook = ({ src }) => {
+const Macbook = ({ src }: { src?: string }) => {
   return (
     <div
       className="[perspective:2000px] relative before:absolute before:top-0 before:left-0 before:h-full before:w-full before:bg-gradient-to-t before:from-black/50 before:via-black/0 before:to-black/0 transform-gpu"
@@ -112,6 +133,12 @@ export const Lid = ({
   rotate,
   translate,
   src
+}: {
+  scaleX: any;
+  scaleY: any;
+  rotate: any;
+  translate: any;
+  src?: string;
 }) => {
   return (
     <div className="relative [perspective:800px]">
@@ -144,7 +171,7 @@ export const Lid = ({
         className="h-96 w-[32rem] absolute inset-0 bg-[#010101] rounded-2xl p-2">
         <div className="absolute inset-0 bg-[#272729] rounded-lg" />
         <img
-          src="/images/ai-robot.jpg"
+          src={src || "/images/ai-robot.jpg"}
           alt="Macbook screen content"
           className="object-contain absolute rounded-lg inset-0 h-full w-full p-1"
         />

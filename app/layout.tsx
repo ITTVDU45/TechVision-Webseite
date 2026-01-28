@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./styles/globals.css";
+import "./styles/slick-overrides.css";
+import CustomCursor from "./components/CustomCursor";
+import SmoothScroll from "./components/SmoothScroll";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -61,7 +64,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className={inter.className}>
+    <html lang="de" className={inter.className} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -69,7 +72,9 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
+        <SmoothScroll />
+        <CustomCursor />
         {children}
       </body>
     </html>

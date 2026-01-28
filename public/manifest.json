@@ -10,7 +10,7 @@
     {
       "src": "/images/logo_wei_neu.png.avif",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/avif"
     }
   ]
 }

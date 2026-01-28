@@ -4,11 +4,13 @@ import Header from "../components/Header";
 import LoadingScreen from "../components/LoadingScreen";
 import HeroSection from "../components/HeroSection";
 import Services from "../components/Services";
-import EfficiencySection from "../EfficiencySection";
+import AIStrategySection from "../components/AIStrategySection";
+import IndustrySolutionsSection from "../components/IndustrySolutionsSection";
 import Technologies from "../components/Technologies";
 import ProcessSection from "./ProcessSection";
 import CaseStudies from "../components/CaseStudies";
-import Testimonials from "../components/Testimonials";
+import TopThemes from "../components/TopThemes";
+import FAQSection from "../components/FAQSection";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
 
@@ -25,16 +27,20 @@ export default function HomePage() {
       <HeroSection isLoading={isLoading} />
       {/* Services Section */}
       <Services />
-      {/* Efficiency Section */}
-      <EfficiencySection />
-      {/* Case Studies Section (moved) */}
+      {/* AI Strategy Section */}
+      <AIStrategySection />
+      {/* Industry Solutions Section */}
+      <IndustrySolutionsSection />
+      {/* Process Section */}
+      <ProcessSection />
+      {/* Case Studies Section */}
       <CaseStudies />
       {/* Technologies Section */}
       <Technologies />
-      {/* Process Section */}
-      <ProcessSection />
-      {/* Testimonials Section */}
-      <Testimonials />
+      {/* Top Themes Section */}
+      <TopThemes />
+      {/* FAQ Section */}
+      <FAQSection />
       {/* CTA Section */}
       <CTA />
       {/* Footer */}

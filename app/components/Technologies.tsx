@@ -3,12 +3,18 @@ import React from 'react';
 
 export default function Technologies(): JSX.Element {
   return (
-    <section className="min-h-screen bg-black text-white py-24">
-      <div className="container mx-auto px-4">
+    <section className="min-h-screen bg-black text-white py-24 relative overflow-hidden">
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-600/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2" />
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
             <div className="max-w-3xl">
-              <h2 className="text-4xl md:text-5xl font-bold mb-4">Unsere Technologien</h2>
+              <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                Unsere <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600">Technologien</span>
+              </h2>
               <p className="text-lg text-gray-400 mb-8">Wir bauen Lösungen mit einem klaren Fokus auf Skalierbarkeit, Sicherheit und Performance. Unsere Toolchain kombiniert bewährte Backend- und Frontend-Technologien mit modernen KI- und Datenplattformen.</p>
             </div>
 
