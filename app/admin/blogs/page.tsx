@@ -14,12 +14,13 @@ interface BlogPost {
   image: string;
   date: string;
   readTime: string;
-  category: {
+  category: Array<{
+    id: string;
     name: string;
     icon: string;
-  };
+  }>;
   tags?: string[];
-  page?: string;
+  page?: string[];
   published: boolean;
 }
 
@@ -54,12 +55,28 @@ export default function BlogsPage() {
       
       // Stelle sicher, dass data ein Array ist
       if (Array.isArray(data)) {
-        // Stelle sicher, dass tags und page korrekt geladen werden
-        const blogsWithDefaults = data.map((blog: any) => ({
-          ...blog,
-          tags: Array.isArray(blog.tags) ? blog.tags : (blog.tags ? [blog.tags] : []),
-          page: blog.page || null,
-        }));
+        // Stelle sicher, dass tags, page und category korrekt geladen werden
+        const blogsWithDefaults = data.map((blog: any) => {
+          // Normalisiere category zu Array
+          let normalizedCategory: Array<{ id: string; name: string; icon: string }> = [];
+          if (Array.isArray(blog.category)) {
+            normalizedCategory = blog.category;
+          } else if (blog.category && typeof blog.category === 'object') {
+            // Konvertiere altes Format (einzelnes Objekt) zu Array
+            const cat = blog.category as any;
+            if (cat.name && cat.icon) {
+              const categoryId = cat.id || cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+              normalizedCategory = [{ id: categoryId, name: cat.name, icon: cat.icon }];
+            }
+          }
+
+          return {
+            ...blog,
+            category: normalizedCategory,
+            tags: Array.isArray(blog.tags) ? blog.tags : (blog.tags ? [blog.tags] : []),
+            page: Array.isArray(blog.page) ? blog.page : (blog.page ? [blog.page] : []),
+          };
+        });
         setBlogs(blogsWithDefaults);
       } else {
         // Wenn data kein Array ist, aber auch kein Fehler-Objekt mit error-Feld
