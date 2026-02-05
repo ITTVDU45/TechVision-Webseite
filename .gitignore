@@ -78,3 +78,13 @@ jspm_packages/
 .tern-port
 .next/
 .next/
+
+# Documentation and setup files
+ERROR_FIXES.md
+SETUP_ENV.md
+Fragen für FAQ.md
+DB_INTEGRATION_STATUS.md
+CONTENT_INTEGRATION_CHECKLIST.md
+codesnippets.md
+ADMIN_PANEL_README.md
+MONGODB_SETUP.md

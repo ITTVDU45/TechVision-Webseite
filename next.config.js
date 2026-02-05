@@ -16,6 +16,8 @@ const nextConfig = {
     ],
     unoptimized: false,
   },
+  // Output configuration for Vercel
+  output: 'standalone',
   trailingSlash: false,
   poweredByHeader: false,
   // React 19 Strict Mode
