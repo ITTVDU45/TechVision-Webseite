@@ -1,4 +1,6 @@
 const { FlatCompat } = require('@eslint/eslintrc');
+const typescriptParser = require('@typescript-eslint/parser');
+const typescriptPlugin = require('@typescript-eslint/eslint-plugin');
 
 // Provide a minimal recommendedConfig to satisfy FlatCompat's constructor
 // (an empty object is sufficient for our usage here)
@@ -9,11 +11,14 @@ module.exports = [
   {
     ignores: ['node_modules/**', '.next/**'],
     languageOptions: {
-      parser: '@typescript-eslint/parser',
-      parserOptions: { ecmaVersion: 2024, sourceType: 'module' },
+      parser: typescriptParser,
+      parserOptions: { 
+        ecmaVersion: 2024, 
+        sourceType: 'module',
+      },
     },
     plugins: {
-      '@typescript-eslint': require('@typescript-eslint/eslint-plugin'),
+      '@typescript-eslint': typescriptPlugin,
     },
     rules: {
       '@typescript-eslint/explicit-module-boundary-types': 'off',
