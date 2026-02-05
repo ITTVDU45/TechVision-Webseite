@@ -180,7 +180,7 @@ export default function BlogPage() {
                               })
                             ) : (
                               <Link
-                                href={`/blog/category/${post.category.id || post.category.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}
+                                href={`/blog/category/${('id' in post.category ? post.category.id : post.category.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''))}`}
                                 onClick={(e) => e.stopPropagation()}
                                 className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-sm hover:bg-black/70 transition-colors"
                               >
