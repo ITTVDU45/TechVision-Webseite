@@ -267,23 +267,28 @@ export default function BlogDetailPage() {
                       ) : (
                         <p className="text-gray-400 text-sm">Keine Kategorien</p>
                       )
-                    ) : (
-                      <Link
-                        href={`/blog/category/${blog.category.id || blog.category.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`}
-                        className="flex items-center gap-2 hover:text-blue-400 transition-colors group"
-                      >
-                        <span className="text-2xl">{blog.category.icon}</span>
-                        <span className="flex-1">{blog.category.name}</span>
-                        <svg
-                          className="w-4 h-4 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                    ) : (() => {
+                      // Normalisiere altes Format zu Array
+                      const cat = blog.category as any;
+                      const categoryId = cat.id || cat.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'allgemein';
+                      return (
+                        <Link
+                          href={`/blog/category/${categoryId}`}
+                          className="flex items-center gap-2 hover:text-blue-400 transition-colors group"
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
-                    )}
+                          <span className="text-2xl">{cat.icon || '📝'}</span>
+                          <span className="flex-1">{cat.name || 'Allgemein'}</span>
+                          <svg
+                            className="w-4 h-4 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </Link>
+                      );
+                    })()}
                   </div>
 
                   {/* Tags */}
