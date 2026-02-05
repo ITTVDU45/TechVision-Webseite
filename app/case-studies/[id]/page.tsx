@@ -13,7 +13,7 @@ export async function generateMetadata(props: any): Promise<Metadata> {
   const data = caseStudies[id as keyof typeof caseStudies];
   return {
     title: data?.title ?? 'Case Study',
-    description: data?.summary ?? undefined,
+    description: data?.description ?? data?.subtitle ?? undefined,
   };
 }
 

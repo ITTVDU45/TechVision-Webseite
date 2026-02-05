@@ -50,7 +50,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
           "@context": "https://schema.org",
           "@type": "CaseStudy",
           "name": data.title,
-          "description": data.summary,
+          "description": data.description || data.subtitle,
           "url": `https://your-domain.com/case-studies/${data.id}`,
           "image": data.heroImage || null,
           "mainEntityOfPage": {
@@ -79,7 +79,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto prose prose-invert">
             <h2 id="cs-summary-title">Zusammenfassung</h2>
-            <p>{data.summary}</p>
+            <p>{data.description}</p>
 
             {data.challenges && (
               <>
@@ -128,7 +128,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
                     </div>
                     <h3 className="text-xl font-semibold mb-1">{o.title}</h3>
                     {o.subtitle && <p className="text-sm text-gray-400 mb-2">{o.subtitle}</p>}
-                    <p className="text-sm text-gray-300">{o.summary?.slice(0, 120)}{o.summary && o.summary.length > 120 ? '…' : ''}</p>
+                    <p className="text-sm text-gray-300">{o.description?.slice(0, 120)}{o.description && o.description.length > 120 ? '…' : ''}</p>
                   </Link>
                 ))}
               </div>
