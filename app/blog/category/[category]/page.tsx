@@ -55,7 +55,7 @@ export default function BlogCategoryPage() {
                 return catId === categorySlug || catName === categorySlug;
               });
             } else if (b.category?.name) {
-              const catId = b.category.id || b.category.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+              const catId = ('id' in b.category ? b.category.id : b.category.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')) || '';
               const catName = b.category.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
               return catId === categorySlug || catName === categorySlug;
             }
