@@ -11,9 +11,9 @@ interface CaseStudy {
   subtitle?: string;
   description: string;
   image?: string;
-  category?: string;
+  category?: string | string[];
   stats?: Array<{ value: string; label: string }>;
-  id?: string;
+  id: string; // Required, nicht optional
   published?: boolean;
 }
 
@@ -56,11 +56,15 @@ const CaseStudies: React.FC = () => {
   }, []);
 
   // Kombiniere API-Daten mit statischen Daten
-  const getCategorizedCases = () => {
+  const getCategorizedCases = (): Record<string, Array<{ id: string; title: string; subtitle?: string; description: string; image?: string; stats?: Array<{ value: string; label: string }> }>> => {
     // Wenn API-Daten vorhanden, gruppiere nach Kategorien
     if (apiCaseStudies.length > 0) {
-      const grouped: Record<string, CaseStudy[]> = {};
+      const grouped: Record<string, Array<{ id: string; title: string; subtitle?: string; description: string; image?: string; stats?: Array<{ value: string; label: string }> }>> = {};
       apiCaseStudies.forEach((cs) => {
+        // Stelle sicher, dass id immer ein string ist
+        const caseId = cs._id || cs.id || Math.random().toString();
+        if (!caseId) return; // Skip wenn keine ID
+        
         // Unterstütze sowohl Array als auch String (für Rückwärtskompatibilität)
         const categories = Array.isArray(cs.category) ? cs.category : (cs.category ? [cs.category] : []);
         
@@ -69,8 +73,11 @@ const CaseStudies: React.FC = () => {
           const defaultCat = 'software';
           if (!grouped[defaultCat]) grouped[defaultCat] = [];
           grouped[defaultCat].push({
-            ...cs,
-            id: cs._id || cs.id || Math.random().toString(),
+            id: caseId,
+            title: cs.title,
+            subtitle: cs.subtitle,
+            description: cs.description,
+            image: cs.image,
             stats: cs.stats || [],
           });
         } else {
@@ -78,8 +85,11 @@ const CaseStudies: React.FC = () => {
           categories.forEach((cat: string) => {
             if (!grouped[cat]) grouped[cat] = [];
             grouped[cat].push({
-              ...cs,
-              id: cs._id || cs.id || Math.random().toString(),
+              id: caseId,
+              title: cs.title,
+              subtitle: cs.subtitle,
+              description: cs.description,
+              image: cs.image,
               stats: cs.stats || [],
             });
           });
@@ -87,8 +97,19 @@ const CaseStudies: React.FC = () => {
       });
       return grouped;
     }
-    // Fallback auf statische Daten
-    return categorizedCases;
+    // Fallback auf statische Daten - konvertiere zu kompatiblem Format
+    const converted: Record<string, Array<{ id: string; title: string; subtitle?: string; description: string; image?: string; stats?: Array<{ value: string; label: string }> }>> = {};
+    Object.keys(categorizedCases).forEach((key) => {
+      converted[key] = categorizedCases[key].map((cs) => ({
+        id: cs.id,
+        title: cs.title,
+        subtitle: cs.subtitle,
+        description: cs.description,
+        image: cs.image,
+        stats: cs.stats,
+      }));
+    });
+    return converted;
   };
 
   const currentCases = getCategorizedCases()[selectedCategory] || [];
