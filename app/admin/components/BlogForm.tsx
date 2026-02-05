@@ -64,13 +64,26 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
         image: blog.image || '',
         date: blog.date || '',
         readTime: blog.readTime || '5 min',
-        category: Array.isArray(blog.category) 
-          ? blog.category 
-          : (blog.category?.name ? [{ 
-              id: blog.category.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-              name: blog.category.name, 
-              icon: blog.category.icon || '📝' 
-            }] : []),
+        category: (() => {
+          // Wenn category bereits ein Array ist, verwende es direkt
+          if (Array.isArray(blog.category)) {
+            return blog.category;
+          }
+          // Wenn category ein Objekt ist (altes Format), konvertiere es zu Array
+          if (blog.category && typeof blog.category === 'object' && 'name' in blog.category) {
+            const cat = blog.category as any;
+            if (cat.name) {
+              const categoryId = cat.id || cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+              return [{ 
+                id: categoryId,
+                name: cat.name, 
+                icon: cat.icon || '📝' 
+              }];
+            }
+          }
+          // Fallback: leeres Array
+          return [];
+        })(),
         tags: (blog as any).tags || [],
         page: Array.isArray((blog as any).page) 
           ? (blog as any).page 
