@@ -1,25 +1,49 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { fetchFAQs } from '@/lib/api';
+import { faqs as staticFAQs } from '@/app/data/faqs';
 
-const faqs = [
-    {
-        question: 'Wie kann KI mein Unternehmen transformieren?',
-        answer: 'KI hilft, Geschäftsprozesse zu automatisieren, Daten effizient zu analysieren und bessere Entscheidungen zu treffen. Sie kann Routineaufgaben übernehmen und Muster in großen Datensätzen erkennen, um Wettbewerbsvorteile zu schaffen.'
-    },
-    {
-        question: 'Welche Branchen profitieren am meisten von KI?',
-        answer: 'Nahezu jede Branche kann profitieren, besonders aber E-Commerce, Dienstleistungen, Fertigung und das Gesundheitswesen durch Prozessoptimierung und personalisierte Kundenerlebnisse.'
-    },
-    {
-        question: 'Wie sicher sind KI-Lösungen?',
-        answer: 'Sicherheit steht bei uns an erster Stelle. Wir implementieren KI-Lösungen nach höchsten Datenschutzstandards (DSGVO) und sorgen für eine sichere Infrastruktur.'
-    }
-];
+interface FAQ {
+  question: string;
+  answer: string;
+  page?: string;
+  order?: number;
+}
 
 export default function FAQSection(): JSX.Element {
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    const [faqs, setFaqs] = useState<FAQ[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      const loadFAQs = async () => {
+        try {
+          // Lade FAQs für die Homepage
+          const apiFAQs = await fetchFAQs('home');
+          
+          if (apiFAQs && Array.isArray(apiFAQs) && apiFAQs.length > 0) {
+            // Sortiere nach order, falls vorhanden
+            const sorted = apiFAQs.sort((a, b) => (a.order || 0) - (b.order || 0));
+            setFaqs(sorted);
+          } else {
+            // Fallback auf statische FAQs für Homepage
+            const homeFAQs = staticFAQs.filter(faq => !faq.category || faq.category === 'home');
+            setFaqs(homeFAQs.slice(0, 3)); // Erste 3 als Fallback
+          }
+        } catch (error) {
+          console.error('Error loading FAQs:', error);
+          // Fallback auf statische FAQs
+          const homeFAQs = staticFAQs.filter(faq => !faq.category || faq.category === 'home');
+          setFaqs(homeFAQs.slice(0, 3));
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      loadFAQs();
+    }, []);
 
     return (
         <section className="py-24 relative overflow-hidden bg-black">
@@ -38,7 +62,12 @@ export default function FAQSection(): JSX.Element {
                 </motion.h2>
 
                 <div className="max-w-4xl mx-auto space-y-4">
-                    {faqs.map((faq, index) => (
+                    {loading ? (
+                        <div className="text-center text-gray-400 py-8">Lädt FAQs...</div>
+                    ) : faqs.length === 0 ? (
+                        <div className="text-center text-gray-400 py-8">Keine FAQs verfügbar</div>
+                    ) : (
+                        faqs.map((faq, index) => (
                         <motion.div
                             key={index}
                             initial={{ opacity: 0, y: 20 }}
@@ -73,7 +102,8 @@ export default function FAQSection(): JSX.Element {
                                 </div>
                             </motion.div>
                         </motion.div>
-                    ))}
+                        ))
+                    )}
                 </div>
 
                 <motion.div

@@ -59,7 +59,7 @@ const TopicCard: React.FC<TopicCardProps> = ({ post, index }) => {
 
                         <div className="mt-auto">
                             <Link
-                                href={`/blog/${post.id}`}
+                                href={`/blog/${(post as any).slug || post.id}`}
                                 className="inline-flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-400 group/link transition-colors"
                             >
                                 <span className="uppercase tracking-widest">Artikel lesen</span>

@@ -1,11 +1,97 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import CaseStudySlider from "./CaseStudySlider";
-import { categories, categorizedCases } from "../data/caseStudies";
+import { categorizedCases } from "../data/caseStudies";
+import { fetchCaseStudies } from "@/lib/api";
+
+interface CaseStudy {
+  _id?: string;
+  title: string;
+  subtitle?: string;
+  description: string;
+  image?: string;
+  category?: string;
+  stats?: Array<{ value: string; label: string }>;
+  id?: string;
+  published?: boolean;
+}
 
 const CaseStudies: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("software");
+  const [apiCaseStudies, setApiCaseStudies] = useState<CaseStudy[]>([]);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        // Lade Kategorien
+        const categoriesRes = await fetch('/api/case-study-categories');
+        if (categoriesRes.ok) {
+          const categoriesData = await categoriesRes.json();
+          setCategories(categoriesData);
+          // Setze erste Kategorie als Standard, falls vorhanden
+          if (categoriesData.length > 0 && !selectedCategory) {
+            setSelectedCategory(categoriesData[0].id);
+          }
+        }
+
+        // Lade alle veröffentlichten Case Studies (für die Case Studies Seite werden alle angezeigt)
+        const apiData = await fetchCaseStudies();
+        
+        if (apiData && Array.isArray(apiData) && apiData.length > 0) {
+          // Filtere nur veröffentlichte (auf der Case Studies Seite werden alle angezeigt, unabhängig von page)
+          const published = apiData.filter((cs: CaseStudy) => cs.published !== false);
+          setApiCaseStudies(published);
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  // Kombiniere API-Daten mit statischen Daten
+  const getCategorizedCases = () => {
+    // Wenn API-Daten vorhanden, gruppiere nach Kategorien
+    if (apiCaseStudies.length > 0) {
+      const grouped: Record<string, CaseStudy[]> = {};
+      apiCaseStudies.forEach((cs) => {
+        // Unterstütze sowohl Array als auch String (für Rückwärtskompatibilität)
+        const categories = Array.isArray(cs.category) ? cs.category : (cs.category ? [cs.category] : []);
+        
+        // Wenn keine Kategorien, verwende 'software' als Standard
+        if (categories.length === 0) {
+          const defaultCat = 'software';
+          if (!grouped[defaultCat]) grouped[defaultCat] = [];
+          grouped[defaultCat].push({
+            ...cs,
+            id: cs._id || cs.id || Math.random().toString(),
+            stats: cs.stats || [],
+          });
+        } else {
+          // Füge Case Study zu allen zugewiesenen Kategorien hinzu
+          categories.forEach((cat: string) => {
+            if (!grouped[cat]) grouped[cat] = [];
+            grouped[cat].push({
+              ...cs,
+              id: cs._id || cs.id || Math.random().toString(),
+              stats: cs.stats || [],
+            });
+          });
+        }
+      });
+      return grouped;
+    }
+    // Fallback auf statische Daten
+    return categorizedCases;
+  };
+
+  const currentCases = getCategorizedCases()[selectedCategory] || [];
 
   return (
     <section id="success-stories" className="py-24 bg-black relative overflow-hidden">
@@ -47,20 +133,22 @@ const CaseStudies: React.FC = () => {
         </div>
 
         {/* Category Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-16">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`relative px-6 py-2.5 rounded-xl transition-all duration-300 text-sm font-medium border ${selectedCategory === category.id
-                ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'
-                : 'bg-neutral-900/50 border-neutral-800 text-gray-400 hover:border-neutral-700 hover:text-white'
-                }`}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
+        {categories.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-3 mb-16">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`relative px-6 py-2.5 rounded-xl transition-all duration-300 text-sm font-medium border ${selectedCategory === category.id
+                  ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'
+                  : 'bg-neutral-900/50 border-neutral-800 text-gray-400 hover:border-neutral-700 hover:text-white'
+                  }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Slider Section */}
         <div className="max-w-7xl mx-auto">
@@ -72,7 +160,7 @@ const CaseStudies: React.FC = () => {
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              <CaseStudySlider cases={categorizedCases[selectedCategory] || []} />
+              <CaseStudySlider cases={currentCases} />
             </motion.div>
           </AnimatePresence>
         </div>

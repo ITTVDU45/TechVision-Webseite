@@ -1,9 +1,12 @@
 "use client";
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import blogPostsData from '../../data/blogPosts';
+import { fetchBlogPosts } from '@/lib/api';
+
+// Fallback-Daten, falls Import fehlschlägt
+const defaultBlogPosts: BlogPost[] = [];
 
 type BlogPost = {
   title: string;
@@ -24,11 +27,70 @@ type BlogSectionProps = {
 export default function BlogSection({
   title = 'KI-Insights & Trends',
   subtitle = 'Erfahren Sie mehr über aktuelle Entwicklungen und entdecken Sie Best Practices für Ihr Unternehmen.',
-  blogPosts = blogPostsData
+  blogPosts: initialBlogPosts = defaultBlogPosts
 }: BlogSectionProps) {
+  const [blogPosts, setBlogPosts] = useState(initialBlogPosts);
   const postsPerPage = 3; // always 3
   const pageCount = Math.max(1, Math.ceil(blogPosts.length / postsPerPage));
   const [page, setPage] = useState(0);
+
+  // Aktualisiere BlogPosts, wenn initialBlogPosts sich ändern
+  useEffect(() => {
+    if (initialBlogPosts && initialBlogPosts.length > 0) {
+      setBlogPosts(initialBlogPosts);
+    }
+  }, [initialBlogPosts]);
+
+  useEffect(() => {
+    // Wenn bereits Blogs übergeben wurden, überspringe API-Laden komplett
+    if (initialBlogPosts && initialBlogPosts.length > 0) {
+      return;
+    }
+
+    // Andernfalls lade aus der API
+    const loadBlogs = async () => {
+      try {
+        const apiBlogs = await fetchBlogPosts();
+        if (apiBlogs && Array.isArray(apiBlogs) && apiBlogs.length > 0) {
+          const published = apiBlogs
+            .filter((b: any) => b.published !== false)
+            .sort((a: any, b: any) => {
+              const dateA = new Date(a.date || a.createdAt || 0).getTime();
+              const dateB = new Date(b.date || b.createdAt || 0).getTime();
+              return dateB - dateA;
+            })
+            .map((b: any) => {
+              // Formatiere API-Daten in das erwartete Format
+              const category = Array.isArray(b.category) && b.category.length > 0
+                ? b.category[0].name || b.category[0].id
+                : (b.category?.name || b.category || 'Allgemein');
+              
+              return {
+                title: b.title || '',
+                subtitle: b.subtitle || '',
+                excerpt: b.description || b.content?.substring(0, 200) || '',
+                image: b.image || 'https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Blog+Image',
+                link: b.slug ? `/blog/${b.slug}` : (b.id ? `/blog/${b.id}` : '#'),
+                category: category,
+                date: b.date || new Date(b.createdAt || Date.now()).toLocaleDateString('de-DE', {
+                  day: 'numeric',
+                  month: 'long',
+                  year: 'numeric'
+                }),
+              };
+            });
+          
+          if (published.length > 0) {
+            setBlogPosts(published);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading blog posts:', error);
+      }
+    };
+
+    loadBlogs();
+  }, [initialBlogPosts]);
 
   const visiblePosts = useMemo(() => {
     const start = page * postsPerPage;

@@ -1,10 +1,83 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import TopicSlider from "./TopicSlider";
-import { blogPosts } from "../data/blogPosts";
+import { blogPosts as staticBlogPosts } from "../data/blogPosts";
+import { fetchBlogPosts } from "@/lib/api";
 
 const TopThemes: React.FC = () => {
+    const [posts, setPosts] = useState(staticBlogPosts);
+
+    useEffect(() => {
+        const loadBlogs = async () => {
+            try {
+                const apiBlogs = await fetchBlogPosts();
+                console.log('TopThemes: Fetched blogs from API:', apiBlogs?.length || 0);
+                
+                if (apiBlogs && Array.isArray(apiBlogs) && apiBlogs.length > 0) {
+                    // Filtere veröffentlichte Blogs
+                    const published = apiBlogs.filter((b: any) => b.published !== false);
+                    console.log('TopThemes: Published blogs:', published.length);
+                    
+                    // Zuerst versuche Blogs mit 'home' im page Array zu finden
+                    let homeBlogs = published.filter((b: any) => {
+                        const pages = Array.isArray(b.page) ? b.page : (b.page ? [b.page] : []);
+                        const hasHome = pages.includes('home');
+                        if (hasHome) {
+                            console.log('TopThemes: Found blog with home page:', b.title);
+                        }
+                        return hasHome;
+                    });
+                    
+                    console.log('TopThemes: Blogs with home page:', homeBlogs.length);
+                    
+                    // Wenn keine Blogs mit 'home' gefunden wurden, nimm alle veröffentlichten Blogs
+                    if (homeBlogs.length === 0) {
+                        console.log('TopThemes: No blogs with home page, using all published blogs');
+                        homeBlogs = published;
+                    }
+                    
+                    const formatted = homeBlogs
+                        .sort((a: any, b: any) => {
+                            const dateA = new Date(a.date || a.createdAt || 0).getTime();
+                            const dateB = new Date(b.date || b.createdAt || 0).getTime();
+                            return dateB - dateA;
+                        })
+                        .slice(0, 6) // Top 6 für Homepage
+                        .map((b: any) => ({
+                            id: b.id || b._id?.toString() || b.slug || '',
+                            title: b.title || '',
+                            subtitle: b.subtitle || '',
+                            description: b.description || b.content?.substring(0, 150) || '',
+                            image: b.image || 'https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Blog+Image',
+                            date: b.date || new Date(b.createdAt || Date.now()).toLocaleDateString('de-DE', { 
+                                day: 'numeric', 
+                                month: 'long', 
+                                year: 'numeric' 
+                            }),
+                            readTime: b.readTime || '5 min',
+                            category: Array.isArray(b.category) && b.category.length > 0 
+                                ? b.category[0] 
+                                : (b.category || { name: 'Allgemein', icon: '📝' }),
+                            slug: b.slug || b.id || b._id?.toString() || '',
+                        }));
+                    
+                    console.log('TopThemes: Formatted blogs:', formatted.length);
+                    console.log('TopThemes: Blog titles:', formatted.map((p: any) => p.title));
+                    
+                    // Setze die Posts immer, auch wenn es weniger als 6 sind
+                    setPosts(formatted);
+                } else {
+                    console.log('TopThemes: No API blogs found, keeping static posts');
+                }
+            } catch (error) {
+                console.error('TopThemes: Error loading blog posts:', error);
+            }
+        };
+
+        loadBlogs();
+    }, []);
+
     return (
         <section id="top-themes" className="py-24 bg-black relative overflow-hidden">
             {/* Dynamic Background Elements */}
@@ -44,7 +117,7 @@ const TopThemes: React.FC = () => {
                 </div>
 
                 <div className="max-w-7xl mx-auto">
-                    <TopicSlider posts={blogPosts} />
+                    <TopicSlider posts={posts} />
                 </div>
             </div>
         </section>

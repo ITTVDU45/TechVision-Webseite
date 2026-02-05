@@ -1,14 +1,24 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { fetchServices } from '@/lib/api';
 
-type Service = { icon: string; title: string; description: string; gradient: string; link: string };
+type Service = { 
+  icon?: string; 
+  name?: string;
+  title?: string; 
+  description: string; 
+  gradient?: string; 
+  link?: string;
+  page?: string;
+  published?: boolean;
+};
 
-const services: Service[] = [
+const staticServices: Service[] = [
   { icon: '🤖', title: 'KI-Transformation', description: 'Wir analysieren Ihre Geschäftsprozesse und identifizieren Potenziale für den Einsatz von Künstlicher Intelligenz, um Effizienz und Produktivität zu steigern.', gradient: 'from-blue-400 via-blue-500 to-indigo-500', link: '/ki-transformation' },
   { icon: '⚡', title: 'Workflow Automatisierung', description: 'Von der Planung bis zur Umsetzung integrieren wir maßgeschneiderte KI-Lösungen nahtlos in Ihre bestehenden Systeme.', gradient: 'from-blue-500 via-indigo-500 to-purple-500', link: '/workflow-automation' },
   { icon: '💻', title: 'Software Entwicklung', description: 'Entwicklung intelligenter Softwarelösungen, die durch KI Ihre Geschäftsabläufe optimieren und automatisieren.', gradient: 'from-purple-400 via-pink-500 to-red-500', link: '/software-development' },
@@ -49,6 +59,46 @@ const NextArrow = (props: any) => {
 };
 
 export default function Services() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        // Lade Services für die Homepage
+        const apiServices = await fetchServices('home');
+        
+        if (apiServices && Array.isArray(apiServices) && apiServices.length > 0) {
+          // Filtere nur veröffentlichte und konvertiere Format
+          const published = apiServices
+            .filter((s: Service) => s.published !== false)
+            .map((s: Service) => ({
+              icon: s.icon || '💼',
+              title: s.name || s.title || 'Service',
+              description: s.description || '',
+              gradient: s.gradient || 'from-blue-400 via-blue-500 to-indigo-500',
+              link: s.link || '#',
+            }));
+          
+          if (published.length > 0) {
+            setServices(published);
+          } else {
+            setServices(staticServices);
+          }
+        } else {
+          setServices(staticServices);
+        }
+      } catch (error) {
+        console.error('Error loading services:', error);
+        setServices(staticServices);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadServices();
+  }, []);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -101,8 +151,13 @@ export default function Services() {
         </motion.h2>
 
         <div className="services-carousel relative z-10 -mx-4">
-          <Slider {...settings}>
-            {services.map((service) => (
+          {loading ? (
+            <div className="text-center text-gray-400 py-16">Lädt Services...</div>
+          ) : services.length === 0 ? (
+            <div className="text-center text-gray-400 py-16">Keine Services verfügbar</div>
+          ) : (
+            <Slider {...settings}>
+              {services.map((service, index) => (
               <div key={service.title} className="px-4 pb-12 h-full">
                 <motion.div
                   className="relative group h-[450px]"
@@ -149,8 +204,9 @@ export default function Services() {
                   </div>
                 </motion.div>
               </div>
-            ))}
-          </Slider>
+              ))}
+            </Slider>
+          )}
         </div>
       </div>
 

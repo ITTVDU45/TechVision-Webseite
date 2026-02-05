@@ -11,7 +11,7 @@ const solutions = [
   { name: "Tools & KI-Agenten", href: "/tools", icon: "🛠️", description: "Spezialisierte Werkzeuge und KI-Lösungen" },
   { name: "Webhosting", href: "/webhosting", icon: "☁️", description: "Schnelles und sicheres Hosting" },
   { name: "IT Infrastruktur", href: "/it-infrastructure", icon: "🔧", description: "Optimierung Ihrer IT-Systeme" },
-  { name: "Branchenlösungen", href: "/industry-solutions", icon: "🏢", description: "Maßgeschneiderte Lösungen für Ihre Branche" },
+  { name: "Webentwicklung", href: "/web-development", icon: "🌐", description: "Moderne Weblösungen und Webanwendungen" },
 ];
 
 const moreItems = [

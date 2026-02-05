@@ -3,14 +3,51 @@
   "short_name": "Techvision",
   "description": "Professionelle KI-Telefonie, Softwareentwicklung und IT-Beratung",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#3B82F6",
   "icons": [
     {
       "src": "/images/logo_wei_neu.png.avif",
       "sizes": "192x192",
-      "type": "image/avif"
+      "type": "image/avif",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/logo_wei_neu.png.avif",
+      "sizes": "512x512",
+      "type": "image/avif",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Admin Panel",
+      "short_name": "Admin",
+      "description": "Zum Admin Panel",
+      "url": "/admin",
+      "icons": [
+        {
+          "src": "/images/logo_wei_neu.png.avif",
+          "sizes": "192x192",
+          "type": "image/avif"
+        }
+      ]
+    },
+    {
+      "name": "Blog",
+      "short_name": "Blog",
+      "description": "Zum Blog",
+      "url": "/blog",
+      "icons": [
+        {
+          "src": "/images/logo_wei_neu.png.avif",
+          "sizes": "192x192",
+          "type": "image/avif"
+        }
+      ]
     }
   ]
 }
