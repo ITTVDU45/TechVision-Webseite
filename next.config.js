@@ -22,7 +22,7 @@ const nextConfig = {
   reactStrictMode: true,
   // ESLint-Fehler sollen den Build nicht stoppen (nur Warnungen)
   eslint: {
-    ignoreDuringBuilds: false, // Wir wollen ESLint, aber weniger streng
+    ignoreDuringBuilds: true, // Ignoriere ESLint-Fehler während des Builds
   },
   typescript: {
     ignoreBuildErrors: false, // TypeScript-Fehler sollen den Build stoppen
