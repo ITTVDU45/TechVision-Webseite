@@ -56,10 +56,10 @@ const CaseStudies: React.FC = () => {
   }, []);
 
   // Kombiniere API-Daten mit statischen Daten
-  const getCategorizedCases = (): Record<string, Array<{ id: string; title: string; subtitle?: string; description: string; image?: string; stats?: Array<{ value: string; label: string }> }>> => {
+  const getCategorizedCases = (): Record<string, Array<{ id: string; title: string; subtitle: string; description: string; image: string; stats: Array<{ value: string; label: string }> }>> => {
     // Wenn API-Daten vorhanden, gruppiere nach Kategorien
     if (apiCaseStudies.length > 0) {
-      const grouped: Record<string, Array<{ id: string; title: string; subtitle?: string; description: string; image?: string; stats?: Array<{ value: string; label: string }> }>> = {};
+      const grouped: Record<string, Array<{ id: string; title: string; subtitle: string; description: string; image: string; stats: Array<{ value: string; label: string }> }>> = {};
       apiCaseStudies.forEach((cs) => {
         // Stelle sicher, dass id immer ein string ist
         const caseId = cs._id || cs.id || Math.random().toString();
@@ -68,6 +68,10 @@ const CaseStudies: React.FC = () => {
         // Unterstütze sowohl Array als auch String (für Rückwärtskompatibilität)
         const categories = Array.isArray(cs.category) ? cs.category : (cs.category ? [cs.category] : []);
         
+        // Stelle sicher, dass subtitle immer ein string ist (required für CaseStudy)
+        const subtitle = cs.subtitle || '';
+        const image = cs.image || '';
+        
         // Wenn keine Kategorien, verwende 'software' als Standard
         if (categories.length === 0) {
           const defaultCat = 'software';
@@ -75,9 +79,9 @@ const CaseStudies: React.FC = () => {
           grouped[defaultCat].push({
             id: caseId,
             title: cs.title,
-            subtitle: cs.subtitle,
+            subtitle: subtitle,
             description: cs.description,
-            image: cs.image,
+            image: image,
             stats: cs.stats || [],
           });
         } else {
@@ -87,9 +91,9 @@ const CaseStudies: React.FC = () => {
             grouped[cat].push({
               id: caseId,
               title: cs.title,
-              subtitle: cs.subtitle,
+              subtitle: subtitle,
               description: cs.description,
-              image: cs.image,
+              image: image,
               stats: cs.stats || [],
             });
           });
@@ -98,7 +102,7 @@ const CaseStudies: React.FC = () => {
       return grouped;
     }
     // Fallback auf statische Daten - konvertiere zu kompatiblem Format
-    const converted: Record<string, Array<{ id: string; title: string; subtitle?: string; description: string; image?: string; stats?: Array<{ value: string; label: string }> }>> = {};
+    const converted: Record<string, Array<{ id: string; title: string; subtitle: string; description: string; image: string; stats: Array<{ value: string; label: string }> }>> = {};
     Object.keys(categorizedCases).forEach((key) => {
       converted[key] = categorizedCases[key].map((cs) => ({
         id: cs.id,
