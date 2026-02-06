@@ -9,7 +9,9 @@ type CaseStudy = {
   id: string;
   title: string;
   subtitle?: string;
+  description?: string;
   heroImage?: string;
+  image?: string;
   gallery?: readonly string[];
   summary?: string;
   challenges?: string[];
@@ -50,9 +52,9 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
           "@context": "https://schema.org",
           "@type": "CaseStudy",
           "name": data.title,
-          "description": data.description || data.subtitle,
+          "description": data.description || data.summary || data.subtitle || '',
           "url": `https://your-domain.com/case-studies/${data.id}`,
-          "image": data.heroImage || null,
+          "image": data.heroImage || data.image || null,
           "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": `https://your-domain.com/case-studies/${data.id}`
@@ -64,10 +66,10 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
           <div className="max-w-4xl mx-auto text-center">
             <h1 id="cs-hero-title" className="text-4xl md:text-6xl font-bold mb-4">{data.title}</h1>
             {data.subtitle && <p className="text-xl text-gray-400 mb-6">{data.subtitle}</p>}
-            {data.heroImage && (
+            {(data.heroImage || data.image) && (
               <div className="w-full h-80 relative rounded-2xl overflow-hidden mb-8 glass">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-700/10 via-indigo-700/6 to-transparent" />
-                <Image src={data.heroImage} alt={data.title} fill className="object-cover transition-transform duration-700 ease-out hover:scale-105" />
+                <Image src={data.heroImage || data.image || ''} alt={data.title} fill className="object-cover transition-transform duration-700 ease-out hover:scale-105" />
               </div>
             )}
           </div>
@@ -79,7 +81,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto prose prose-invert">
             <h2 id="cs-summary-title">Zusammenfassung</h2>
-            <p>{data.description}</p>
+            <p>{data.description || data.summary || ''}</p>
 
             {data.challenges && (
               <>
@@ -124,7 +126,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
                     aria-label={`Öffne Case Study ${o.title}`}
                   >
                     <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
-                      {o.heroImage && <Image src={o.heroImage} alt={o.title} fill className="object-cover" />}
+                      {(o.heroImage || o.image) && <Image src={o.heroImage || o.image || ''} alt={o.title} fill className="object-cover" />}
                     </div>
                     <h3 className="text-xl font-semibold mb-1">{o.title}</h3>
                     {o.subtitle && <p className="text-sm text-gray-400 mb-2">{o.subtitle}</p>}
