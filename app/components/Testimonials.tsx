@@ -16,7 +16,7 @@ const processSteps = [
 
 type TestimonialsProps = {};
 
-export default function Testimonials(_props: TestimonialsProps): JSX.Element {
+export default function Testimonials(_props: TestimonialsProps): React.JSX.Element {
   const sectionRef = useRef<HTMLElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);

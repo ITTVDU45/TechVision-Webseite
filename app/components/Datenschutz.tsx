@@ -2,7 +2,7 @@
 import React from 'react';
 import Footer from './Footer';
 
-export default function Datenschutz(): JSX.Element {
+export default function Datenschutz(): React.JSX.Element {
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <section className="py-24">

@@ -15,7 +15,7 @@ const quickLinks = [
   { name: 'Blog', href: '/blog' }
 ];
 
-export default function Footer(): JSX.Element {
+export default function Footer(): React.JSX.Element {
   return (
     <footer className="bg-gray-900/90 backdrop-blur-xl border-t border-white/10">
       <div className="container mx-auto px-4 py-12 md:py-16">

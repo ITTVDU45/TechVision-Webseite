@@ -3,7 +3,7 @@ import React from 'react';
 import AnimatedGradientText from './ui/animated-gradient-text';
 import Footer from './Footer';
 
-export default function Impressum(): JSX.Element {
+export default function Impressum(): React.JSX.Element {
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <section className="min-h-screen relative overflow-hidden bg-black flex items-center">

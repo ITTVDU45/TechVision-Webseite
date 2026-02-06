@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { IconBrandReact, IconServer, IconBrain, IconCloud, IconDatabase, IconDeviceMobile } from '@tabler/icons-react';
 
-export default function Technologies(): JSX.Element {
+export default function Technologies(): React.JSX.Element {
   const technologies = [
     {
       icon: IconBrandReact,

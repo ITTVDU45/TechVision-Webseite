@@ -12,7 +12,7 @@ interface FAQ {
   order?: number;
 }
 
-export default function FAQSection(): JSX.Element {
+export default function FAQSection(): React.JSX.Element {
     const [openFaq, setOpenFaq] = useState<number | null>(null);
     const [faqs, setFaqs] = useState<FAQ[]>([]);
     const [loading, setLoading] = useState(true);

@@ -22,7 +22,7 @@ const moreItems = [
 
 type HeaderProps = {};
 
-export default function Header(_props: HeaderProps): JSX.Element {
+export default function Header(_props: HeaderProps): React.JSX.Element {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [showSolutions, setShowSolutions] = useState(false);
