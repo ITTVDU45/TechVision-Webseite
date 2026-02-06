@@ -141,10 +141,12 @@ export default function FAQ() {
     if (autoScrollQuestion && filteredFAQs.length > 0 && Object.keys(categorizedFAQs).length > 0) {
       const matchingFAQ = faqs.find(faq => faq.question === autoScrollQuestion);
       if (matchingFAQ && matchingFAQ.category) {
+        // Lokale Variable mit garantiertem string-Typ für TypeScript
+        const category = matchingFAQ.category;
         // Warte kurz, damit React die DOM-Updates abgeschlossen hat
         setTimeout(() => {
           // Scrolle zur Kategorie
-          const categoryElement = document.getElementById(`category-${matchingFAQ.category}`);
+          const categoryElement = document.getElementById(`category-${category}`);
           if (categoryElement) {
             categoryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
             
@@ -156,10 +158,10 @@ export default function FAQ() {
                 
                 // Scrolle zur spezifischen FAQ
                 setTimeout(() => {
-                  const categoryFAQs = categorizedFAQs[matchingFAQ.category] || [];
+                  const categoryFAQs = categorizedFAQs[category] || [];
                   const faqIndexInCategory = categoryFAQs.findIndex(f => f.question === autoScrollQuestion);
                   if (faqIndexInCategory !== -1) {
-                    const faqElements = document.querySelectorAll(`[id^="faq-${matchingFAQ.category}"]`);
+                    const faqElements = document.querySelectorAll(`[id^="faq-${category}"]`);
                     if (faqElements[faqIndexInCategory]) {
                       faqElements[faqIndexInCategory].scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }
