@@ -56,6 +56,9 @@ jspm_packages/
 .cache
 .parcel-cache
 
+# TypeScript incremental build (lokal, nicht versionieren)
+*.tsbuildinfo
+
 # next.js build output
 .next
 
