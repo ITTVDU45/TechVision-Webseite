@@ -8,9 +8,12 @@ export default function useSmoothScroll() {
   useEffect(() => {
     const links = document.querySelectorAll('a[href^="#"]')
     
-    const smoothScroll = (e) => {
+    const smoothScroll = (e: Event) => {
       e.preventDefault()
-      const targetId = e.currentTarget.getAttribute('href')
+      const el = e.currentTarget
+      if (!(el instanceof HTMLAnchorElement)) return
+      const targetId = el.getAttribute("href")
+      if (!targetId) return
       const target = document.querySelector(targetId)
       
       if (target) {

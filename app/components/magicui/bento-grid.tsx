@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRightIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { GlowingEffect } from "@/components/ui/glowing-effect";
+import { Button } from "../ui/button";
+import { cn } from "../../lib/utils";
+import { GlowingEffect } from "../ui/glowing-effect";
 import { CheckIcon } from "@radix-ui/react-icons";
 
-export const BentoGrid = ({ children }) => {
+export const BentoGrid = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
       {children}
@@ -14,7 +14,15 @@ export const BentoGrid = ({ children }) => {
   );
 };
 
-export const BentoCard = ({ name, children, className = '' }) => {
+export const BentoCard = ({
+  name,
+  children,
+  className = "",
+}: {
+  name: string;
+  children: React.ReactNode;
+  className?: string;
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

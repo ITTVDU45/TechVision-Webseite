@@ -1,19 +1,32 @@
-"use client";;
+"use client";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+
+export interface TabItem {
+  title: string;
+  value: string;
+  content?: ReactNode;
+}
 
 export const Tabs = ({
   tabs: propTabs,
   containerClassName,
   activeTabClassName,
   tabClassName,
-  contentClassName
+  contentClassName,
+}: {
+  tabs: TabItem[];
+  containerClassName?: string;
+  activeTabClassName?: string;
+  tabClassName?: string;
+  contentClassName?: string;
 }) => {
   const [active, setActive] = useState(propTabs[0]);
   const [tabs, setTabs] = useState(propTabs);
 
-  const moveSelectedTabToTop = (idx) => {
+  const moveSelectedTabToTop = (idx: number) => {
     const newTabs = [...propTabs];
     const selectedTab = newTabs.splice(idx, 1);
     newTabs.unshift(selectedTab[0]);
@@ -59,7 +72,6 @@ export const Tabs = ({
     </div>
     <FadeInDiv
       tabs={tabs}
-      active={active}
       key={active.value}
       hovering={hovering}
       className={cn("mt-32", contentClassName)} />
@@ -69,9 +81,13 @@ export const Tabs = ({
 export const FadeInDiv = ({
   className,
   tabs,
-  hovering
+  hovering,
+}: {
+  className?: string;
+  tabs: TabItem[];
+  hovering: boolean;
 }) => {
-  const isActive = (tab) => {
+  const isActive = (tab: TabItem) => {
     return tab.value === tabs[0].value;
   };
   return (

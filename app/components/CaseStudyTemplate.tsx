@@ -2,8 +2,9 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { caseStudies } from "../data/caseStudies";
+import { caseStudies, categorizedCases, categories as caseStudyCategories } from "../data/caseStudies";
 import Script from "next/script";
+import Header from "./Header";
 
 type CaseStudy = {
   id: string;
@@ -20,6 +21,22 @@ type CaseStudy = {
 
 export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
   const others = Object.values(caseStudies).filter((c) => c.id !== data.id) as CaseStudy[];
+  const currentCategoryId =
+    Object.entries(categorizedCases).find(([, items]) => items.some((item) => item.id === data.id))?.[0] ?? null;
+  const currentCategoryName =
+    caseStudyCategories.find((category) => category.id === currentCategoryId)?.name ?? "Allgemein";
+
+  const tags = Array.from(
+    new Set(
+      [
+        currentCategoryName,
+        ...(data.subtitle ? data.subtitle.split(/\s+/) : []),
+        ...data.title.split(/\s+/),
+      ]
+        .map((value) => value.replace(/[^\p{L}\p{N}-]/gu, "").trim())
+        .filter((value) => value.length >= 3)
+    )
+  ).slice(0, 10);
 
   // helper: render gallery - special layout for cms-webentwicklung (2x2)
   const renderGallery = () => {
@@ -39,6 +56,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <Header />
       {/* Skip link for keyboard users */}
       <a
         href="#main-content"
@@ -78,36 +96,98 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
 
       <main id="main-content" tabIndex={-1}>
         <section className="py-16" aria-labelledby="cs-summary-title">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto prose prose-invert">
-            <h2 id="cs-summary-title">Zusammenfassung</h2>
-            <p>{data.description || data.summary || ''}</p>
+          <div className="container mx-auto px-4">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+              <div className="prose prose-invert max-w-none">
+                <h2 id="cs-summary-title">Zusammenfassung</h2>
+                <p>{data.description || data.summary || ''}</p>
 
-            {data.challenges && (
-              <>
-                <h3>Herausforderungen</h3>
-                <ul>
-                  {data.challenges.map((c, i) => (
-                    <li key={i} className="mb-2">{c}</li>
-                  ))}
-                </ul>
-              </>
-            )}
+                {data.challenges && (
+                  <>
+                    <h3>Herausforderungen</h3>
+                    <ul>
+                      {data.challenges.map((c, i) => (
+                        <li key={i} className="mb-2">{c}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
 
-            {data.results && (
-              <>
-                <h3>Ergebnisse</h3>
-                <ul>
-                  {data.results.map((r, i) => (
-                    <li key={i} className="mb-2">{r}</li>
-                  ))}
-                </ul>
-              </>
-            )}
+                {data.results && (
+                  <>
+                    <h3>Ergebnisse</h3>
+                    <ul>
+                      {data.results.map((r, i) => (
+                        <li key={i} className="mb-2">{r}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
 
-            {renderGallery()}
+                {renderGallery()}
+              </div>
+
+              <aside className="space-y-6 lg:sticky lg:top-28">
+                <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+                  <h3 className="mb-4 text-lg font-semibold text-white">Kategorien</h3>
+                  <div className="flex flex-col gap-2">
+                    {caseStudyCategories.map((category) => {
+                      const firstCase = categorizedCases[category.id]?.[0];
+                      const isActive = category.id === currentCategoryId;
+                      return (
+                        <Link
+                          key={category.id}
+                          href={firstCase ? `/case-studies/${firstCase.id}` : "/case-studies"}
+                          className={`rounded-lg border px-3 py-2 text-sm transition ${
+                            isActive
+                              ? "border-blue-500 bg-blue-600/30 text-blue-200"
+                              : "border-white/10 text-gray-300 hover:border-white/30 hover:text-white"
+                          }`}
+                        >
+                          {category.name}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                <section className="rounded-2xl border border-blue-500/30 bg-gradient-to-br from-blue-600/20 via-indigo-600/20 to-transparent p-6">
+                  <h3 className="mb-2 text-lg font-semibold text-white">Nehmen Sie Kontakt auf</h3>
+                  <p className="mb-4 text-sm text-gray-200">
+                    Wir analysieren Ihren Case und zeigen konkrete Potenziale auf.
+                  </p>
+                  <div className="flex flex-col gap-3">
+                    <Link
+                      href="/contact"
+                      className="rounded-lg bg-white px-4 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-gray-100"
+                    >
+                      Kontakt aufnehmen
+                    </Link>
+                    <Link
+                      href="/offer"
+                      className="rounded-lg border border-white/30 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/10"
+                    >
+                      Erstgespräch buchen
+                    </Link>
+                  </div>
+                </section>
+
+                <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
+                  <h3 className="mb-4 text-lg font-semibold text-white">Schlagwörter</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-xs text-gray-300"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              </aside>
+            </div>
           </div>
-        </div>
         </section>
       </main>
 

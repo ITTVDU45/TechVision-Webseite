@@ -7,7 +7,14 @@ import {
   IconTrendingUp,
   IconPlug,
 } from "@tabler/icons-react";
-import { UseCase, FeatureCard, ProcessStep, FAQ } from "./types";
+import {
+  UseCase,
+  FeatureCard,
+  ProcessStep,
+  FAQ,
+  Tool,
+  BlogPost,
+} from "./types";
 
 export const useCasesData: UseCase[] = [
   {

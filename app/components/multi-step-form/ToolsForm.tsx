@@ -1,6 +1,9 @@
-
-import type { ToolsFormState } from '../../types/forms'
+"use client";
 
+import emailjs from "@emailjs/browser";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { ToolsFormState } from "../../types/forms";
 
 const ToolsForm = () => {
   const router = useRouter();
@@ -62,19 +65,26 @@ const ToolsForm = () => {
     }
   };
 
-  const currentStepData = steps[currentStep];
-  const selectedValue = formData[currentStepData.field];
-  const isSelected = currentStepData.multiSelect 
-    ? selectedValue?.length > 0 
-    : selectedValue !== '';
+  const currentStepData = steps[currentStep as keyof typeof steps];
+  const selectedValue = formData[currentStepData.field as keyof ToolsFormState];
+  const isMulti =
+    "multiSelect" in currentStepData && Boolean(currentStepData.multiSelect);
+  const isContactForm =
+    "isContactForm" in currentStepData && Boolean(currentStepData.isContactForm);
+  const isSelected = isMulti
+    ? Array.isArray(selectedValue) && selectedValue.length > 0
+    : selectedValue !== "" && selectedValue != null;
 
-  const handleSelect = (value) => {
-    const { field, multiSelect } = steps[currentStep];
-    
-    if (multiSelect) {
-      const currentValues = formData[field] || [];
+  const handleSelect = (value: string) => {
+    const step = steps[currentStep as keyof typeof steps];
+    const field = step.field as keyof ToolsFormState;
+
+    if ("multiSelect" in step && step.multiSelect) {
+      const currentValues = (Array.isArray(formData[field])
+        ? formData[field]
+        : []) as string[];
       const newValues = currentValues.includes(value)
-        ? currentValues.filter(v => v !== value)
+        ? currentValues.filter((v) => v !== value)
         : [...currentValues, value];
       setFormData({ ...formData, [field]: newValues });
     } else {
@@ -132,46 +142,46 @@ const ToolsForm = () => {
     }
   };
 
-  const formatFormDataForEmail = (data) => {
-    let emailContent = '';
+  const formatFormDataForEmail = (data: ToolsFormState) => {
+    let emailContent = "";
+    const label = <T extends Record<string, string>>(m: T, k: string) =>
+      m[k as keyof T] ?? k;
 
-    // Open-Source-Tools
-    emailContent += '🛠️ OPEN-SOURCE-TOOLS\n';
+    emailContent += "🛠️ OPEN-SOURCE-TOOLS\n";
     if (data.openSourceTools && data.openSourceTools.length > 0) {
       const tools = {
-        'calcom': 'Cal.com',
-        'time_tracking': 'Zeiterfassung',
-        'password_vault': 'Passwort-Tresor',
-        'erp_idurar': 'ERP-System Idurar',
-        'crm_perfex': 'CRM Perfex',
-        'file_transfer': 'File-Transfer',
-        'nextcloud': 'Nextcloud'
+        calcom: "Cal.com",
+        time_tracking: "Zeiterfassung",
+        password_vault: "Passwort-Tresor",
+        erp_idurar: "ERP-System Idurar",
+        crm_perfex: "CRM Perfex",
+        file_transfer: "File-Transfer",
+        nextcloud: "Nextcloud",
       };
-      data.openSourceTools.forEach(tool => {
-        emailContent += `► ${tools[tool]}\n`;
+      data.openSourceTools.forEach((tool) => {
+        emailContent += `► ${label(tools, tool)}\n`;
       });
-      emailContent += '\n';
+      emailContent += "\n";
     }
 
-    // KI-Agenten
-    emailContent += '🤖 KI-AGENTEN\n';
+    emailContent += "🤖 KI-AGENTEN\n";
     if (data.aiAgents && data.aiAgents.length > 0) {
       const agents = {
-        'personal_assistant': 'Personal Assistant',
-        'legal_agents': 'Juristische KI-Agenten',
-        'business_consultant': 'Unternehmensberater-KI',
-        'phone_meeting': 'Telefonbesprechungs-KI',
-        'marketing_agent': 'Marketing-KI-Agent',
-        'finance_accounting': 'Finanz- & Buchhaltungs-KI',
-        'hr_agent': 'HR-Agent',
-        'sales_ai': 'Vertriebs-KI',
-        'healthcare_ai': 'Gesundheits-KI',
-        'production_ai': 'Produktions-KI'
+        personal_assistant: "Personal Assistant",
+        legal_agents: "Juristische KI-Agenten",
+        business_consultant: "Unternehmensberater-KI",
+        phone_meeting: "Telefonbesprechungs-KI",
+        marketing_agent: "Marketing-KI-Agent",
+        finance_accounting: "Finanz- & Buchhaltungs-KI",
+        hr_agent: "HR-Agent",
+        sales_ai: "Vertriebs-KI",
+        healthcare_ai: "Gesundheits-KI",
+        production_ai: "Produktions-KI",
       };
-      data.aiAgents.forEach(agent => {
-        emailContent += `► ${agents[agent]}\n`;
+      data.aiAgents.forEach((agent) => {
+        emailContent += `► ${label(agents, agent)}\n`;
       });
-      emailContent += '\n';
+      emailContent += "\n";
     }
 
     return emailContent;
@@ -201,7 +211,7 @@ const ToolsForm = () => {
               </div>
               
               {/* Entweder Options Grid oder Kontaktformular */}
-              {currentStepData.isContactForm ? (
+              {isContactForm ? (
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-6">
                     <div>
@@ -265,16 +275,21 @@ const ToolsForm = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-6">
-                  {currentStepData.options.map((option) => (
+                  {("options" in currentStepData ? currentStepData.options : []).map((option) => (
                     <div
                       key={option.value}
                       onClick={() => handleSelect(option.value)}
                       className="group relative rounded-xl cursor-pointer transition-all duration-300 hover:scale-105"
                     >
-                      {/* Gradient Border */}
-                      <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${option.gradient} transition-opacity duration-300
-                        ${selectedValue.includes(option.value) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} 
-                         style={{ padding: '1px' }}>
+                      <div
+                        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${option.gradient} transition-opacity duration-300
+                        ${
+                          Array.isArray(selectedValue) && selectedValue.includes(option.value)
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100"
+                        }`}
+                        style={{ padding: "1px" }}
+                      >
                         <div className="absolute inset-0 rounded-xl bg-gray-900" style={{ margin: '1px' }}></div>
                       </div>
                       
@@ -299,11 +314,15 @@ const ToolsForm = () => {
                 <button 
                   onClick={handleNext}
                   className={`px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl text-white transition-all duration-300 ${
-                    currentStepData.isContactForm 
-                      ? (formData.contactName && formData.contactEmail ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed')
-                      : (isSelected ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed')
+                    isContactForm
+                      ? formData.contactName && formData.contactEmail
+                        ? "hover:opacity-90"
+                        : "opacity-50 cursor-not-allowed"
+                      : isSelected
+                        ? "hover:opacity-90"
+                        : "opacity-50 cursor-not-allowed"
                   }`}
-                  disabled={currentStepData.isContactForm ? !(formData.contactName && formData.contactEmail) : !isSelected}
+                  disabled={isContactForm ? !(formData.contactName && formData.contactEmail) : !isSelected}
                 >
                   {currentStep === Object.keys(steps).length ? 'Absenden' : 'Weiter'}
                 </button>

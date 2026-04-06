@@ -187,7 +187,7 @@ export default function Services() {
                     </div>
 
                     <div className="mt-auto relative z-10">
-                      <Link href={service.link}>
+                      <Link href={service.link ?? "/"}>
                         <motion.button
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}

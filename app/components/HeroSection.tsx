@@ -1,12 +1,19 @@
 "use client";
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import Spline from '@splinetool/react-spline';
 import { useRouter } from 'next/navigation';
 
-gsap.registerPlugin(ScrollTrigger);
+const HeroSpline = dynamic(() => import('./HeroSpline'), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-900"
+      aria-hidden
+    />
+  ),
+});
 
 type Props = {
   isLoading?: boolean;
@@ -15,12 +22,68 @@ type Props = {
 export default function HeroSection({ isLoading = false }: Props) {
   const heroRef = useRef<HTMLElement | null>(null);
   const textRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll();
+  const [reduceMotion, setReduceMotion] = useState(false);
+  const [shouldRenderSpline, setShouldRenderSpline] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduceMotion(mq.matches);
+    const onChange = () => setReduceMotion(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const section = heroRef.current;
+    if (!section) return;
+
+    const win = window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
+      cancelIdleCallback?: (id: number) => void
+    }
+
+    let idleId: number | null = null
+    let usedIdleCallback = false
+    const startSpline = () => {
+      if (typeof win.requestIdleCallback === "function") {
+        usedIdleCallback = true
+        idleId = win.requestIdleCallback(() => setShouldRenderSpline(true), { timeout: 250 });
+        return;
+      }
+      idleId = window.setTimeout(() => setShouldRenderSpline(true), 16);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        startSpline();
+        observer.disconnect();
+      },
+      { root: null, rootMargin: "350px 0px", threshold: 0.01 }
+    );
+
+    observer.observe(section);
+
+    return () => {
+      observer.disconnect();
+      if (idleId === null) return;
+      if (usedIdleCallback && typeof win.cancelIdleCallback === "function") {
+        win.cancelIdleCallback(idleId);
+        return;
+      }
+      window.clearTimeout(idleId);
+    };
+  }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
   const router = useRouter();
 
-  const rotateX = useTransform(scrollYProgress, [0, 0.5], [0, 50]);
-  const rotateY = useTransform(scrollYProgress, [0, 0.5], [0, 20]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [1, 0.8]);
+  const rotateX = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : 12]);
+  const rotateY = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : 6]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, reduceMotion ? 1 : 0.94]);
   const perspective = "1000px";
 
   useEffect(() => {
@@ -43,9 +106,28 @@ export default function HeroSection({ isLoading = false }: Props) {
   const navigateToOfferPage = () => router.push('/offer');
 
   return (
-    <section ref={heroRef} className="h-screen flex items-end justify-start relative overflow-hidden bg-black">
+    <section
+      id="hero"
+      ref={heroRef}
+      className="h-screen flex items-end justify-start relative overflow-hidden bg-black [contain:layout_paint]"
+    >
       <div className="absolute inset-0 z-0">
-        <Spline scene="https://prod.spline.design/Ijn60NuaQiGIVPWQ/scene.splinecode" style={{ width: '100%', height: '100%', transform: 'scale(1.3)', transformOrigin: 'center center' }} />
+        {reduceMotion || !shouldRenderSpline ? (
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-black to-indigo-950/30"
+            aria-hidden
+          />
+        ) : (
+          <HeroSpline
+            scene="https://prod.spline.design/Ijn60NuaQiGIVPWQ/scene.splinecode"
+            style={{
+              width: "100%",
+              height: "100%",
+              transform: "scale(1.25)",
+              transformOrigin: "center center",
+            }}
+          />
+        )}
       </div>
 
       <motion.div ref={textRef} className="z-10 relative px-8 md:px-16 pb-28 md:pb-52 max-w-3xl" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} style={{ perspective, rotateX, rotateY, scale }}>

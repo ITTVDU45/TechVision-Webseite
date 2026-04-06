@@ -1,4 +1,4 @@
-"use client";;
+"use client";
 import React, {
   useEffect,
   useRef,
@@ -6,6 +6,8 @@ import React, {
   createContext,
   useContext,
 } from "react";
+import type { ImageProps } from "next/image";
+import Image from "next/image";
 import {
   IconArrowNarrowLeft,
   IconArrowNarrowRight,
@@ -15,13 +17,24 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 
-export const CarouselContext = createContext({
+export interface AppleCarouselCard {
+  title: string;
+  category?: string;
+  content?: string;
+}
+
+interface CarouselContextValue {
+  onCardClose: (index: number) => void;
+  currentIndex: number;
+}
+
+export const CarouselContext = createContext<CarouselContextValue>({
   onCardClose: () => {},
   currentIndex: 0,
 });
 
-export const Carousel = ({ items = [] }) => {
-  const carouselRef = React.useRef(null);
+export const Carousel = ({ items = [] }: { items?: AppleCarouselCard[] }) => {
+  const carouselRef = React.useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = React.useState(false);
   const [canScrollRight, setCanScrollRight] = React.useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,7 +66,7 @@ export const Carousel = ({ items = [] }) => {
     }
   };
 
-  const handleCardClose = (index) => {
+  const handleCardClose = (index: number) => {
     if (carouselRef.current) {
       const cardWidth = isMobile() ? 230 : 384; // (md:w-96)
       const gap = isMobile() ? 4 : 8;
@@ -106,7 +119,7 @@ export const Carousel = ({ items = [] }) => {
                 }}
                 key={"card" + index}
                 className="last:pr-[5%] md:last:pr-[33%]  rounded-3xl">
-                <Card card={item} />
+                <Card card={item} index={index} />
               </motion.div>
             ))}
           </div>
@@ -132,15 +145,19 @@ export const Carousel = ({ items = [] }) => {
 
 export const Card = ({
   card,
-  index,
-  layout = false
+  index = 0,
+  layout = false,
+}: {
+  card: AppleCarouselCard;
+  index?: number;
+  layout?: boolean;
 }) => {
   const [open, setOpen] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const { onCardClose, currentIndex } = useContext(CarouselContext);
 
   useEffect(() => {
-    function onKeyDown(event) {
+    function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         handleClose();
       }
@@ -200,7 +217,7 @@ export const BlurImage = ({
   className,
   alt,
   ...rest
-}) => {
+}: ImageProps) => {
   const [isLoading, setLoading] = useState(true);
   return (
     (<Image

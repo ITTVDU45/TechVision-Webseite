@@ -1,32 +1,34 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export default function CustomCursor() {
     const [isVisible, setIsVisible] = useState(false);
+    const hasShownRef = useRef(false);
 
     // Mouse position motion values
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
-    // Smooth spring physics for the follower text
-    const springConfig = { damping: 25, stiffness: 250, mass: 0.5 };
+    // Etwas straffere Feder = weniger „Nachlauf“-Frames beim Scroll/Pointer
+    const springConfig = { damping: 32, stiffness: 400, mass: 0.35 };
     const followerX = useSpring(mouseX, springConfig);
     const followerY = useSpring(mouseY, springConfig);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
-            // Set visibility once mouse starts moving
-            if (!isVisible) setIsVisible(true);
-
             mouseX.set(e.clientX);
             mouseY.set(e.clientY);
+            if (!hasShownRef.current) {
+                hasShownRef.current = true;
+                setIsVisible(true);
+            }
         };
 
         const handleMouseLeave = () => setIsVisible(false);
         const handleMouseEnter = () => setIsVisible(true);
 
-        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mousemove", handleMouseMove, { passive: true });
         document.addEventListener("mouseleave", handleMouseLeave);
         document.addEventListener("mouseenter", handleMouseEnter);
 
@@ -35,7 +37,7 @@ export default function CustomCursor() {
             document.removeEventListener("mouseleave", handleMouseLeave);
             document.removeEventListener("mouseenter", handleMouseEnter);
         };
-    }, [mouseX, mouseY, isVisible]);
+    }, [mouseX, mouseY]);
 
     // Hide cursor on touch devices
     if (typeof window !== "undefined" && "ontouchstart" in window) {

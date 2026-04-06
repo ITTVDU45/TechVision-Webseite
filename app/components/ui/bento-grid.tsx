@@ -1,8 +1,15 @@
+import type { ComponentType, ReactNode } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { GlowingEffect } from "@/components/ui/glowing-effect";
 
-export function BentoGrid({ className, children }) {
+export function BentoGrid({
+  className,
+  children,
+}: {
+  className?: string;
+  children?: ReactNode;
+}) {
   return (
     <div
       className={cn(
@@ -23,6 +30,14 @@ export function BentoCard({
   href,
   cta,
   background,
+}: {
+  className?: string;
+  Icon: ComponentType<{ className?: string }>;
+  name: string;
+  description: string;
+  href: string;
+  cta: string;
+  background: ReactNode;
 }) {
   return (
     <motion.div

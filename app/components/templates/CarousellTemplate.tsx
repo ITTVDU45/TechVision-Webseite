@@ -1,9 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import Link from 'next/link';
+"use client";
 
-const CarousellTemplate = ({ caseStudies }) => {
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+
+interface CaseStudyStat {
+  value: string;
+  label: string;
+}
+
+interface CaseStudyCard {
+  title: string;
+  image: string;
+  subtitle?: string;
+  description?: string;
+  stats: CaseStudyStat[];
+}
+
+const CarousellTemplate = ({ caseStudies }: { caseStudies: CaseStudyCard[] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   

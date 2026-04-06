@@ -40,26 +40,40 @@ export default function Header(_props: HeaderProps): React.JSX.Element {
       { id: "contact", name: "contact" },
     ];
 
-    const handleScroll = () => {
-      if (typeof window !== "undefined") {
-        const currentScrollPos = window.scrollY + window.innerHeight / 2;
-        for (const section of sections) {
-          const element = document.getElementById(section.id);
-          if (element) {
-            const { top, bottom } = element.getBoundingClientRect();
-            if (top <= currentScrollPos && bottom >= currentScrollPos) {
-              setActiveSection(section.name);
-              break;
-            }
-          }
+    let rafId: number | null = null;
+
+    const runScrollLogic = () => {
+      const y = window.scrollY;
+      setIsScrolled(y > 32);
+
+      const viewportMid = y + window.innerHeight / 2;
+      for (const section of sections) {
+        const element = document.getElementById(section.id);
+        if (!element) continue;
+        const { top, bottom } = element.getBoundingClientRect();
+        const absTop = top + y;
+        const absBottom = bottom + y;
+        if (viewportMid >= absTop && viewportMid <= absBottom) {
+          setActiveSection(section.name);
+          break;
         }
       }
     };
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
-    }
+    const handleScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        runScrollLogic();
+      });
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const handleNavClick = (e: React.MouseEvent, href: string) => {

@@ -1,5 +1,10 @@
-
-import type { GenericFormState } from '../../types/forms'
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+import Footer from "../Footer";
+import Header from "../Header";
+import Vortex from "../ui/vortex";
 
 const OfferPage = () => {
   return (

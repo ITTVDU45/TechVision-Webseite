@@ -1,10 +1,6 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const processSteps = [
   { icon: '🔍', title: 'Analyse', description: 'Wir evaluieren Ihre aktuellen Prozesse und identifizieren Optimierungspotenziale.', gradient: 'from-blue-400 via-blue-500 to-indigo-500', delay: 0.2 },
@@ -17,7 +13,6 @@ const processSteps = [
 type TestimonialsProps = {};
 
 export default function Testimonials(_props: TestimonialsProps): React.JSX.Element {
-  const sectionRef = useRef<HTMLElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 

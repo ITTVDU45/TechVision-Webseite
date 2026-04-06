@@ -1,6 +1,9 @@
-
-import type { WebDevelopmentFormState } from '../../types/forms'
+"use client";
 
+import emailjs from "@emailjs/browser";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { WebDevelopmentFormState } from "../../types/forms";
 
 const WebDevelopmentForm = () => {
   const router = useRouter();
@@ -154,13 +157,16 @@ const WebDevelopmentForm = () => {
     }
   };
 
-  const handleSelect = (value) => {
-    const { field, multiSelect } = steps[currentStep];
-    
-    if (multiSelect) {
-      const currentValues = formData[field] || [];
+  const handleSelect = (value: string) => {
+    const step = steps[currentStep as keyof typeof steps];
+    const field = step.field as keyof WebDevelopmentFormState;
+
+    if ("multiSelect" in step && step.multiSelect) {
+      const currentValues = (Array.isArray(formData[field])
+        ? formData[field]
+        : []) as string[];
       const newValues = currentValues.includes(value)
-        ? currentValues.filter(v => v !== value)
+        ? currentValues.filter((v) => v !== value)
         : [...currentValues, value];
       setFormData({ ...formData, [field]: newValues });
     } else {
@@ -221,144 +227,141 @@ const WebDevelopmentForm = () => {
     }
   };
 
-  const currentStepData = steps[currentStep];
-  const selectedValue = formData[currentStepData.field];
-  const isSelected = currentStepData.multiSelect 
-    ? (selectedValue && selectedValue.length > 0)
-    : selectedValue;
+  const currentStepData = steps[currentStep as keyof typeof steps];
+  const selectedValue =
+    formData[currentStepData.field as keyof WebDevelopmentFormState];
+  const isMulti =
+    "multiSelect" in currentStepData && Boolean(currentStepData.multiSelect);
+  const isContactForm =
+    "isContactForm" in currentStepData && Boolean(currentStepData.isContactForm);
+  const isSelected = isMulti
+    ? Array.isArray(selectedValue) && selectedValue.length > 0
+    : Boolean(selectedValue);
 
-  const formatFormDataForEmail = (data) => {
-    let emailContent = '';
-    
-    // Webseitenziel
-    emailContent += '🎯 WEBSEITENZIEL\n';
+  const formatFormDataForEmail = (data: WebDevelopmentFormState) => {
+    let emailContent = "";
+    const label = <T extends Record<string, string>>(m: T, k: string) =>
+      m[k as keyof T] ?? k;
+
+    emailContent += "🎯 WEBSEITENZIEL\n";
     if (data.websiteGoal) {
       const goals = {
-        'leads': 'Kunden gewinnen',
-        'sales': 'Produkte verkaufen',
-        'inform': 'Informieren',
-        'branding': 'Marke aufbauen',
-        'presence': 'Online Präsenz',
-        'digitalize': 'Prozesse digitalisieren'
+        leads: "Kunden gewinnen",
+        sales: "Produkte verkaufen",
+        inform: "Informieren",
+        branding: "Marke aufbauen",
+        presence: "Online Präsenz",
+        digitalize: "Prozesse digitalisieren",
       };
-      emailContent += `► ${goals[data.websiteGoal]}\n\n`;
+      emailContent += `► ${label(goals, data.websiteGoal)}\n\n`;
     }
 
-    // Leistungen
-    emailContent += '💼 GEWÜNSCHTE LEISTUNGEN\n';
+    emailContent += "💼 GEWÜNSCHTE LEISTUNGEN\n";
     if (data.services && data.services.length > 0) {
       const services = {
-        'webdesign': 'Webdesign',
-        'development': 'Web Entwicklung',
-        'media': 'Foto/Video',
-        'seo': 'SEO',
-        'sea': 'SEA',
-        'maintenance': 'Wartung'
+        webdesign: "Webdesign",
+        development: "Web Entwicklung",
+        media: "Foto/Video",
+        seo: "SEO",
+        sea: "SEA",
+        maintenance: "Wartung",
       };
-      data.services.forEach(service => {
-        emailContent += `► ${services[service]}\n`;
+      data.services.forEach((service) => {
+        emailContent += `► ${label(services, service)}\n`;
       });
-      emailContent += '\n';
+      emailContent += "\n";
     }
 
-    // Website-Typ
-    emailContent += '🌐 WEBSITE-TYP\n';
+    emailContent += "🌐 WEBSITE-TYP\n";
     if (data.websiteType) {
       const types = {
-        'business': 'Business Website',
-        'ecommerce': 'Online-Shop',
-        'portfolio': 'Portfolio',
-        'blog': 'Blog / Magazine',
-        'landing': 'Landing Page'
+        business: "Business Website",
+        ecommerce: "Online-Shop",
+        portfolio: "Portfolio",
+        blog: "Blog / Magazine",
+        landing: "Landing Page",
       };
-      emailContent += `► ${types[data.websiteType]}\n\n`;
+      emailContent += `► ${label(types, data.websiteType)}\n\n`;
     }
 
-    // Design
-    emailContent += '🎨 DESIGN-PRÄFERENZ\n';
+    emailContent += "🎨 DESIGN-PRÄFERENZ\n";
     if (data.design) {
       const designs = {
-        'minimal': 'Minimalistisch & Modern',
-        'corporate': 'Corporate & Professional',
-        'creative': 'Kreativ & Innovativ',
-        'ecommerce': 'E-Commerce optimiert'
+        minimal: "Minimalistisch & Modern",
+        corporate: "Corporate & Professional",
+        creative: "Kreativ & Innovativ",
+        ecommerce: "E-Commerce optimiert",
       };
-      emailContent += `► ${designs[data.design]}\n\n`;
+      emailContent += `► ${label(designs, data.design)}\n\n`;
     }
 
-    // Features
-    emailContent += '⚡ GEWÜNSCHTE FEATURES\n';
+    emailContent += "⚡ GEWÜNSCHTE FEATURES\n";
     if (data.features && data.features.length > 0) {
       const features = {
-        'cms': 'Content Management System',
-        'mobile': 'Mobile Optimierung',
-        'seo': 'SEO Optimierung',
-        'contact': 'Kontaktformular',
-        'ssl': 'SSL Verschlüsselung',
-        'analytics': 'Analytics Integration'
+        cms: "Content Management System",
+        mobile: "Mobile Optimierung",
+        seo: "SEO Optimierung",
+        contact: "Kontaktformular",
+        ssl: "SSL Verschlüsselung",
+        analytics: "Analytics Integration",
       };
-      data.features.forEach(feature => {
-        emailContent += `► ${features[feature]}\n`;
+      data.features.forEach((feature) => {
+        emailContent += `► ${label(features, feature)}\n`;
       });
-      emailContent += '\n';
+      emailContent += "\n";
     }
 
-    // Budget
-    emailContent += '💰 BUDGET\n';
+    emailContent += "💰 BUDGET\n";
     if (data.budget) {
       const budgets = {
-        'basic': 'Basic (bis 5.000€)',
-        'professional': 'Professional (5.000€ - 10.000€)',
-        'business': 'Business (10.000€ - 20.000€)',
-        'enterprise': 'Enterprise (20.000€+)'
+        basic: "Basic (bis 5.000€)",
+        professional: "Professional (5.000€ - 10.000€)",
+        business: "Business (10.000€ - 20.000€)",
+        enterprise: "Enterprise (20.000€+)",
       };
-      emailContent += `► ${budgets[data.budget]}\n\n`;
+      emailContent += `► ${label(budgets, data.budget)}\n\n`;
     }
 
-    // Timeline
-    emailContent += '⏱️ ZEITRAHMEN\n';
+    emailContent += "⏱️ ZEITRAHMEN\n";
     if (data.timeline) {
       const timelines = {
-        'asap': 'So schnell wie möglich',
-        'short': '1-2 Monate',
-        'medium': '2-4 Monate',
-        'long': '4+ Monate'
+        asap: "So schnell wie möglich",
+        short: "1-2 Monate",
+        medium: "2-4 Monate",
+        long: "4+ Monate",
       };
-      emailContent += `► ${timelines[data.timeline]}\n\n`;
+      emailContent += `► ${label(timelines, data.timeline)}\n\n`;
     }
 
-    // Seiten
-    emailContent += '📑 ANZAHL DER SEITEN\n';
+    emailContent += "📑 ANZAHL DER SEITEN\n";
     if (data.pages) {
       const pages = {
-        'small': 'Landing Page (1-3 Seiten)',
-        'medium': 'Standard (4-10 Seiten)',
-        'large': 'Umfangreich (11-20 Seiten)',
-        'xlarge': 'Enterprise (20+ Seiten)'
+        small: "Landing Page (1-3 Seiten)",
+        medium: "Standard (4-10 Seiten)",
+        large: "Umfangreich (11-20 Seiten)",
+        xlarge: "Enterprise (20+ Seiten)",
       };
-      emailContent += `► ${pages[data.pages]}\n\n`;
+      emailContent += `► ${label(pages, data.pages)}\n\n`;
     }
 
-    // Sprachen
-    emailContent += '🌍 SPRACHEN\n';
+    emailContent += "🌍 SPRACHEN\n";
     if (data.languages) {
       const languages = {
-        'de': 'Nur Deutsch',
-        'de_en': 'Deutsch & Englisch',
-        'multi': 'Mehrsprachig (3+ Sprachen)'
+        de: "Nur Deutsch",
+        de_en: "Deutsch & Englisch",
+        multi: "Mehrsprachig (3+ Sprachen)",
       };
-      emailContent += `► ${languages[data.languages]}\n\n`;
+      emailContent += `► ${label(languages, data.languages)}\n\n`;
     }
 
-    // Wartung
-    emailContent += '🔧 WARTUNG & SUPPORT\n';
+    emailContent += "🔧 WARTUNG & SUPPORT\n";
     if (data.maintenance) {
       const maintenances = {
-        'basic': 'Basic Support',
-        'standard': 'Standard Support',
-        'premium': 'Premium Support'
+        basic: "Basic Support",
+        standard: "Standard Support",
+        premium: "Premium Support",
       };
-      emailContent += `► ${maintenances[data.maintenance]}\n\n`;
+      emailContent += `► ${label(maintenances, data.maintenance)}\n\n`;
     }
 
     return emailContent;
@@ -388,7 +391,7 @@ const WebDevelopmentForm = () => {
               </div>
               
               {/* Entweder Options Grid oder Kontaktformular */}
-              {currentStepData.isContactForm ? (
+              {isContactForm ? (
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-6">
                     <div>
@@ -453,21 +456,30 @@ const WebDevelopmentForm = () => {
               ) : (
                 // Bisheriger Options Grid Code
                 <div className="grid grid-cols-3 gap-6 mb-8">
-                  {currentStepData.options.map((option) => (
+                  {("options" in currentStepData ? currentStepData.options : []).map((option) => (
                     <div
                       key={option.value}
                       className={`group h-32 flex flex-col items-center justify-center p-4 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 relative
-                        ${currentStepData.multiSelect 
-                          ? (selectedValue?.includes(option.value) ? 'bg-blue-500/10' : 'bg-gray-800/50')
-                          : (selectedValue === option.value ? 'bg-blue-500/10' : 'bg-gray-800/50')}`}
+                        ${isMulti
+                          ? Array.isArray(selectedValue) && selectedValue.includes(option.value)
+                            ? "bg-blue-500/10"
+                            : "bg-gray-800/50"
+                          : selectedValue === option.value
+                            ? "bg-blue-500/10"
+                            : "bg-gray-800/50"}`}
                       onClick={() => handleSelect(option.value)}
                     >
-                      {/* Gradient Border */}
-                      <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${option.gradient} transition-opacity duration-300
-                        ${currentStepData.multiSelect 
-                          ? (selectedValue?.includes(option.value) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100')
-                          : (selectedValue === option.value ? 'opacity-100' : 'opacity-0 group-hover:opacity-100')}`} 
-                           style={{ padding: '1px' }}>
+                      <div
+                        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${option.gradient} transition-opacity duration-300
+                        ${isMulti
+                          ? Array.isArray(selectedValue) && selectedValue.includes(option.value)
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100"
+                          : selectedValue === option.value
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100"}`}
+                        style={{ padding: "1px" }}
+                      >
                         <div className="absolute inset-0 rounded-xl bg-gray-900" style={{ margin: '1px' }}></div>
                       </div>
                       
@@ -492,11 +504,15 @@ const WebDevelopmentForm = () => {
                 <button 
                   onClick={handleNext}
                   className={`px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl text-white transition-all duration-300 ${
-                    currentStepData.isContactForm 
-                      ? (formData.contactName && formData.contactEmail ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed')
-                      : (isSelected ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed')
+                    isContactForm
+                      ? formData.contactName && formData.contactEmail
+                        ? "hover:opacity-90"
+                        : "opacity-50 cursor-not-allowed"
+                      : isSelected
+                        ? "hover:opacity-90"
+                        : "opacity-50 cursor-not-allowed"
                   }`}
-                  disabled={currentStepData.isContactForm ? !(formData.contactName && formData.contactEmail) : !isSelected}
+                  disabled={isContactForm ? !(formData.contactName && formData.contactEmail) : !isSelected}
                 >
                   {currentStep === Object.keys(steps).length ? 'Absenden' : 'Weiter'}
                 </button>

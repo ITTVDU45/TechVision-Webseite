@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import CaseStudySlider from "./CaseStudySlider";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
 import { categorizedCases } from "../data/caseStudies";
 import { fetchCaseStudies } from "@/lib/api";
 
@@ -54,6 +55,13 @@ const CaseStudies: React.FC = () => {
 
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (categories.length === 0) return;
+    const hasSelectedCategory = categories.some((category) => category.id === selectedCategory);
+    if (hasSelectedCategory) return;
+    setSelectedCategory(categories[0].id);
+  }, [categories, selectedCategory]);
 
   // Kombiniere API-Daten mit statischen Daten
   const getCategorizedCases = (): Record<string, Array<{ id: string; title: string; subtitle: string; description: string; image: string; stats: Array<{ value: string; label: string }> }>> => {
@@ -116,10 +124,15 @@ const CaseStudies: React.FC = () => {
     return converted;
   };
 
-  const currentCases = getCategorizedCases()[selectedCategory] || [];
+  const categorizedCasesMap = getCategorizedCases();
+  const currentCases = categorizedCasesMap[selectedCategory] || [];
+  const availableCategories =
+    categories.length > 0
+      ? categories
+      : Object.keys(categorizedCasesMap).map((id) => ({ id, name: id }));
 
   return (
-    <section id="success-stories" className="py-24 bg-black relative overflow-hidden">
+    <section id="success-stories" className="pb-20 pt-10 bg-black relative overflow-hidden">
       {/* Background Orbs */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-blue-600/5 rounded-full blur-[120px] -translate-y-1/2 -translate-x-1/2" />
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-violet-600/5 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2" />
@@ -157,38 +170,79 @@ const CaseStudies: React.FC = () => {
           </motion.p>
         </div>
 
-        {/* Category Tabs */}
-        {categories.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-3 mb-16">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`relative px-6 py-2.5 rounded-xl transition-all duration-300 text-sm font-medium border ${selectedCategory === category.id
-                  ? 'bg-blue-600 border-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'
-                  : 'bg-neutral-900/50 border-neutral-800 text-gray-400 hover:border-neutral-700 hover:text-white'
-                  }`}
+        <div className="mb-12 flex flex-wrap justify-center gap-3">
+          {availableCategories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`rounded-lg border px-4 py-2 text-sm transition-all ${
+                selectedCategory === category.id
+                  ? "border-blue-500 bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.25)]"
+                  : "border-neutral-700 bg-neutral-900/70 text-gray-300 hover:border-neutral-500 hover:text-white"
+              }`}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
+
+        {loading ? (
+          <div className="rounded-2xl border border-white/10 bg-neutral-900/40 px-6 py-16 text-center text-gray-400">
+            Lädt Case Studies...
+          </div>
+        ) : currentCases.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-neutral-900/40 px-6 py-16 text-center text-gray-400">
+            Keine Case Studies in dieser Kategorie gefunden.
+          </div>
+        ) : (
+          <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 md:grid-cols-2">
+            {currentCases.map((caseItem, index) => (
+              <motion.article
+                key={`${caseItem.id}-${index}`}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.35, delay: index * 0.04 }}
+                className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl shadow-xl"
               >
-                {category.name}
-              </button>
+                <Link href={`/case-studies/${caseItem.id}`} className="group block h-full">
+                  <div className="relative h-52 overflow-hidden">
+                    {caseItem.image ? (
+                      <Image
+                        src={caseItem.image}
+                        alt={caseItem.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-gradient-to-br from-blue-600/30 via-indigo-600/20 to-transparent" />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="mb-2 text-xl font-semibold text-white transition-colors group-hover:text-blue-400">
+                      {caseItem.title}
+                    </h3>
+                    <p className="mb-3 text-sm text-blue-300/90">{caseItem.subtitle || "Case Study"}</p>
+                    <p className="line-clamp-3 text-sm text-gray-300">{caseItem.description}</p>
+                    {caseItem.stats.length > 0 && (
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {caseItem.stats.slice(0, 2).map((stat, statIndex) => (
+                          <span
+                            key={`${caseItem.id}-stat-${statIndex}`}
+                            className="rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-1 text-xs text-blue-300"
+                          >
+                            {stat.value} {stat.label}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              </motion.article>
             ))}
           </div>
         )}
-
-        {/* Slider Section */}
-        <div className="max-w-7xl mx-auto">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={selectedCategory}
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.98 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-            >
-              <CaseStudySlider cases={currentCases} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
       </div>
     </section>
   );

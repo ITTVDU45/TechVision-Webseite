@@ -1,4 +1,14 @@
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+
+type MarqueeProps = ComponentPropsWithoutRef<"div"> & {
+  className?: string;
+  reverse?: boolean;
+  pauseOnHover?: boolean;
+  children?: ReactNode;
+  vertical?: boolean;
+  repeat?: number;
+};
 
 export function Marquee({
   className,
@@ -8,7 +18,7 @@ export function Marquee({
   vertical = false,
   repeat = 4,
   ...props
-}) {
+}: MarqueeProps) {
   return (
     <div
       {...props}

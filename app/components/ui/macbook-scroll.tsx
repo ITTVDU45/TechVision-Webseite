@@ -539,13 +539,18 @@ export const KBtn = ({
   className,
   children,
   childrenClassName,
-  backlit = true
+  backlit = true,
+}: {
+  className?: string;
+  children?: React.ReactNode;
+  childrenClassName?: string;
+  backlit?: boolean;
 }) => {
   return (
     (<div
       className={cn(
         "p-[0.5px] rounded-[4px]",
-        backlit && "bg-white/[0.2] shadow-xl shadow-white"
+        backlit ? "bg-white/[0.2] shadow-xl shadow-white" : undefined
       )}>
       <div
         className={cn(
@@ -560,7 +565,7 @@ export const KBtn = ({
           className={cn(
             "text-neutral-200 text-[5px] w-full flex justify-center items-center flex-col",
             childrenClassName,
-            backlit && "text-white"
+            backlit ? "text-white" : undefined
           )}>
           {children}
         </div>
@@ -569,9 +574,7 @@ export const KBtn = ({
   );
 };
 
-export const Row = ({
-  children
-}) => {
+export const Row = ({ children }: { children: React.ReactNode }) => {
   return (
     (<div className="flex gap-[2px] mb-[2px] w-full flex-shrink-0">
       {children}
@@ -591,9 +594,7 @@ export const SpeakerGrid = () => {
   );
 };
 
-export const OptionKey = ({
-  className
-}) => {
+export const OptionKey = ({ className }: { className?: string }) => {
   return (
     (<svg
       fill="none"

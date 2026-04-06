@@ -1,16 +1,41 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import ColourfulText from '@/components/ui/colourful-text';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+"use client";
 
-export default function BlogSection({ 
-  title = "KI-Insights & Trends", 
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import ColourfulText from "@/components/ui/colourful-text";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+
+interface BlogPostItem {
+  title: string;
+  link: string;
+  category?: string;
+  date?: string;
+  image?: string;
+  excerpt?: string;
+}
+
+interface BlogSectionProps {
+  title?: string;
+  subtitle?: string;
+  blogPosts?: BlogPostItem[];
+}
+
+export default function BlogSection({
+  title = "KI-Insights & Trends",
   subtitle = "Erfahren Sie mehr über aktuelle Entwicklungen und entdecken Sie Best Practices für Ihr Unternehmen.",
-  blogPosts = []
-}) {
+  blogPosts = [],
+}: BlogSectionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const isMobile = window.innerWidth < 768; // Annahme: Mobile Ansicht bei weniger als 768px
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
   const postsPerPage = isMobile ? 1 : 3; // Zeige 1 Post auf mobilen Geräten, sonst 3
   const pageCount = Math.ceil(blogPosts.length / postsPerPage);
 

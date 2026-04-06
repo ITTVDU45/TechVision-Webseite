@@ -1,5 +1,6 @@
-
-import type { GenericFormState } from '../../types/forms'
+"use client";
+
+import { useRouter } from "next/navigation";
 
 const ThankYouPage = () => {
   const router = useRouter();

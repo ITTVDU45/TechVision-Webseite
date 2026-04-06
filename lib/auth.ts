@@ -179,6 +179,5 @@ export const authOptions: NextAuthOptions = {
     },
   },
   secret: NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development',
-  trustHost: true, // Wichtig für Development
+  debug: process.env.NODE_ENV === "development",
 };

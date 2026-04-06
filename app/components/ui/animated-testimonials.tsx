@@ -2,7 +2,18 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
-export const AnimatedTestimonials = ({ testimonials }) => {
+interface TestimonialSlide {
+  src: string;
+  quote: string;
+  name: string;
+  designation: string;
+}
+
+export const AnimatedTestimonials = ({
+  testimonials,
+}: {
+  testimonials: TestimonialSlide[];
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {

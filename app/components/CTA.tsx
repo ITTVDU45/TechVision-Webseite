@@ -1,30 +1,71 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { GlowingEffect } from './ui/glowing-effect';
-import Vortex from './ui/vortex';
 import Link from 'next/link';
-import LiquidEther from './LiquidEther';
+
+const LiquidEther = dynamic(() => import('./LiquidEther'), { ssr: false });
 
 export default function CTA() {
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const [reduceMotion, setReduceMotion] = useState(false)
+  const [shouldRenderLiquid, setShouldRenderLiquid] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    setReduceMotion(mq.matches)
+    const onChange = () => setReduceMotion(mq.matches)
+    mq.addEventListener("change", onChange)
+    return () => mq.removeEventListener("change", onChange)
+  }, [])
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    const section = sectionRef.current
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setShouldRenderLiquid(true)
+        observer.disconnect()
+      },
+      { root: null, rootMargin: "250px 0px", threshold: 0.05 }
+    )
+
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [reduceMotion])
+
   return (
-    <section id="contact" className="py-32 bg-black relative overflow-hidden">
+    <section ref={sectionRef} id="contact" className="py-32 bg-black relative overflow-hidden">
       <div className="container mx-auto px-4">
         <GlowingEffect blur={20} spread={150} proximity={150} className="max-w-6xl mx-auto">
           <div className="rounded-[32px] overflow-hidden bg-white/[0.02] backdrop-blur-2xl border border-white/10 shadow-[0_0_50px_-12px_rgba(59,130,246,0.2)] relative group">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             <div className="relative min-h-[500px] w-full p-8 md:p-16 flex flex-col items-center justify-center overflow-hidden">
               <div className="absolute inset-0 z-0 opacity-40">
-                <LiquidEther
-                  colors={['#3b82f6', '#4f46e5', '#818cf8']}
-                  mouseForce={25}
-                  cursorSize={100}
-                  isViscous
-                  viscous={30}
-                  autoDemo
-                  autoSpeed={0.8}
-                  autoIntensity={3.5}
-                />
+                {reduceMotion || !shouldRenderLiquid ? (
+                  <div
+                    className="h-full w-full bg-gradient-to-br from-blue-500/15 via-indigo-500/10 to-blue-500/5"
+                    aria-hidden
+                  />
+                ) : (
+                  <LiquidEther
+                    colors={['#3b82f6', '#4f46e5', '#818cf8']}
+                    mouseForce={22}
+                    cursorSize={90}
+                    isViscous
+                    viscous={28}
+                    resolution={0.4}
+                    iterationsViscous={22}
+                    iterationsPoisson={22}
+                    autoDemo
+                    autoSpeed={0.65}
+                    autoIntensity={3}
+                  />
+                )}
               </div>
 
               <div className="flex flex-col lg:flex-row items-center gap-12 max-w-5xl relative z-10 w-full">

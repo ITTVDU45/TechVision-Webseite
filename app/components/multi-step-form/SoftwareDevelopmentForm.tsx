@@ -1,6 +1,9 @@
-
-import type { SoftwareDevelopmentFormState } from '../../types/forms'
+"use client";
 
+import emailjs from "@emailjs/browser";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { SoftwareDevelopmentFormState } from "../../types/forms";
 
 const SoftwareDevelopmentForm = () => {
   const router = useRouter();
@@ -123,19 +126,27 @@ const SoftwareDevelopmentForm = () => {
     }
   };
 
-  const currentStepData = steps[currentStep];
-  const selectedValue = formData[currentStepData.field];
-  const isSelected = currentStepData.multiSelect 
-    ? selectedValue?.length > 0 
-    : selectedValue !== '';
+  const currentStepData = steps[currentStep as keyof typeof steps];
+  const selectedValue =
+    formData[currentStepData.field as keyof SoftwareDevelopmentFormState];
+  const isMulti =
+    "multiSelect" in currentStepData && Boolean(currentStepData.multiSelect);
+  const isContactForm =
+    "isContactForm" in currentStepData && Boolean(currentStepData.isContactForm);
+  const isSelected = isMulti
+    ? Array.isArray(selectedValue) && selectedValue.length > 0
+    : selectedValue !== "" && selectedValue != null;
 
-  const handleSelect = (value) => {
-    const { field, multiSelect } = steps[currentStep];
-    
-    if (multiSelect) {
-      const currentValues = formData[field] || [];
+  const handleSelect = (value: string) => {
+    const step = steps[currentStep as keyof typeof steps];
+    const field = step.field as keyof SoftwareDevelopmentFormState;
+
+    if ("multiSelect" in step && step.multiSelect) {
+      const currentValues = (Array.isArray(formData[field])
+        ? formData[field]
+        : []) as string[];
       const newValues = currentValues.includes(value)
-        ? currentValues.filter(v => v !== value)
+        ? currentValues.filter((v) => v !== value)
         : [...currentValues, value];
       setFormData({ ...formData, [field]: newValues });
     } else {
@@ -159,105 +170,100 @@ const SoftwareDevelopmentForm = () => {
     }
   };
 
-  const formatFormDataForEmail = (data) => {
-    let emailContent = '';
-    
-    // Projektziel
-    emailContent += '🎯 PROJEKTZIEL\n';
+  const formatFormDataForEmail = (data: SoftwareDevelopmentFormState) => {
+    let emailContent = "";
+    const label = <T extends Record<string, string>>(m: T, k: string) =>
+      m[k as keyof T] ?? k;
+
+    emailContent += "🎯 PROJEKTZIEL\n";
     if (data.projectGoal) {
       const goals = {
-        'automation': 'Prozessautomatisierung',
-        'analysis': 'Datenanalyse',
-        'crm': 'Kundenmanagement',
-        'mobile': 'Mobile App',
-        'enterprise': 'Enterprise Software',
-        'devtools': 'Entwicklertools'
+        automation: "Prozessautomatisierung",
+        analysis: "Datenanalyse",
+        crm: "Kundenmanagement",
+        mobile: "Mobile App",
+        enterprise: "Enterprise Software",
+        devtools: "Entwicklertools",
       };
-      emailContent += `► ${goals[data.projectGoal]}\n\n`;
+      emailContent += `► ${label(goals, data.projectGoal)}\n\n`;
     }
 
-    // Software-Typ
-    emailContent += '💻 SOFTWARE-TYP\n';
+    emailContent += "💻 SOFTWARE-TYP\n";
     if (data.softwareType) {
       const types = {
-        'desktop': 'Desktop-Anwendung',
-        'web': 'Web-Anwendung',
-        'mobile': 'Mobile App',
-        'cloud': 'Cloud-Lösung',
-        'ai': 'KI/ML-Anwendung'
+        desktop: "Desktop-Anwendung",
+        web: "Web-Anwendung",
+        mobile: "Mobile App",
+        cloud: "Cloud-Lösung",
+        ai: "KI/ML-Anwendung",
       };
-      emailContent += `► ${types[data.softwareType]}\n\n`;
+      emailContent += `► ${label(types, data.softwareType)}\n\n`;
     }
 
-    // Plattformen
-    emailContent += '🖥️ PLATTFORMEN\n';
+    emailContent += "🖥️ PLATTFORMEN\n";
     if (data.platform && data.platform.length > 0) {
       const platforms = {
-        'windows': 'Windows',
-        'macos': 'macOS',
-        'linux': 'Linux',
-        'ios': 'iOS',
-        'android': 'Android',
-        'web': 'Browser-basiert'
+        windows: "Windows",
+        macos: "macOS",
+        linux: "Linux",
+        ios: "iOS",
+        android: "Android",
+        web: "Browser-basiert",
       };
-      data.platform.forEach(platform => {
-        emailContent += `► ${platforms[platform]}\n`;
+      data.platform.forEach((platform) => {
+        emailContent += `► ${label(platforms, platform)}\n`;
       });
-      emailContent += '\n';
+      emailContent += "\n";
     }
 
-    // Features
-    emailContent += '⚡ FEATURES\n';
+    emailContent += "⚡ FEATURES\n";
     if (data.features && data.features.length > 0) {
       const features = {
-        'user_management': 'Benutzerverwaltung',
-        'data_analysis': 'Datenanalyse',
-        'api': 'API-Integration',
-        'offline': 'Offline-Modus',
-        'reporting': 'Reporting',
-        'security': 'Sicherheitsfunktionen'
+        user_management: "Benutzerverwaltung",
+        data_analysis: "Datenanalyse",
+        api: "API-Integration",
+        offline: "Offline-Modus",
+        reporting: "Reporting",
+        security: "Sicherheitsfunktionen",
       };
-      data.features.forEach(feature => {
-        emailContent += `► ${features[feature]}\n`;
+      data.features.forEach((feature) => {
+        emailContent += `► ${label(features, feature)}\n`;
       });
-      emailContent += '\n';
+      emailContent += "\n";
     }
 
-    // Technologie
-    emailContent += '🛠️ TECHNOLOGIE\n';
+    emailContent += "🛠️ TECHNOLOGIE\n";
     if (data.technology) {
       const technologies = {
-        'react': 'React/Node.js',
-        'python': 'Python',
-        'java': 'Java',
-        'dotnet': '.NET',
-        'native': 'Native (iOS/Android)'
+        react: "React/Node.js",
+        python: "Python",
+        java: "Java",
+        dotnet: ".NET",
+        native: "Native (iOS/Android)",
       };
-      emailContent += `► ${technologies[data.technology]}\n\n`;
+      emailContent += `► ${label(technologies, data.technology)}\n\n`;
     }
 
-    // Budget
-    emailContent += '💰 BUDGET\n';
+    emailContent += "💰 BUDGET\n";
     if (data.budget) {
       const budgets = {
-        'basic': 'Basic (bis 10.000€)',
-        'standard': 'Standard (10.000€ - 25.000€)',
-        'professional': 'Professional (25.000€ - 50.000€)',
-        'enterprise': 'Enterprise (50.000€+)'
+        basic: "Basic (bis 10.000€)",
+        standard: "Standard (10.000€ - 25.000€)",
+        professional: "Professional (25.000€ - 50.000€)",
+        enterprise: "Enterprise (50.000€+)",
       };
-      emailContent += `► ${budgets[data.budget]}\n\n`;
+      emailContent += `► ${label(budgets, data.budget)}\n\n`;
     }
 
-    // Timeline
-    emailContent += '⏱️ ZEITRAHMEN\n';
+    emailContent += "⏱️ ZEITRAHMEN\n";
     if (data.timeline) {
       const timelines = {
-        'asap': 'So schnell wie möglich',
-        'short': '2-3 Monate',
-        'medium': '3-6 Monate',
-        'long': '6+ Monate'
+        asap: "So schnell wie möglich",
+        short: "2-3 Monate",
+        medium: "3-6 Monate",
+        long: "6+ Monate",
       };
-      emailContent += `► ${timelines[data.timeline]}\n\n`;
+      emailContent += `► ${label(timelines, data.timeline)}\n\n`;
     }
 
     return emailContent;
@@ -321,7 +327,7 @@ const SoftwareDevelopmentForm = () => {
               </div>
               
               {/* Entweder Options Grid oder Kontaktformular */}
-              {currentStepData.isContactForm ? (
+              {isContactForm ? (
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-6">
                     <div>
@@ -385,21 +391,30 @@ const SoftwareDevelopmentForm = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-6 mb-8">
-                  {currentStepData.options.map((option) => (
+                  {("options" in currentStepData ? currentStepData.options : []).map((option) => (
                     <div
                       key={option.value}
                       className={`group h-32 flex flex-col items-center justify-center p-4 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 relative
-                        ${currentStepData.multiSelect 
-                          ? (selectedValue?.includes(option.value) ? 'bg-blue-500/10' : 'bg-gray-800/50')
-                          : (selectedValue === option.value ? 'bg-blue-500/10' : 'bg-gray-800/50')}`}
+                        ${isMulti
+                          ? Array.isArray(selectedValue) && selectedValue.includes(option.value)
+                            ? "bg-blue-500/10"
+                            : "bg-gray-800/50"
+                          : selectedValue === option.value
+                            ? "bg-blue-500/10"
+                            : "bg-gray-800/50"}`}
                       onClick={() => handleSelect(option.value)}
                     >
-                      {/* Gradient Border */}
-                      <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${option.gradient} transition-opacity duration-300
-                        ${currentStepData.multiSelect 
-                          ? (selectedValue?.includes(option.value) ? 'opacity-100' : 'opacity-0 group-hover:opacity-100')
-                          : (selectedValue === option.value ? 'opacity-100' : 'opacity-0 group-hover:opacity-100')}`} 
-                           style={{ padding: '1px' }}>
+                      <div
+                        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${option.gradient} transition-opacity duration-300
+                        ${isMulti
+                          ? Array.isArray(selectedValue) && selectedValue.includes(option.value)
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100"
+                          : selectedValue === option.value
+                            ? "opacity-100"
+                            : "opacity-0 group-hover:opacity-100"}`}
+                        style={{ padding: "1px" }}
+                      >
                         <div className="absolute inset-0 rounded-xl bg-gray-900" style={{ margin: '1px' }}></div>
                       </div>
                       
@@ -424,11 +439,15 @@ const SoftwareDevelopmentForm = () => {
                 <button 
                   onClick={handleNext}
                   className={`px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl text-white transition-all duration-300 ${
-                    currentStepData.isContactForm 
-                      ? (formData.contactName && formData.contactEmail ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed')
-                      : (isSelected ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed')
+                    isContactForm
+                      ? formData.contactName && formData.contactEmail
+                        ? "hover:opacity-90"
+                        : "opacity-50 cursor-not-allowed"
+                      : isSelected
+                        ? "hover:opacity-90"
+                        : "opacity-50 cursor-not-allowed"
                   }`}
-                  disabled={currentStepData.isContactForm ? !(formData.contactName && formData.contactEmail) : !isSelected}
+                  disabled={isContactForm ? !(formData.contactName && formData.contactEmail) : !isSelected}
                 >
                   {currentStep === Object.keys(steps).length ? 'Absenden' : 'Weiter'}
                 </button>

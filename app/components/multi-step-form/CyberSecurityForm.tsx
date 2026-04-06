@@ -1,6 +1,9 @@
-
-import type { CyberSecurityFormState } from '../../types/forms'
+"use client";
 
+import emailjs from "@emailjs/browser";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import type { CyberSecurityFormState } from "../../types/forms";
 
 const CyberSecurityForm = () => {
   const router = useRouter();
@@ -89,10 +92,12 @@ const CyberSecurityForm = () => {
     }
   };
 
-  const currentStepData = steps[currentStep];
-  const selectedValue = formData[currentStepData.field];
+  const currentStepData = steps[currentStep as keyof typeof steps];
+  const isContactForm =
+    "isContactForm" in currentStepData && Boolean(currentStepData.isContactForm);
+  const selectedValue = formData[currentStepData.field as keyof CyberSecurityFormState];
 
-  const handleSelect = (value) => {
+  const handleSelect = (value: string) => {
     setFormData({ ...formData, [currentStepData.field]: value });
   };
 
@@ -120,7 +125,7 @@ const CyberSecurityForm = () => {
               </div>
 
               {/* Options Grid or Contact Form */}
-              {currentStepData.isContactForm ? (
+              {isContactForm ? (
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-6">
                     <div>
@@ -184,22 +189,21 @@ const CyberSecurityForm = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-6">
-                  {currentStepData.options.map((option) => (
+                  {("options" in currentStepData ? currentStepData.options : []).map((option) => (
                     <div
                       key={option.value}
                       onClick={() => handleSelect(option.value)}
                       className={`group relative rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 ${
-                        selectedValue === option.value ? 'bg-blue-500/10' : 'bg-gray-800/50'
+                        selectedValue === option.value ? "bg-blue-500/10" : "bg-gray-800/50"
                       }`}
                     >
-                      {/* Gradient Border */}
-                      <div className={`absolute inset-0 rounded-xl bg-gradient-to-r ${option.gradient} transition-opacity duration-300
-                        ${selectedValue === option.value ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`} 
-                         style={{ padding: '1px' }}>
-                        <div className="absolute inset-0 rounded-xl bg-gray-900" style={{ margin: '1px' }}></div>
+                      <div
+                        className={`absolute inset-0 rounded-xl bg-gradient-to-r ${option.gradient} transition-opacity duration-300
+                        ${selectedValue === option.value ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
+                        style={{ padding: "1px" }}
+                      >
+                        <div className="absolute inset-0 rounded-xl bg-gray-900" style={{ margin: "1px" }} />
                       </div>
-                      
-                      {/* Content */}
                       <div className="relative z-10 flex flex-col items-center justify-center text-center p-6 bg-gray-800/50 rounded-xl">
                         <span className="text-3xl mb-2">{option.icon}</span>
                         <span className="text-sm font-medium">{option.name}</span>
@@ -220,11 +224,15 @@ const CyberSecurityForm = () => {
                 <button 
                   onClick={handleNext}
                   className={`px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl text-white transition-all duration-300 ${
-                    currentStepData.isContactForm 
-                      ? (formData.contactName && formData.contactEmail ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed')
-                      : (selectedValue ? 'hover:opacity-90' : 'opacity-50 cursor-not-allowed')
+                    isContactForm
+                      ? formData.contactName && formData.contactEmail
+                        ? "hover:opacity-90"
+                        : "opacity-50 cursor-not-allowed"
+                      : selectedValue
+                        ? "hover:opacity-90"
+                        : "opacity-50 cursor-not-allowed"
                   }`}
-                  disabled={currentStepData.isContactForm ? !(formData.contactName && formData.contactEmail) : !selectedValue}
+                  disabled={isContactForm ? !(formData.contactName && formData.contactEmail) : !selectedValue}
                 >
                   {currentStep === Object.keys(steps).length ? 'Absenden' : 'Weiter'}
                 </button>

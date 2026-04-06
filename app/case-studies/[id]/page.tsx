@@ -6,10 +6,12 @@ export async function generateStaticParams() {
   return Object.keys(caseStudies).map((id) => ({ id }));
 }
 
-export async function generateMetadata(props: any): Promise<Metadata> {
-  // props may be a Promise in Next.js; await to access params safely
-  const { params } = await props;
-  const id = params?.id ?? '';
+interface CaseStudyRouteProps {
+  params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: CaseStudyRouteProps): Promise<Metadata> {
+  const { id = '' } = await params;
   const data = caseStudies[id as keyof typeof caseStudies];
   return {
     title: data?.title ?? 'Case Study',
@@ -17,9 +19,8 @@ export async function generateMetadata(props: any): Promise<Metadata> {
   };
 }
 
-export default async function CaseStudyByIdPage(props: any) {
-  const { params } = await props;
-  const id = params?.id ?? '';
+export default async function CaseStudyByIdPage({ params }: CaseStudyRouteProps) {
+  const { id = '' } = await params;
   const data = caseStudies[id as keyof typeof caseStudies];
   if (!data) {
     return (
