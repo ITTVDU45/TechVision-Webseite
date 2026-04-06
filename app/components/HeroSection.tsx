@@ -1,10 +1,14 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { usePreferLightEffects } from '@/hooks/usePreferLightEffects';
+
+const narrowHeroQuery = '(max-width: 767px)';
+const heroMobileImageSrc = '/images/aitelefonie.jpg';
 
 const HeroSpline = dynamic(() => import('./HeroSpline'), {
   ssr: false,
@@ -25,6 +29,7 @@ export default function HeroSection({ isLoading = false }: Props) {
   const textRef = useRef<HTMLDivElement | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [shouldRenderSpline, setShouldRenderSpline] = useState(false);
+  const [isNarrowHero, setIsNarrowHero] = useState(false);
   const preferLightEffects = usePreferLightEffects();
 
   useEffect(() => {
@@ -36,9 +41,22 @@ export default function HeroSection({ isLoading = false }: Props) {
   }, []);
 
   useEffect(() => {
+    const mq = window.matchMedia(narrowHeroQuery);
+    const sync = () => {
+      const narrow = mq.matches;
+      setIsNarrowHero(narrow);
+      if (narrow) setShouldRenderSpline(false);
+    };
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
     const section = heroRef.current;
     if (!section) return;
     if (preferLightEffects) return;
+    if (typeof window !== "undefined" && window.matchMedia(narrowHeroQuery).matches) return;
 
     const win = window as Window & {
       requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
@@ -84,7 +102,7 @@ export default function HeroSection({ isLoading = false }: Props) {
   });
   const router = useRouter();
 
-  const light = reduceMotion || preferLightEffects;
+  const light = reduceMotion || preferLightEffects || isNarrowHero;
   const rotateX = useTransform(scrollYProgress, [0, 1], [0, light ? 0 : 12]);
   const rotateY = useTransform(scrollYProgress, [0, 1], [0, light ? 0 : 6]);
   const scale = useTransform(scrollYProgress, [0, 1], [1, light ? 1 : 0.94]);
@@ -116,22 +134,43 @@ export default function HeroSection({ isLoading = false }: Props) {
       className="min-h-[100dvh] h-[100dvh] flex items-end justify-start relative overflow-hidden bg-black [contain:layout_paint]"
     >
       <div className="absolute inset-0 z-0">
-        {reduceMotion || preferLightEffects || !shouldRenderSpline ? (
+        <div className="absolute inset-0 md:hidden">
+          <Image
+            src={heroMobileImageSrc}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
           <div
-            className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-black to-indigo-950/30"
+            className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/55 to-black/90"
             aria-hidden
           />
-        ) : (
-          <HeroSpline
-            scene="https://prod.spline.design/Ijn60NuaQiGIVPWQ/scene.splinecode"
-            style={{
-              width: "100%",
-              height: "100%",
-              transform: "scale(1.25)",
-              transformOrigin: "center center",
-            }}
+          <div
+            className="absolute inset-0 bg-gradient-to-tr from-cyan-950/35 via-transparent to-indigo-950/25"
+            aria-hidden
           />
-        )}
+        </div>
+
+        <div className="absolute inset-0 hidden md:block">
+          {reduceMotion || preferLightEffects || !shouldRenderSpline ? (
+            <div
+              className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-black to-indigo-950/30"
+              aria-hidden
+            />
+          ) : (
+            <HeroSpline
+              scene="https://prod.spline.design/Ijn60NuaQiGIVPWQ/scene.splinecode"
+              style={{
+                width: "100%",
+                height: "100%",
+                transform: "scale(1.25)",
+                transformOrigin: "center center",
+              }}
+            />
+          )}
+        </div>
       </div>
 
       <motion.div ref={textRef} className="z-10 relative px-8 md:px-16 pb-28 md:pb-52 max-w-3xl" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} style={{ perspective, rotateX, rotateY, scale }}>
@@ -202,7 +241,10 @@ export default function HeroSection({ isLoading = false }: Props) {
         </div>
       </motion.div>
 
-      <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-transparent pointer-events-none z-[1]" />
+      <div
+        className="pointer-events-none z-[1] absolute inset-0 hidden bg-gradient-to-br from-black/40 via-black/30 to-transparent md:block"
+        aria-hidden
+      />
     </section>
   );
 }
