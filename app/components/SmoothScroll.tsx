@@ -7,28 +7,55 @@ function prefersReducedMotion(): boolean {
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+const finePointerQuery = "(hover: hover) and (pointer: fine)";
+
+function shouldUseLenis(): boolean {
+    if (typeof window === "undefined") return false;
+    if (prefersReducedMotion()) return false;
+    return window.matchMedia(finePointerQuery).matches;
+}
+
 /**
- * Ein Lenis mit autoRaf (ein RAF-Loop) statt manuellem RAF + lenis.raf — weniger Jank.
- * Bei reduced-motion: natives Scrollen (bessere Performance + A11y).
+ * Lenis mit autoRaf — weniger Jank als manuelles RAF.
+ * Auf Touch-Geräten kein Lenis: natives Momentum-Scrolling bleibt erhalten (kein syncTouch-Jank).
+ * Bei reduced-motion: natives Scrollen (Performance + A11y).
  */
 export default function SmoothScroll() {
     useEffect(() => {
-        if (prefersReducedMotion()) return;
+        if (typeof window === "undefined") return;
 
-        const lenis = new Lenis({
-            autoRaf: true,
-            smoothWheel: true,
-            orientation: "vertical",
-            gestureOrientation: "vertical",
-            lerp: 0.085,
-            wheelMultiplier: 0.85,
-            touchMultiplier: 1.35,
-            syncTouch: true,
-            infinite: false,
-        });
+        let lenis: Lenis | null = null;
+
+        const apply = () => {
+            lenis?.destroy();
+            lenis = null;
+            if (!shouldUseLenis()) return;
+            lenis = new Lenis({
+                autoRaf: true,
+                smoothWheel: true,
+                orientation: "vertical",
+                gestureOrientation: "vertical",
+                lerp: 0.085,
+                wheelMultiplier: 0.85,
+                touchMultiplier: 1,
+                syncTouch: false,
+                infinite: false,
+            });
+        };
+
+        const mq = window.matchMedia(finePointerQuery);
+        const onMotion = () => apply();
+
+        const motionMq = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        apply();
+        mq.addEventListener("change", apply);
+        motionMq.addEventListener("change", onMotion);
 
         return () => {
-            lenis.destroy();
+            mq.removeEventListener("change", apply);
+            motionMq.removeEventListener("change", onMotion);
+            lenis?.destroy();
         };
     }, []);
 
