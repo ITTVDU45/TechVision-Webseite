@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { categorizedCases } from "../data/caseStudies";
 import { fetchCaseStudies } from "@/lib/api";
+import { usePreferLightEffects } from "@/hooks/usePreferLightEffects";
 
 interface CaseStudy {
   _id?: string;
@@ -19,6 +20,7 @@ interface CaseStudy {
 }
 
 const CaseStudies: React.FC = () => {
+  const preferLightEffects = usePreferLightEffects();
   const [selectedCategory, setSelectedCategory] = useState<string>("software");
   const [apiCaseStudies, setApiCaseStudies] = useState<CaseStudy[]>([]);
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
@@ -202,8 +204,10 @@ const CaseStudies: React.FC = () => {
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.35, delay: index * 0.04 }}
-                className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl shadow-xl"
+                transition={{ duration: preferLightEffects ? 0.2 : 0.35, delay: preferLightEffects ? 0 : index * 0.04 }}
+                className={`overflow-hidden rounded-2xl border border-white/10 shadow-xl ${
+                  preferLightEffects ? "bg-neutral-950/95" : "bg-white/[0.03] backdrop-blur-xl"
+                }`}
               >
                 <Link href={`/case-studies/${caseItem.id}`} className="group block h-full">
                   <div className="relative h-52 overflow-hidden">

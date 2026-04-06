@@ -118,9 +118,9 @@ export default function ProcessSection() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="flex-1 relative group"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${step.accent} opacity-10 blur-[100px] rounded-full scale-90 group-hover:scale-110 transition-transform duration-1000`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${step.accent} opacity-10 blur-[100px] rounded-full scale-90 md:group-hover:scale-110 transition-transform duration-1000`} />
 
-                <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-gray-900/40 backdrop-blur-sm shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-700 group-hover:scale-[1.03] group-hover:border-white/20">
+                <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-gray-900/40 backdrop-blur-sm shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-700 md:group-hover:scale-[1.03] md:group-hover:border-white/20">
                   <img
                     src={step.image}
                     alt={step.title}

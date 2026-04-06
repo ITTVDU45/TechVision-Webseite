@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { fetchServices } from '@/lib/api';
+import { usePreferLightEffects } from '@/hooks/usePreferLightEffects';
 
 type Service = { 
   icon?: string; 
@@ -61,6 +62,7 @@ const NextArrow = (props: any) => {
 export default function Services() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
+  const preferLightEffects = usePreferLightEffects();
 
   useEffect(() => {
     const loadServices = async () => {
@@ -99,33 +101,37 @@ export default function Services() {
     loadServices();
   }, []);
 
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 800,
-    slidesToShow: 2,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2500,
-    pauseOnHover: true,
-    arrows: true,
-    prevArrow: <PrevArrow />,
-    nextArrow: <NextArrow />,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-        }
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 1,
-        }
-      }
-    ]
-  };
+  const settings = useMemo(
+    () => ({
+      dots: true,
+      infinite: true,
+      speed: preferLightEffects ? 320 : 800,
+      cssEase: preferLightEffects ? 'ease-out' : 'ease-in-out',
+      slidesToShow: 2,
+      slidesToScroll: 1,
+      autoplay: !preferLightEffects,
+      autoplaySpeed: 2500,
+      pauseOnHover: true,
+      arrows: true,
+      prevArrow: <PrevArrow />,
+      nextArrow: <NextArrow />,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 2,
+          },
+        },
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 1,
+          },
+        },
+      ],
+    }),
+    [preferLightEffects]
+  );
 
   return (
     <section id="services" className="py-32 bg-black relative overflow-hidden">
@@ -157,19 +163,54 @@ export default function Services() {
             <div className="text-center text-gray-400 py-16">Keine Services verfügbar</div>
           ) : (
             <Slider {...settings}>
-              {services.map((service, index) => (
+              {services.map((service) => (
               <div key={service.title} className="px-4 pb-12 h-full">
+                {preferLightEffects ? (
+                <div className="relative group min-h-[380px] md:h-[450px] md:min-h-0">
+                  <div className={`absolute -inset-2 bg-gradient-to-r ${service.gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500`} />
+
+                  <div className="relative h-full min-h-[inherit] p-8 bg-neutral-950/90 border border-white/10 rounded-2xl flex flex-col transition-colors duration-300 group-hover:bg-neutral-900/95 group-hover:border-white/20 shadow-2xl overflow-hidden">
+                    {/* Subtle Interior Gradient */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500`} />
+
+                    <div className="relative z-10">
+                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${service.gradient} flex items-center justify-center text-3xl mb-6 shadow-lg shadow-black/20`}>
+                        {service.icon}
+                      </div>
+
+                      <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
+                        {service.title}
+                      </h3>
+
+                      <p className="text-gray-400 flex-grow mb-8 leading-relaxed group-hover:text-gray-300 transition-colors line-clamp-4">
+                        {service.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-auto relative z-10">
+                      <Link href={service.link ?? "/"}>
+                        <button
+                          type="button"
+                          className={`w-full py-3.5 px-4 bg-gradient-to-r ${service.gradient} rounded-xl text-white text-sm font-bold shadow-lg transition-all duration-300 relative overflow-hidden group/button active:scale-[0.98]`}
+                        >
+                          <span className="relative z-10">Mehr dazu</span>
+                          <div className="absolute inset-0 bg-white opacity-0 group-hover/button:opacity-20 transition-opacity duration-300" />
+                        </button>
+                      </Link>
+                    </div>
+
+                    <div className={`absolute -top-12 -right-12 w-24 h-24 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500`} />
+                  </div>
+                </div>
+                ) : (
                 <motion.div
                   className="relative group h-[450px]"
                   whileHover={{ y: -5 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  {/* Dynamic Glowing Shadow */}
                   <div className={`absolute -inset-2 bg-gradient-to-r ${service.gradient} rounded-2xl opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500`} />
 
-                  {/* Glass Card */}
                   <div className="relative h-full p-8 bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl flex flex-col transition-all duration-300 group-hover:bg-white/[0.05] group-hover:border-white/20 shadow-2xl overflow-hidden">
-                    {/* Subtle Interior Gradient */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500`} />
 
                     <div className="relative z-10">
@@ -199,10 +240,10 @@ export default function Services() {
                       </Link>
                     </div>
 
-                    {/* Decorative Corner Light */}
                     <div className={`absolute -top-12 -right-12 w-24 h-24 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-20 blur-2xl transition-opacity duration-500`} />
                   </div>
                 </motion.div>
+                )}
               </div>
               ))}
             </Slider>

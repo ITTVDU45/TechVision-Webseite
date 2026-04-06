@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import gsap from 'gsap';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { usePreferLightEffects } from '@/hooks/usePreferLightEffects';
 
 const HeroSpline = dynamic(() => import('./HeroSpline'), {
   ssr: false,
@@ -24,6 +25,7 @@ export default function HeroSection({ isLoading = false }: Props) {
   const textRef = useRef<HTMLDivElement | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [shouldRenderSpline, setShouldRenderSpline] = useState(false);
+  const preferLightEffects = usePreferLightEffects();
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -36,6 +38,7 @@ export default function HeroSection({ isLoading = false }: Props) {
   useEffect(() => {
     const section = heroRef.current;
     if (!section) return;
+    if (preferLightEffects) return;
 
     const win = window as Window & {
       requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
@@ -73,7 +76,7 @@ export default function HeroSection({ isLoading = false }: Props) {
       }
       window.clearTimeout(idleId);
     };
-  }, []);
+  }, [preferLightEffects]);
 
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -81,9 +84,10 @@ export default function HeroSection({ isLoading = false }: Props) {
   });
   const router = useRouter();
 
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : 12]);
-  const rotateY = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : 6]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, reduceMotion ? 1 : 0.94]);
+  const light = reduceMotion || preferLightEffects;
+  const rotateX = useTransform(scrollYProgress, [0, 1], [0, light ? 0 : 12]);
+  const rotateY = useTransform(scrollYProgress, [0, 1], [0, light ? 0 : 6]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, light ? 1 : 0.94]);
   const perspective = "1000px";
 
   useEffect(() => {
@@ -109,10 +113,10 @@ export default function HeroSection({ isLoading = false }: Props) {
     <section
       id="hero"
       ref={heroRef}
-      className="h-screen flex items-end justify-start relative overflow-hidden bg-black [contain:layout_paint]"
+      className="min-h-[100dvh] h-[100dvh] flex items-end justify-start relative overflow-hidden bg-black [contain:layout_paint]"
     >
       <div className="absolute inset-0 z-0">
-        {reduceMotion || !shouldRenderSpline ? (
+        {reduceMotion || preferLightEffects || !shouldRenderSpline ? (
           <div
             className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-black to-indigo-950/30"
             aria-hidden
