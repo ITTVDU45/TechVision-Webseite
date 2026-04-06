@@ -1,6 +1,8 @@
 "use client";
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { usePreferLightEffects } from '@/hooks/usePreferLightEffects';
 
 const steps = [
   {
@@ -37,6 +39,10 @@ const steps = [
 
 export default function ProcessSection() {
   const router = useRouter();
+  const preferLight = usePreferLightEffects();
+  const slidePx = preferLight ? 0 : 36;
+  const enterDuration = preferLight ? 0.28 : 0.55;
+  const imageSizes = '(max-width: 768px) 100vw, (max-width: 1280px) 85vw, 640px';
 
   return (
     <section id="process" className="py-32 bg-black relative overflow-hidden">
@@ -44,9 +50,9 @@ export default function ProcessSection() {
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-20 pointer-events-none" />
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-20 pointer-events-none" />
 
-      {/* Background Orbs */}
-      <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[140px] -translate-y-1/2 -translate-x-1/2" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2" />
+      {/* Große Blur-Orbs sind auf Mobile sehr teuer — nur ab md */}
+      <div className="absolute top-0 left-0 hidden md:block w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[140px] -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 hidden md:block w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-24">
@@ -92,10 +98,10 @@ export default function ProcessSection() {
             >
               {/* Text Side */}
               <motion.div
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -slidePx : slidePx }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                viewport={{ once: true, amount: 0.15, margin: '0px 0px -8% 0px' }}
+                transition={{ duration: enterDuration, ease: 'easeOut' }}
                 className="flex-1 text-center md:text-left"
               >
                 <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${step.accent} text-white font-bold text-xl mb-6 shadow-lg shadow-blue-500/20`}>
@@ -112,23 +118,36 @@ export default function ProcessSection() {
 
               {/* Image Side */}
               <motion.div
-                initial={{ opacity: 0, x: index % 2 === 0 ? 50 : -50 }}
+                initial={{ opacity: 0, x: index % 2 === 0 ? slidePx : -slidePx }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="flex-1 relative group"
+                viewport={{ once: true, amount: 0.15, margin: '0px 0px -8% 0px' }}
+                transition={{ duration: enterDuration, ease: 'easeOut' }}
+                className="flex-1 relative group w-full"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${step.accent} opacity-10 blur-[100px] rounded-full scale-90 md:group-hover:scale-110 transition-transform duration-1000`} />
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${step.accent} rounded-full scale-90 md:group-hover:scale-110 transition-transform duration-1000 pointer-events-none ${
+                    preferLight ? 'hidden' : 'opacity-10 blur-[100px] md:opacity-10'
+                  }`}
+                />
 
-                <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-gray-900/40 backdrop-blur-sm shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-700 md:group-hover:scale-[1.03] md:group-hover:border-white/20">
-                  <img
-                    src={step.image}
-                    alt={step.title}
-                    className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                <div
+                  className={`relative w-full overflow-hidden rounded-3xl border border-white/10 bg-gray-900/40 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-700 md:group-hover:scale-[1.03] md:group-hover:border-white/20 ${
+                    preferLight ? '' : 'backdrop-blur-sm'
+                  }`}
+                >
+                  <div className="relative aspect-[4/3] w-full bg-neutral-950">
+                    <Image
+                      src={step.image}
+                      alt={step.title}
+                      fill
+                      sizes={imageSizes}
+                      className="object-cover opacity-90 transition-opacity group-hover:opacity-100"
+                      loading={index < 2 ? 'eager' : 'lazy'}
+                      decoding="async"
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 pointer-events-none" />
 
-                  {/* Glass Card Overlay Effect */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-tr from-white/5 to-transparent" />
                 </div>
               </motion.div>
