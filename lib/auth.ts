@@ -123,23 +123,7 @@ export const authOptions: NextAuthOptions = {
               role: DEMO_USER.role,
             };
           }
-          
-          // Für den neuen User: Temporärer Fallback bei MongoDB-Verbindungsproblemen
-          // (Nur wenn die Credentials korrekt sind)
-          if (credentials.email === 'info@it-techvision.de' && credentials.password === 'Ittvdu.45!!11') {
-            if (isMongoConnectionError) {
-              console.log('⚠️  MongoDB-Verbindungsfehler, aber Credentials sind korrekt. Verwende temporären Fallback.');
-              // Temporärer Fallback: Erlaube Login auch bei MongoDB-Verbindungsproblemen
-              // WICHTIG: Dies sollte nur temporär sein, bis MongoDB korrekt konfiguriert ist
-              return {
-                id: 'temp-admin-info',
-                email: 'info@it-techvision.de',
-                name: 'Admin',
-                role: 'admin',
-              };
-            }
-          }
-          
+
           throw new Error('Authentication failed');
         }
       },
