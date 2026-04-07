@@ -19,7 +19,12 @@ interface CaseStudy {
   published?: boolean;
 }
 
-const CaseStudies: React.FC = () => {
+interface CaseStudiesProps {
+  /** z. B. `home` auf der Marketing-Startseite. Ohne Prop: alle veröffentlichten Studies (Übersichtsseite). */
+  apiPage?: string;
+}
+
+const CaseStudies: React.FC<CaseStudiesProps> = ({ apiPage }) => {
   const preferLightEffects = usePreferLightEffects();
   const [selectedCategory, setSelectedCategory] = useState<string>("software");
   const [apiCaseStudies, setApiCaseStudies] = useState<CaseStudy[]>([]);
@@ -40,8 +45,7 @@ const CaseStudies: React.FC = () => {
           }
         }
 
-        // Lade alle veröffentlichten Case Studies (für die Case Studies Seite werden alle angezeigt)
-        const apiData = await fetchCaseStudies();
+        const apiData = await fetchCaseStudies(undefined, apiPage);
         
         if (apiData && Array.isArray(apiData) && apiData.length > 0) {
           // Filtere nur veröffentlichte (auf der Case Studies Seite werden alle angezeigt, unabhängig von page)
@@ -56,7 +60,7 @@ const CaseStudies: React.FC = () => {
     };
 
     loadData();
-  }, []);
+  }, [apiPage]);
 
   useEffect(() => {
     if (categories.length === 0) return;

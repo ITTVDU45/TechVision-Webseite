@@ -94,21 +94,10 @@ export function usePageContent(options: UsePageContentOptions): UsePageContentRe
 
         if (loadCaseStudies) {
           promises.push(
-            fetchCaseStudies().then(data => {
+            fetchCaseStudies(undefined, page).then(data => {
               if (data && Array.isArray(data) && data.length > 0) {
-                let filtered = data.filter((cs: any) => cs.published !== false);
-                // Filtere nach Seite, falls angegeben
-                if (page) {
-                  filtered = filtered.filter((cs: any) => {
-                    if (!cs.page || (Array.isArray(cs.page) && cs.page.length === 0)) {
-                      return false; // Keine Seite zugewiesen = nicht anzeigen
-                    }
-                    // Unterstütze sowohl Array als auch String (für Rückwärtskompatibilität)
-                    const pages = Array.isArray(cs.page) ? cs.page : [cs.page];
-                    return pages.includes(page);
-                  });
-                }
-                setCaseStudies(filtered);
+                const published = data.filter((cs: any) => cs.published !== false);
+                setCaseStudies(published);
               }
               return data;
             }).catch(err => {

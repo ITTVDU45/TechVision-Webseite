@@ -41,7 +41,7 @@ export function usePageData(options: UsePageDataOptions) {
         }
 
         if (loadCaseStudies) {
-          const apiCaseStudies = await fetchCaseStudies();
+          const apiCaseStudies = await fetchCaseStudies(undefined, page);
           if (apiCaseStudies && Array.isArray(apiCaseStudies) && apiCaseStudies.length > 0) {
             const published = apiCaseStudies.filter((cs: any) => cs.published !== false);
             setCaseStudies(published);

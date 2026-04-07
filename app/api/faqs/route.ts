@@ -2,10 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+function getMongoUri(): string | undefined {
+  return process.env.MONGODB_URI?.trim() || process.env.MongoDB_URI?.trim();
+}
+
 export async function GET(request: NextRequest) {
   try {
-    // Demo-Modus: Leere Liste zurückgeben
-    if (!process.env.MONGODB_URI) {
+    if (!getMongoUri()) {
       return NextResponse.json([]);
     }
 
@@ -14,7 +17,6 @@ export async function GET(request: NextRequest) {
       await connectDB();
     } catch (dbError: any) {
       console.error('MongoDB connection error in FAQs API:', dbError?.message);
-      // Bei Verbindungsfehlern leeres Array zurückgeben statt Fehler
       return NextResponse.json([]);
     }
 
@@ -22,8 +24,15 @@ export async function GET(request: NextRequest) {
     const page = searchParams.get('page');
 
     const FAQ = (await import('@/lib/models/FAQ')).default;
-    const query = page ? { page } : {};
-    const faqs = await FAQ.find(query).sort({ order: 1, createdAt: -1 });
+    const query: Record<string, unknown> = {};
+    // Marketing-Startseite (/marketing) und CMS-Wert „home“ gleich behandeln
+    if (page === 'home' || page === 'marketing') {
+      query.page = { $in: ['home', 'marketing'] };
+    } else if (page) {
+      query.page = page;
+    }
+
+    const faqs = await FAQ.find(query).sort({ order: 1, createdAt: -1 }).lean();
 
     return NextResponse.json(faqs);
   } catch (error: any) {
@@ -40,7 +49,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!process.env.MONGODB_URI) {
+    if (!getMongoUri()) {
       return NextResponse.json({ error: 'MongoDB is not configured. Please set MONGODB_URI in .env.local' }, { status: 503 });
     }
 
@@ -50,7 +59,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const faq = await FAQ.create(body);
 
-    return NextResponse.json(faq, { status: 201 });
+    return NextResponse.json(faq.toObject(), { status: 201 });
   } catch (error) {
     console.error('Error creating FAQ:', error);
     return NextResponse.json({ error: 'Failed to create FAQ' }, { status: 500 });
@@ -64,7 +73,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!process.env.MONGODB_URI) {
+    if (!getMongoUri()) {
       return NextResponse.json({ error: 'MongoDB is not configured. Please set MONGODB_URI in .env.local' }, { status: 503 });
     }
 
@@ -94,7 +103,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!process.env.MONGODB_URI) {
+    if (!getMongoUri()) {
       return NextResponse.json({ error: 'MongoDB is not configured. Please set MONGODB_URI in .env.local' }, { status: 503 });
     }
 

@@ -34,7 +34,7 @@ export default function HomePage() {
       {/* Process Section */}
       <ProcessSection />
       {/* Case Studies Section */}
-      <CaseStudies />
+      <CaseStudies apiPage="home" />
       {/* Technologies Section */}
       <Technologies />
       {/* Top Themes Section */}

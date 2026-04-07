@@ -4,10 +4,13 @@ import CaseStudy from '@/lib/models/CaseStudy';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+function getMongoUri(): string | undefined {
+  return process.env.MONGODB_URI?.trim() || process.env.MongoDB_URI?.trim();
+}
+
 export async function GET(request: NextRequest) {
   try {
-    // Demo-Modus: Leeres Array zurückgeben, wenn MongoDB nicht konfiguriert ist
-    if (!process.env.MONGODB_URI) {
+    if (!getMongoUri()) {
       return NextResponse.json([]);
     }
 
@@ -15,19 +18,44 @@ export async function GET(request: NextRequest) {
       await connectDB();
     } catch (dbError: any) {
       console.error('MongoDB connection error in case studies API:', dbError?.message);
-      // Bei Verbindungsfehlern leeres Array zurückgeben statt Fehler
       return NextResponse.json([]);
     }
+
+    const session = await getServerSession(authOptions);
+    const isAdmin = !!session;
 
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
     const published = searchParams.get('published');
+    const pageParam = searchParams.get('page');
 
-    const query: any = {};
-    if (category) query.category = category;
-    if (published === 'true') query.published = true;
+    const query: Record<string, unknown> = {};
 
-    const caseStudies = await CaseStudy.find(query).sort({ createdAt: -1 });
+    if (!isAdmin) {
+      query.published = { $ne: false };
+    }
+    if (isAdmin && published === 'true') {
+      query.published = true;
+    }
+
+    if (category) {
+      query.category = category;
+    }
+
+    // Öffentlich: nur Case Studies, die für diese Seite vorgesehen sind (oder global ohne page)
+    if (pageParam && !isAdmin) {
+      const aliases =
+        pageParam === 'home' || pageParam === 'marketing'
+          ? ['home', 'marketing']
+          : [pageParam];
+      query.$or = [
+        { page: { $exists: false } },
+        { page: { $size: 0 } },
+        { page: { $in: aliases } },
+      ];
+    }
+
+    const caseStudies = await CaseStudy.find(query).sort({ createdAt: -1 }).lean();
 
     return NextResponse.json(caseStudies);
   } catch (error: any) {
@@ -44,7 +72,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!process.env.MONGODB_URI) {
+    if (!getMongoUri()) {
       return NextResponse.json({ error: 'MongoDB is not configured. Please set MONGODB_URI in .env.local' }, { status: 503 });
     }
 
@@ -162,7 +190,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!process.env.MONGODB_URI) {
+    if (!getMongoUri()) {
       return NextResponse.json({ error: 'MongoDB is not configured. Please set MONGODB_URI in .env.local' }, { status: 503 });
     }
 
@@ -204,7 +232,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!process.env.MONGODB_URI) {
+    if (!getMongoUri()) {
       return NextResponse.json({ error: 'MongoDB is not configured. Please set MONGODB_URI in .env.local' }, { status: 503 });
     }
 

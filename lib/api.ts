@@ -26,9 +26,13 @@ export async function fetchBlogPosts() {
   return null;
 }
 
-export async function fetchCaseStudies(category?: string) {
+export async function fetchCaseStudies(category?: string, page?: string) {
   try {
-    const url = category ? `/api/case-studies?category=${category}` : '/api/case-studies';
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (page) params.set('page', page);
+    const q = params.toString();
+    const url = q ? `/api/case-studies?${q}` : '/api/case-studies';
     const res = await fetch(url, { cache: 'no-store' });
     if (res.ok) {
       return await res.json();
