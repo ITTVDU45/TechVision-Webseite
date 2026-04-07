@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -104,19 +103,21 @@ export default function Header(): React.JSX.Element {
             paddingRight: "max(1rem, env(safe-area-inset-right, 0px))",
           }}
         >
-          <div className="flex min-h-[44px] items-center justify-between gap-3">
+          <div className="relative z-[1] flex min-h-[44px] items-center justify-between gap-3">
             <Link
               href="/"
-              className="relative block h-9 w-[9.5rem] shrink-0 sm:h-10 sm:w-[11rem] md:h-11 md:w-[12rem]"
+              className="flex shrink-0 items-center"
               aria-label="TechVision – Zur Startseite"
             >
-              <Image
+              {/* Direkt aus /public — umgeht /_next/image (robuster in Produktion/CDN) */}
+              <img
                 src={HEADER_LOGO_SRC}
                 alt="TechVision"
-                fill
-                className="object-contain object-left"
-                priority
-                sizes="(max-width: 768px) 152px, 192px"
+                width={320}
+                height={80}
+                fetchPriority="high"
+                decoding="async"
+                className="h-11 w-auto max-h-[3.5rem] max-w-[min(16rem,85vw)] object-contain object-left sm:h-12 sm:max-h-[4rem] md:h-14 md:max-h-[4.25rem]"
               />
             </Link>
 
@@ -296,15 +297,17 @@ export default function Header(): React.JSX.Element {
                 <Link
                   href="/"
                   onClick={closeSidebar}
-                  className="relative block h-9 w-36 shrink-0"
+                  className="flex shrink-0 items-center"
                   aria-label="TechVision – Zur Startseite"
                 >
-                  <Image
+                  <img
                     src={HEADER_LOGO_SRC}
                     alt="TechVision"
-                    fill
-                    className="object-contain object-left"
-                    sizes="144px"
+                    width={280}
+                    height={70}
+                    fetchPriority="high"
+                    decoding="async"
+                    className="h-11 w-auto max-w-[11rem] object-contain object-left"
                   />
                 </Link>
                 <button
