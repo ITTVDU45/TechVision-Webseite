@@ -1,7 +1,10 @@
 import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
+import { ensureLocalNextAuthUrl } from '@/lib/auth-env';
 import { getNextAuthSecret } from '@/lib/auth-secret';
+
+ensureLocalNextAuthUrl();
 
 async function verifyPasswordAgainstHash(
   plain: string,
@@ -144,18 +147,8 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 Tage
     updateAge: 24 * 60 * 60, // Session wird täglich aktualisiert
   },
-  cookies: {
-    sessionToken: {
-      name: `next-auth.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 30 * 24 * 60 * 60, // 30 Tage
-      },
-    },
-  },
+  // Keine eigenen cookie-Namen: müssen mit getToken() in der Middleware übereinstimmen
+  // (NEXTAUTH_URL https → __Secure-next-auth.session-token; http → next-auth.session-token).
   pages: {
     signIn: '/admin/login',
   },
