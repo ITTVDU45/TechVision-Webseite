@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from "@/lib/site-logo";
 import "./styles/globals.css";
 import "./styles/slick-overrides.css";
 import CustomCursor from "./components/CustomCursor";
@@ -21,8 +22,8 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL("https://techvision.de"),
   icons: {
-    icon: [{ url: "/images/techvision-logo.png", type: "image/png" }],
-    apple: "/images/techvision-logo.png",
+    icon: [{ url: SITE_LOGO_PATH, type: "image/png" }],
+    apple: SITE_LOGO_PATH,
   },
   appleWebApp: {
     capable: true,
@@ -36,9 +37,9 @@ export const metadata: Metadata = {
     siteName: "Techvision",
     images: [
       {
-        url: "/images/logo_wei_neu.png.avif",
-        width: 1200,
-        height: 630,
+        url: SITE_LOGO_PATH,
+        width: SITE_LOGO_WIDTH,
+        height: SITE_LOGO_HEIGHT,
         alt: "Techvision Logo",
       },
     ],
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Techvision - KI-Telefonie & Softwareentwicklung",
     description: "Professionelle KI-Telefonie, Softwareentwicklung und IT-Beratung. Moderne Lösungen für Unternehmen.",
-    images: ["/images/logo_wei_neu.png.avif"],
+    images: [SITE_LOGO_PATH],
   },
   robots: {
     index: true,
@@ -84,8 +85,8 @@ export default function RootLayout({
     <html lang="de" className={inter.className} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <link rel="icon" href="/images/techvision-logo.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/images/techvision-logo.png" />
+        <link rel="icon" href={SITE_LOGO_PATH} type="image/png" />
+        <link rel="apple-touch-icon" href={SITE_LOGO_PATH} />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#3B82F6" />
         <meta name="mobile-web-app-capable" content="yes" />

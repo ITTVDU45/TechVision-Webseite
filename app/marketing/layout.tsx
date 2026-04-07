@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from "@/lib/site-logo";
 import "../styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -24,9 +25,9 @@ export const metadata: Metadata = {
     siteName: "Techvision",
     images: [
       {
-        url: "/images/logo_wei_neu.png.avif",
-        width: 1200,
-        height: 630,
+        url: SITE_LOGO_PATH,
+        width: SITE_LOGO_WIDTH,
+        height: SITE_LOGO_HEIGHT,
         alt: "Techvision Logo",
       },
     ],
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Techvision - KI-Telefonie & Softwareentwicklung",
     description: "Professionelle KI-Telefonie, Softwareentwicklung und IT-Beratung. Moderne Lösungen für Unternehmen.",
-    images: ["/images/logo_wei_neu.png.avif"],
+    images: [SITE_LOGO_PATH],
   },
   robots: {
     index: true,

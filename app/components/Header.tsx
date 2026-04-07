@@ -4,10 +4,7 @@ import Image from "next/image";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import headerLogo from "../assets/techvision-logo.png";
-
-/** Fallback aus public/ falls gebündelte URL auf Custom Domain nicht lädt */
-const HEADER_LOGO_PUBLIC = "/images/techvision-logo.png";
+import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from "@/lib/site-logo";
 
 const solutions = [
   { name: "KI Transformation", href: "/ki-transformation", icon: "🤖", description: "Digitale Transformation mit KI" },
@@ -32,7 +29,6 @@ export default function Header(): React.JSX.Element {
   const [showSolutions, setShowSolutions] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [logoUsePublicFallback, setLogoUsePublicFallback] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
@@ -113,28 +109,14 @@ export default function Header(): React.JSX.Element {
               className="relative z-[3] flex shrink-0 items-center"
               aria-label="TechVision – Zur Startseite"
             >
-              {logoUsePublicFallback ? (
-                <img
-                  src={HEADER_LOGO_PUBLIC}
-                  alt="TechVision"
-                  width={headerLogo.width}
-                  height={headerLogo.height}
-                  fetchPriority="high"
-                  decoding="async"
-                  className="h-14 w-auto max-w-[min(20rem,88vw)] object-contain object-left sm:h-16 md:h-[4.75rem] md:max-w-[24rem]"
-                />
-              ) : (
-                <Image
-                  src={headerLogo}
-                  alt="TechVision"
-                  width={headerLogo.width}
-                  height={headerLogo.height}
-                  unoptimized
-                  priority
-                  onError={() => setLogoUsePublicFallback(true)}
-                  className="h-14 w-auto max-w-[min(20rem,88vw)] object-contain object-left sm:h-16 md:h-[4.75rem] md:max-w-[24rem]"
-                />
-              )}
+              <Image
+                src={SITE_LOGO_PATH}
+                alt="TechVision"
+                width={SITE_LOGO_WIDTH}
+                height={SITE_LOGO_HEIGHT}
+                priority
+                className="h-14 w-auto max-w-[min(20rem,88vw)] object-contain object-left sm:h-16 md:h-[4.75rem] md:max-w-[24rem]"
+              />
             </Link>
 
             <nav className="hidden md:flex items-center gap-2">
@@ -318,28 +300,14 @@ export default function Header(): React.JSX.Element {
                     className="inline-flex max-w-full items-center"
                     aria-label="TechVision – Zur Startseite"
                   >
-                    {logoUsePublicFallback ? (
-                      <img
-                        src={HEADER_LOGO_PUBLIC}
-                        alt="TechVision"
-                        width={headerLogo.width}
-                        height={headerLogo.height}
-                        fetchPriority="high"
-                        decoding="async"
-                        className="h-12 w-auto max-w-[11.5rem] object-contain object-left sm:h-14"
-                      />
-                    ) : (
-                      <Image
-                        src={headerLogo}
-                        alt="TechVision"
-                        width={headerLogo.width}
-                        height={headerLogo.height}
-                        unoptimized
-                        priority
-                        onError={() => setLogoUsePublicFallback(true)}
-                        className="h-12 w-auto max-w-[11.5rem] object-contain object-left sm:h-14"
-                      />
-                    )}
+                    <Image
+                      src={SITE_LOGO_PATH}
+                      alt="TechVision"
+                      width={SITE_LOGO_WIDTH}
+                      height={SITE_LOGO_HEIGHT}
+                      priority
+                      className="h-12 w-auto max-w-[11.5rem] object-contain object-left sm:h-14"
+                    />
                   </Link>
                 </div>
                 <button
