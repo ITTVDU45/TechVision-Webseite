@@ -44,15 +44,18 @@ export default function CustomCursor() {
         return null;
     }
 
+    const fadeStyle = {
+        opacity: isVisible ? 1 : 0,
+        transition: "opacity 0.3s ease",
+    } as const;
+
     return (
-        <div
-            className="fixed inset-0 pointer-events-none z-[9999]"
-            style={{ opacity: isVisible ? 1 : 0, transition: "opacity 0.3s ease" }}
-        >
-            {/* Custom Cursor Arrow */}
+        <>
+            {/* Kein full-screen fixed inset-0 — vermeidet Stacking/GPU-Probleme über dem Header/Logo */}
             <motion.div
-                className="fixed top-0 left-0 w-6 h-6 text-blue-500"
+                className="pointer-events-none fixed top-0 left-0 z-[9999] w-6 h-6 text-blue-500"
                 style={{
+                    ...fadeStyle,
                     x: mouseX,
                     y: mouseY,
                     translateX: "-5%",
@@ -101,6 +104,6 @@ export default function CustomCursor() {
           }
         }
       `}</style>
-        </div>
+        </>
     );
 }

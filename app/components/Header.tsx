@@ -1,9 +1,13 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import headerLogo from "../assets/techvision-logo.png";
+
+/** Fallback aus public/ falls gebündelte URL auf Custom Domain nicht lädt */
+const HEADER_LOGO_PUBLIC = "/images/techvision-logo.png";
 
 const solutions = [
   { name: "KI Transformation", href: "/ki-transformation", icon: "🤖", description: "Digitale Transformation mit KI" },
@@ -28,6 +32,7 @@ export default function Header(): React.JSX.Element {
   const [showSolutions, setShowSolutions] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [logoUsePublicFallback, setLogoUsePublicFallback] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
@@ -87,7 +92,7 @@ export default function Header(): React.JSX.Element {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${headerPadY}`}
+        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${headerPadY}`}
         style={{
           paddingTop: `calc(${isScrolled ? "0.75rem" : "1rem"} + env(safe-area-inset-top, 0px))`,
         }}
@@ -102,22 +107,34 @@ export default function Header(): React.JSX.Element {
             paddingRight: "max(1rem, env(safe-area-inset-right, 0px))",
           }}
         >
-          <div className="relative z-[1] flex min-h-[52px] items-center justify-between gap-3 md:min-h-14">
+          <div className="relative z-[2] flex min-h-[52px] items-center justify-between gap-3 md:min-h-14">
             <Link
               href="/"
-              className="flex shrink-0 items-center"
+              className="relative z-[3] flex shrink-0 items-center"
               aria-label="TechVision – Zur Startseite"
             >
-              {/* Import aus app/assets → gebündelt als /_next/static/... (zuverlässig auf Vercel/Custom-Domain) */}
-              <img
-                src={headerLogo.src}
-                alt="TechVision"
-                width={headerLogo.width}
-                height={headerLogo.height}
-                fetchPriority="high"
-                decoding="async"
-                className="h-14 w-auto max-w-[min(20rem,88vw)] object-contain object-left sm:h-16 md:h-[4.75rem] md:max-w-[24rem]"
-              />
+              {logoUsePublicFallback ? (
+                <img
+                  src={HEADER_LOGO_PUBLIC}
+                  alt="TechVision"
+                  width={headerLogo.width}
+                  height={headerLogo.height}
+                  fetchPriority="high"
+                  decoding="async"
+                  className="h-14 w-auto max-w-[min(20rem,88vw)] object-contain object-left sm:h-16 md:h-[4.75rem] md:max-w-[24rem]"
+                />
+              ) : (
+                <Image
+                  src={headerLogo}
+                  alt="TechVision"
+                  width={headerLogo.width}
+                  height={headerLogo.height}
+                  unoptimized
+                  priority
+                  onError={() => setLogoUsePublicFallback(true)}
+                  className="h-14 w-auto max-w-[min(20rem,88vw)] object-contain object-left sm:h-16 md:h-[4.75rem] md:max-w-[24rem]"
+                />
+              )}
             </Link>
 
             <nav className="hidden md:flex items-center gap-2">
@@ -270,7 +287,7 @@ export default function Header(): React.JSX.Element {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[100] bg-black/70 md:hidden"
+              className="fixed inset-0 z-[150] bg-black/70 md:hidden"
               aria-hidden
               onClick={closeSidebar}
             />
@@ -284,7 +301,7 @@ export default function Header(): React.JSX.Element {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed top-0 right-0 z-[110] flex h-[100dvh] w-full max-w-sm flex-col border-l border-white/10 bg-neutral-950 shadow-2xl md:hidden"
+              className="fixed top-0 right-0 z-[160] flex h-[100dvh] w-full max-w-sm flex-col border-l border-white/10 bg-neutral-950 shadow-2xl md:hidden"
               style={{
                 paddingTop: "env(safe-area-inset-top, 0px)",
                 paddingBottom: "max(1rem, env(safe-area-inset-bottom, 0px))",
@@ -299,15 +316,28 @@ export default function Header(): React.JSX.Element {
                   className="flex shrink-0 items-center"
                   aria-label="TechVision – Zur Startseite"
                 >
-                  <img
-                    src={headerLogo.src}
-                    alt="TechVision"
-                    width={headerLogo.width}
-                    height={headerLogo.height}
-                    fetchPriority="high"
-                    decoding="async"
-                    className="h-14 w-auto max-w-[13rem] object-contain object-left"
-                  />
+                  {logoUsePublicFallback ? (
+                    <img
+                      src={HEADER_LOGO_PUBLIC}
+                      alt="TechVision"
+                      width={headerLogo.width}
+                      height={headerLogo.height}
+                      fetchPriority="high"
+                      decoding="async"
+                      className="h-14 w-auto max-w-[13rem] object-contain object-left"
+                    />
+                  ) : (
+                    <Image
+                      src={headerLogo}
+                      alt="TechVision"
+                      width={headerLogo.width}
+                      height={headerLogo.height}
+                      unoptimized
+                      priority
+                      onError={() => setLogoUsePublicFallback(true)}
+                      className="h-14 w-auto max-w-[13rem] object-contain object-left"
+                    />
+                  )}
                 </Link>
                 <button
                   type="button"
