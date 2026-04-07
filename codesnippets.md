@@ -88,7 +88,7 @@ export default function Footer() {
     return (
         <footer className="bg-gray-900 text-white py-10">
             <div className="max-w-6xl mx-auto flex flex-col items-center">
-                <p>Contact us at <a href="mailto:info@alphavision.com" className="underline">info@alphavision.com</a></p>
+                <p>Contact us at <a href="mailto:info@it-techvision.de" className="underline">info@it-techvision.de</a></p>
                 <div className="flex gap-6 mt-6">
                     {['facebook', 'twitter', 'instagram'].map((platform) => (
                         <a key={platform} href={`https://${platform}.com`} target="_blank" rel="noopener noreferrer">
@@ -96,7 +96,7 @@ export default function Footer() {
                         </a>
                     ))}
                 </div>
-                <p className="mt-8">&copy; 2024 AlphaVision | Privacy Policy</p>
+                <p className="mt-8">&copy; 2024 Techvision | Privacy Policy</p>
             </div>
         </footer>
     );

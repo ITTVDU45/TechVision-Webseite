@@ -287,8 +287,8 @@ export default function Header(): React.JSX.Element {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[150] bg-black/70 md:hidden"
-              aria-hidden
+              className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-sm md:hidden"
+              aria-label="Menü schließen"
               onClick={closeSidebar}
             />
             <motion.div
@@ -301,124 +301,157 @@ export default function Header(): React.JSX.Element {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed top-0 right-0 z-[160] flex h-[100dvh] w-full max-w-sm flex-col border-l border-white/10 bg-neutral-950 shadow-2xl md:hidden"
+              className="fixed top-0 right-0 z-[160] flex h-[100dvh] w-full max-w-[min(100%,22rem)] flex-col border-l border-white/15 bg-neutral-950/95 shadow-2xl shadow-black/40 backdrop-blur-2xl md:hidden"
               style={{
                 paddingTop: "env(safe-area-inset-top, 0px)",
                 paddingBottom: "max(1rem, env(safe-area-inset-bottom, 0px))",
-                paddingLeft: "max(0.75rem, env(safe-area-inset-left, 0px))",
+                paddingLeft: "max(1rem, env(safe-area-inset-left, 0px))",
                 paddingRight: "max(1rem, env(safe-area-inset-right, 0px))",
               }}
             >
-              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 py-3 pl-1 pr-0">
-                <Link
-                  href="/"
-                  onClick={closeSidebar}
-                  className="flex shrink-0 items-center"
-                  aria-label="TechVision – Zur Startseite"
-                >
-                  {logoUsePublicFallback ? (
-                    <img
-                      src={HEADER_LOGO_PUBLIC}
-                      alt="TechVision"
-                      width={headerLogo.width}
-                      height={headerLogo.height}
-                      fetchPriority="high"
-                      decoding="async"
-                      className="h-14 w-auto max-w-[13rem] object-contain object-left"
-                    />
-                  ) : (
-                    <Image
-                      src={headerLogo}
-                      alt="TechVision"
-                      width={headerLogo.width}
-                      height={headerLogo.height}
-                      unoptimized
-                      priority
-                      onError={() => setLogoUsePublicFallback(true)}
-                      className="h-14 w-auto max-w-[13rem] object-contain object-left"
-                    />
-                  )}
-                </Link>
+              <div className="flex shrink-0 items-start justify-between gap-3 border-b border-white/10 pb-4 pt-1">
+                <div className="min-w-0 flex-1">
+                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500">Menü</p>
+                  <Link
+                    href="/"
+                    onClick={closeSidebar}
+                    className="inline-flex max-w-full items-center"
+                    aria-label="TechVision – Zur Startseite"
+                  >
+                    {logoUsePublicFallback ? (
+                      <img
+                        src={HEADER_LOGO_PUBLIC}
+                        alt="TechVision"
+                        width={headerLogo.width}
+                        height={headerLogo.height}
+                        fetchPriority="high"
+                        decoding="async"
+                        className="h-12 w-auto max-w-[11.5rem] object-contain object-left sm:h-14"
+                      />
+                    ) : (
+                      <Image
+                        src={headerLogo}
+                        alt="TechVision"
+                        width={headerLogo.width}
+                        height={headerLogo.height}
+                        unoptimized
+                        priority
+                        onError={() => setLogoUsePublicFallback(true)}
+                        className="h-12 w-auto max-w-[11.5rem] object-contain object-left sm:h-14"
+                      />
+                    )}
+                  </Link>
+                </div>
                 <button
                   type="button"
                   onClick={closeSidebar}
-                  className="flex h-11 min-w-[44px] items-center justify-center rounded-xl text-white touch-manipulation border border-white/15 bg-white/5 active:bg-white/10"
+                  className="flex h-11 min-w-[44px] shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white touch-manipulation transition-colors active:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
                   aria-label="Menü schließen"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
 
-              <nav className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain py-2 [-webkit-overflow-scrolling:touch]" aria-label="Seiten">
-                <Link
-                  href="/"
-                  onClick={closeSidebar}
-                  className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-3 text-base font-medium text-white active:bg-white/10"
-                >
-                  <span className="text-xl opacity-80" aria-hidden>
-                    🏠
-                  </span>
-                  Home
-                </Link>
+              <nav
+                className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-y-contain py-5 [-webkit-overflow-scrolling:touch]"
+                aria-label="Seiten"
+              >
+                <section>
+                  <h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Übersicht</h2>
+                  <div className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.04] p-2">
+                    <Link
+                      href="/"
+                      onClick={closeSidebar}
+                      className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                    >
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
+                        🏠
+                      </span>
+                      Startseite
+                    </Link>
+                    <Link
+                      href="/marketing"
+                      onClick={closeSidebar}
+                      className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                    >
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
+                        ✨
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block">Marketing &amp; KI</span>
+                        <span className="mt-0.5 block text-xs font-normal leading-snug text-gray-500">Landing mit Leistungen &amp; CTA</span>
+                      </span>
+                    </Link>
+                    <Link
+                      href="/case-studies"
+                      onClick={closeSidebar}
+                      className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                    >
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
+                        📊
+                      </span>
+                      Case Studies
+                    </Link>
+                  </div>
+                </section>
 
-                <p className="mt-4 px-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Lösungen</p>
-                <ul className="mt-1 space-y-0.5">
-                  {solutions.map((s) => (
-                    <li key={s.href}>
-                      <Link
-                        href={s.href}
-                        onClick={closeSidebar}
-                        className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-white active:bg-white/10"
-                      >
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
-                          {s.icon}
-                        </span>
-                        <span className="text-[15px] font-medium leading-snug">{s.name}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <section>
+                  <h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Unsere Lösungen</h2>
+                  <ul className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.04] p-2">
+                    {solutions.map((s) => (
+                      <li key={s.href}>
+                        <Link
+                          href={s.href}
+                          onClick={closeSidebar}
+                          className="flex min-h-[52px] gap-3 rounded-xl px-3 py-2.5 text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                        >
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
+                            {s.icon}
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-[15px] font-medium leading-snug">{s.name}</span>
+                            <span className="mt-0.5 block text-xs font-normal leading-snug text-gray-500 line-clamp-2">{s.description}</span>
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
 
-                <Link
-                  href="/case-studies"
-                  onClick={closeSidebar}
-                  className="mt-4 flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-3 text-base font-medium text-white active:bg-white/10"
-                >
-                  <span className="text-xl opacity-80" aria-hidden>
-                    📊
-                  </span>
-                  Case Studies
-                </Link>
-
-                <p className="mt-4 px-3 text-xs font-semibold uppercase tracking-wider text-gray-500">Weiteres</p>
-                <ul className="mt-1 space-y-0.5">
-                  {moreItems.map((item) => (
-                    <li key={item.href}>
-                      <Link
-                        href={item.href}
-                        onClick={(e) => {
-                          handleNavClick(e, item.href);
-                          closeSidebar();
-                        }}
-                        className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-white active:bg-white/10"
-                      >
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
-                          {item.icon}
-                        </span>
-                        <span className="text-[15px] font-medium leading-snug">{item.name}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <section>
+                  <h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Weiteres</h2>
+                  <ul className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.04] p-2">
+                    {moreItems.map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          onClick={(e) => {
+                            handleNavClick(e, item.href);
+                            closeSidebar();
+                          }}
+                          className="flex min-h-[52px] gap-3 rounded-xl px-3 py-2.5 text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+                        >
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
+                            {item.icon}
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block text-[15px] font-medium leading-snug">{item.name}</span>
+                            <span className="mt-0.5 block text-xs font-normal leading-snug text-gray-500 line-clamp-2">{item.description}</span>
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               </nav>
 
-              <div className="shrink-0 border-t border-white/10 pt-3">
+              <div className="shrink-0 border-t border-white/10 pt-4">
                 <Link
                   href="/offer"
                   onClick={closeSidebar}
-                  className="flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 px-4 py-3.5 text-base font-bold text-white shadow-lg shadow-blue-500/20 active:opacity-90 touch-manipulation"
+                  className="flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 px-4 py-3.5 text-base font-bold text-white shadow-lg shadow-blue-500/25 transition-opacity active:opacity-90 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
                 >
                   Termin buchen
                 </Link>
