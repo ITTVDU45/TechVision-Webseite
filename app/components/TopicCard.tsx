@@ -1,86 +1,96 @@
 "use client";
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { BlogPost } from "../data/blogPosts";
+import { DEFAULT_BLOG_COVER_IMAGE, resolveBlogImageUrl } from "@/lib/resolveBlogImageUrl";
 
 interface TopicCardProps {
-    post: BlogPost;
-    index: number;
+  post: BlogPost;
+  index: number;
 }
 
-const TopicCard: React.FC<TopicCardProps> = ({ post, index }) => {
-    return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-            className="px-4 py-8 h-full"
-        >
-            <div className="relative group h-full">
-                {/* Dynamic Glowing Shadow */}
-                <div className="absolute -inset-2 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 rounded-3xl opacity-0 group-hover:opacity-100 blur-2xl transition-opacity duration-500" />
+export default function TopicCard({ post, index }: TopicCardProps): React.JSX.Element {
+  const [imageSrc, setImageSrc] = useState(() => resolveBlogImageUrl(post.image));
 
-                <div className="relative bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all duration-500 flex flex-col h-full shadow-2xl">
-                    {/* Category Badge - moved inside relative container for better z-index management */}
-                    <div className="absolute top-6 left-6 z-20">
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-black/40 backdrop-blur-xl border border-white/10 rounded-full">
-                            <span className="text-lg">{post.category.icon}</span>
-                            <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">{post.category.name}</span>
-                        </div>
-                    </div>
+  useEffect(() => {
+    setImageSrc(resolveBlogImageUrl(post.image));
+  }, [post.image]);
 
-                    {/* Image Section */}
-                    <div className="relative h-64 overflow-hidden">
-                        <img
-                            src={post.image}
-                            alt={post.title}
-                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-                    </div>
+  const onImageError = useCallback(() => {
+    setImageSrc(DEFAULT_BLOG_COVER_IMAGE);
+  }, []);
 
-                    {/* Content Section */}
-                    <div className="p-8 flex flex-col flex-grow relative z-10">
-                        <div className="flex items-center gap-4 text-xs text-neutral-500 mb-4 font-medium uppercase tracking-wider">
-                            <span>{post.date}</span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500/50" />
-                            <span>{post.readTime} Lesezeit</span>
-                        </div>
+  const href = `/blog/${post.slug ?? post.id}`;
 
-                        <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-blue-400 transition-all duration-300 line-clamp-2">
-                            {post.title}
-                        </h3>
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ delay: index * 0.06, duration: 0.45 }}
+      className="h-full px-2 py-4 sm:px-3 sm:py-6 md:px-4"
+    >
+      <article className="group relative flex h-full min-h-[28rem] flex-col">
+        <div className="pointer-events-none absolute -inset-1 rounded-[1.35rem] bg-gradient-to-r from-blue-600/25 to-indigo-600/25 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100" />
 
-                        <p className="text-neutral-400 text-sm leading-relaxed mb-8 line-clamp-3 group-hover:text-gray-300 transition-colors">
-                            {post.description}
-                        </p>
-
-                        <div className="mt-auto">
-                            <Link
-                                href={`/blog/${(post as any).slug || post.id}`}
-                                className="inline-flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-400 group/link transition-colors"
-                            >
-                                <span className="uppercase tracking-widest">Artikel lesen</span>
-                                <svg
-                                    className="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                </svg>
-                            </Link>
-                        </div>
-                    </div>
-
-                    {/* Decorative Gradient Bar at Bottom */}
-                    <div className="h-1.5 w-0 bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-700 group-hover:w-full" />
-                </div>
+        <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-neutral-950/80 shadow-2xl shadow-black/40 backdrop-blur-sm transition-colors duration-300 group-hover:border-white/20">
+          <div className="absolute left-5 top-5 z-20">
+            <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/55 px-3 py-1.5 backdrop-blur-md">
+              <span className="text-base" aria-hidden>
+                {post.category.icon}
+              </span>
+              <span className="text-[11px] font-bold uppercase tracking-widest text-blue-400">{post.category.name}</span>
             </div>
-        </motion.div>
-    );
-};
+          </div>
 
-export default TopicCard;
+          <div className="relative isolate h-56 shrink-0 overflow-hidden bg-gradient-to-br from-neutral-900 to-neutral-950 sm:h-60">
+            <img
+              src={imageSrc}
+              alt={post.title}
+              className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              loading={index < 2 ? "eager" : "lazy"}
+              decoding="async"
+              onError={onImageError}
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-neutral-950 to-transparent" />
+          </div>
+
+          <div className="flex flex-1 flex-col p-6 sm:p-8">
+            <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-medium uppercase tracking-wider text-neutral-500">
+              <span>{post.date}</span>
+              <span className="hidden h-1 w-1 rounded-full bg-blue-500/60 sm:inline" aria-hidden />
+              <span>{post.readTime} Lesezeit</span>
+            </div>
+
+            <h3 className="mb-3 line-clamp-2 text-xl font-bold leading-snug text-white sm:text-2xl">
+              <Link
+                href={href}
+                className="transition-colors hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+              >
+                {post.title}
+              </Link>
+            </h3>
+
+            <p className="mb-6 line-clamp-3 flex-1 text-sm leading-relaxed text-neutral-400">{post.description}</p>
+
+            <div className="mt-auto">
+              <Link
+                href={href}
+                className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-blue-400 transition-colors hover:text-blue-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+              >
+                Artikel lesen
+                <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </Link>
+            </div>
+          </div>
+
+          <div className="h-1 w-0 bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-700 group-hover:w-full" aria-hidden />
+        </div>
+      </article>
+    </motion.div>
+  );
+}

@@ -41,5 +41,119 @@
 }
 
 .slick-slide > div {
-    height: 100% !important;
+  height: 100% !important;
+}
+
+/* —— TopicSlider („Unsere Top Themen“): keine Doppel-Padding, klare Pfeile —— */
+.topic-slider .slick-list {
+  margin: 0 !important;
+  overflow: hidden !important;
+  padding: 6px 0 !important;
+}
+
+.topic-slider .slick-slide > div {
+  padding: 0 !important;
+  height: auto !important;
+}
+
+.topic-slider .slick-slide {
+  height: auto !important;
+}
+
+.topic-slider .slick-track {
+  display: flex !important;
+  align-items: stretch !important;
+}
+
+.topic-slider .slick-prev:before,
+.topic-slider .slick-next:before {
+  display: none !important;
+  content: none !important;
+}
+
+.topic-slider-arrow {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 44px !important;
+  height: 44px !important;
+  z-index: 30 !important;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(10, 10, 12, 0.88) !important;
+  backdrop-filter: blur(10px);
+  color: #fff !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.topic-slider-arrow:hover {
+  background: rgba(36, 36, 42, 0.95) !important;
+  border-color: rgba(96, 165, 250, 0.45);
+}
+
+.topic-slider-arrow:focus-visible {
+  outline: 2px solid rgb(96, 165, 250);
+  outline-offset: 3px;
+}
+
+.topic-slider-arrow--prev {
+  left: 2px !important;
+}
+
+.topic-slider-arrow--next {
+  right: 2px !important;
+}
+
+@media (min-width: 768px) {
+  .topic-slider {
+    padding-left: 2.75rem;
+    padding-right: 2.75rem;
+  }
+
+  .topic-slider-arrow--prev {
+    left: -6px !important;
+  }
+
+  .topic-slider-arrow--next {
+    right: -6px !important;
+  }
+}
+
+.topic-slider-dots-wrap {
+  margin-top: 1.5rem;
+}
+
+.topic-slider .slick-dots {
+  position: static !important;
+  bottom: auto !important;
+}
+
+.topic-slider .slick-dots li {
+  margin: 0 4px !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.topic-slider .slick-dots li button {
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+.topic-slider .slick-dots li button:before {
+  display: none !important;
+}
+
+.topic-slider-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #404040;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+.topic-slider .slick-dots li.slick-active .topic-slider-dot {
+  width: 24px;
+  background: #2563eb;
 }

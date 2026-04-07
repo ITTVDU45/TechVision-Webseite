@@ -1,5 +1,6 @@
 export type BlogPost = {
   id: string;
+  slug?: string;
   title: string;
   subtitle: string;
   description: string;

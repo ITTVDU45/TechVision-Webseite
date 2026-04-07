@@ -372,19 +372,6 @@ export default function Header(): React.JSX.Element {
                       Startseite
                     </Link>
                     <Link
-                      href="/marketing"
-                      onClick={closeSidebar}
-                      className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-                    >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
-                        ✨
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block">Marketing &amp; KI</span>
-                        <span className="mt-0.5 block text-xs font-normal leading-snug text-gray-500">Landing mit Leistungen &amp; CTA</span>
-                      </span>
-                    </Link>
-                    <Link
                       href="/case-studies"
                       onClick={closeSidebar}
                       className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"

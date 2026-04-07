@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import TopicSlider from "./TopicSlider";
 import { blogPosts as staticBlogPosts } from "../data/blogPosts";
 import { fetchBlogPosts } from "@/lib/api";
+import { resolveBlogImageUrl } from "@/lib/resolveBlogImageUrl";
 
 const TopThemes: React.FC = () => {
     const [posts, setPosts] = useState(staticBlogPosts);
@@ -12,66 +13,79 @@ const TopThemes: React.FC = () => {
         const loadBlogs = async () => {
             try {
                 const apiBlogs = await fetchBlogPosts();
-                console.log('TopThemes: Fetched blogs from API:', apiBlogs?.length || 0);
-                
+
                 if (apiBlogs && Array.isArray(apiBlogs) && apiBlogs.length > 0) {
-                    // Filtere veröffentlichte Blogs
-                    const published = apiBlogs.filter((b: any) => b.published !== false);
-                    console.log('TopThemes: Published blogs:', published.length);
-                    
-                    // Zuerst versuche Blogs mit 'home' im page Array zu finden
-                    let homeBlogs = published.filter((b: any) => {
-                        const pages = Array.isArray(b.page) ? b.page : (b.page ? [b.page] : []);
-                        const hasHome = pages.includes('home');
-                        if (hasHome) {
-                            console.log('TopThemes: Found blog with home page:', b.title);
-                        }
-                        return hasHome;
+                    const published = apiBlogs.filter((b: { published?: boolean }) => b.published !== false);
+
+                    let homeBlogs = published.filter((b: { page?: unknown }) => {
+                        const pages = Array.isArray(b.page) ? b.page : b.page ? [b.page] : [];
+                        return pages.includes("home");
                     });
-                    
-                    console.log('TopThemes: Blogs with home page:', homeBlogs.length);
-                    
-                    // Wenn keine Blogs mit 'home' gefunden wurden, nimm alle veröffentlichten Blogs
-                    if (homeBlogs.length === 0) {
-                        console.log('TopThemes: No blogs with home page, using all published blogs');
-                        homeBlogs = published;
-                    }
-                    
+
+                    if (homeBlogs.length === 0) homeBlogs = published;
+
                     const formatted = homeBlogs
-                        .sort((a: any, b: any) => {
+                        .sort((a: { date?: string; createdAt?: string }, b: { date?: string; createdAt?: string }) => {
                             const dateA = new Date(a.date || a.createdAt || 0).getTime();
                             const dateB = new Date(b.date || b.createdAt || 0).getTime();
                             return dateB - dateA;
                         })
-                        .slice(0, 6) // Top 6 für Homepage
-                        .map((b: any) => ({
-                            id: b.id || b._id?.toString() || b.slug || '',
-                            title: b.title || '',
-                            subtitle: b.subtitle || '',
-                            description: b.description || b.content?.substring(0, 150) || '',
-                            image: b.image || 'https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Blog+Image',
-                            date: b.date || new Date(b.createdAt || Date.now()).toLocaleDateString('de-DE', { 
-                                day: 'numeric', 
-                                month: 'long', 
-                                year: 'numeric' 
-                            }),
-                            readTime: b.readTime || '5 min',
-                            category: Array.isArray(b.category) && b.category.length > 0 
-                                ? b.category[0] 
-                                : (b.category || { name: 'Allgemein', icon: '📝' }),
-                            slug: b.slug || b.id || b._id?.toString() || '',
-                        }));
-                    
-                    console.log('TopThemes: Formatted blogs:', formatted.length);
-                    console.log('TopThemes: Blog titles:', formatted.map((p: any) => p.title));
-                    
-                    // Setze die Posts immer, auch wenn es weniger als 6 sind
+                        .slice(0, 6)
+                        .map((b: Record<string, unknown>) => {
+                            const rawCategory = b.category;
+                            let category: { name: string; icon: string };
+                            if (Array.isArray(rawCategory) && rawCategory.length > 0 && typeof rawCategory[0] === "object" && rawCategory[0] !== null) {
+                                const c = rawCategory[0] as { name?: string; icon?: string };
+                                category = { name: c.name ?? "Allgemein", icon: c.icon ?? "📝" };
+                            } else if (rawCategory && typeof rawCategory === "object" && !Array.isArray(rawCategory)) {
+                                const c = rawCategory as { name?: string; icon?: string };
+                                category = { name: c.name ?? "Allgemein", icon: c.icon ?? "📝" };
+                            } else {
+                                category = { name: "Allgemein", icon: "📝" };
+                            }
+
+                            const id = String(b.id || b._id || b.slug || "");
+                            const slug = typeof b.slug === "string" ? b.slug : id;
+
+                            const rawDate = b.date ?? b.createdAt;
+                            let dateStr: string;
+                            if (rawDate instanceof Date) {
+                                dateStr = rawDate.toLocaleDateString("de-DE", {
+                                    day: "numeric",
+                                    month: "long",
+                                    year: "numeric",
+                                });
+                            } else if (typeof rawDate === "string" || typeof rawDate === "number") {
+                                dateStr = new Date(rawDate).toLocaleDateString("de-DE", {
+                                    day: "numeric",
+                                    month: "long",
+                                    year: "numeric",
+                                });
+                            } else {
+                                dateStr = new Date().toLocaleDateString("de-DE", {
+                                    day: "numeric",
+                                    month: "long",
+                                    year: "numeric",
+                                });
+                            }
+
+                            return {
+                                id,
+                                slug,
+                                title: String(b.title || ""),
+                                subtitle: String(b.subtitle || ""),
+                                description: String(b.description || (typeof b.content === "string" ? b.content.substring(0, 150) : "")),
+                                image: resolveBlogImageUrl(typeof b.image === "string" ? b.image : ""),
+                                date: dateStr,
+                                readTime: String(b.readTime || "5 min"),
+                                category,
+                            };
+                        });
+
                     setPosts(formatted);
-                } else {
-                    console.log('TopThemes: No API blogs found, keeping static posts');
                 }
             } catch (error) {
-                console.error('TopThemes: Error loading blog posts:', error);
+                console.error("TopThemes: Error loading blog posts:", error);
             }
         };
 
