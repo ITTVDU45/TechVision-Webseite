@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import type { Session } from 'next-auth';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
   IconHelp,
@@ -14,6 +15,7 @@ import {
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [fallbackSession, setFallbackSession] = useState<Session | null>(null);
   const [stats, setStats] = useState({
     faqs: 0,
     blogs: 0,
@@ -24,16 +26,32 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/admin/login');
-    }
-  }, [status, router]);
+    if (session) setFallbackSession(null);
+  }, [session]);
 
   useEffect(() => {
-    if (session) {
+    if (status !== 'unauthenticated') return;
+    let cancelled = false;
+    void (async () => {
+      await new Promise((r) => setTimeout(r, 500));
+      if (cancelled) return;
+      const s = await getSession();
+      if (cancelled) return;
+      if (s) setFallbackSession(s);
+      else router.replace('/admin/login');
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [status, router]);
+
+  const activeSession = session ?? fallbackSession;
+
+  useEffect(() => {
+    if (activeSession) {
       fetchStats();
     }
-  }, [session]);
+  }, [activeSession]);
 
   const fetchStats = async () => {
     try {
@@ -67,7 +85,14 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!session) {
+  if (!activeSession) {
+    if (status === 'unauthenticated') {
+      return (
+        <div className="flex min-h-screen items-center justify-center text-gray-300">
+          Sitzung wird geprüft …
+        </div>
+      );
+    }
     return null;
   }
 
@@ -84,7 +109,7 @@ export default function AdminDashboard() {
     <div className="p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-        <p className="text-gray-400">Willkommen zurück, {session.user?.name}</p>
+        <p className="text-gray-400">Willkommen zurück, {activeSession.user?.name}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

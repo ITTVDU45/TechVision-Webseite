@@ -23,5 +23,6 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  // "/admin" allein matcht mit manchen Next-Versionen nicht zuverlässig auf nur ":path*"
+  matcher: ['/admin', '/admin/:path*'],
 };
