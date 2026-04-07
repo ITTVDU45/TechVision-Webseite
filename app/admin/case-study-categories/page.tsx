@@ -135,25 +135,26 @@ export default function CaseStudyCategoriesPage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-white">Lädt...</div>;
+    return <div className="p-4 md:p-8 text-white">Lädt...</div>;
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Case Study Kategorien verwalten</h1>
-          <p className="text-gray-400">Verwalten Sie die Kategorien für Case Studies</p>
+    <div className="p-4 sm:p-5 md:p-8">
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">Case Study Kategorien verwalten</h1>
+          <p className="text-sm text-gray-400 sm:text-base">Verwalten Sie die Kategorien für Case Studies</p>
         </div>
         <button
+          type="button"
           onClick={() => {
             setEditingCategory(null);
             setFormData({ name: '', order: 0 });
             setShowForm(true);
           }}
-          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-medium hover:from-blue-600 hover:to-indigo-700 transition-all flex items-center gap-2"
+          className="flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-3 text-sm font-medium text-white transition-all hover:from-blue-600 hover:to-indigo-700 sm:w-auto sm:px-6"
         >
-          <IconPlus className="w-5 h-5" />
+          <IconPlus className="h-5 w-5 shrink-0" />
           Neue Kategorie hinzufügen
         </button>
       </div>
@@ -188,20 +189,21 @@ export default function CaseStudyCategoriesPage() {
 
       {showForm && (
         <AnimatePresence>
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/60 p-0 sm:items-center sm:bg-black/50 sm:p-4 sm:backdrop-blur-sm">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-gray-900 rounded-2xl border border-gray-800 w-full max-w-md"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 16 }}
+              transition={{ duration: 0.22, ease: [0.32, 0.72, 0, 1] }}
+              className="w-full max-w-md rounded-t-3xl border border-x-0 border-b-0 border-gray-800 bg-gray-900 pb-[max(1rem,env(safe-area-inset-bottom,0px))] sm:rounded-2xl sm:border"
             >
-              <div className="p-6 border-b border-gray-800">
-                <h2 className="text-2xl font-bold text-white">
+              <div className="border-b border-gray-800 p-4 sm:p-6">
+                <h2 className="text-xl font-bold text-white sm:text-2xl">
                   {editingCategory ? 'Kategorie bearbeiten' : 'Neue Kategorie hinzufügen'}
                 </h2>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4 p-4 sm:p-6">
                 {error && (
                   <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4 text-red-400 text-sm">
                     {error}

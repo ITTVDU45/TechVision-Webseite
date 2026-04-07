@@ -3,8 +3,7 @@ import { Inter } from "next/font/google";
 import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from "@/lib/site-logo";
 import "./styles/globals.css";
 import "./styles/slick-overrides.css";
-import CustomCursor from "./components/CustomCursor";
-import SmoothScroll from "./components/SmoothScroll";
+import AppChrome from "./components/AppChrome";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -94,8 +93,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="antialiased" suppressHydrationWarning>
-        <SmoothScroll />
-        <CustomCursor />
+        <AppChrome />
         {children}
       </body>
     </html>

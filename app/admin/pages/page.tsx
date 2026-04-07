@@ -71,22 +71,23 @@ export default function PagesPage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-white">Lädt...</div>;
+    return <div className="p-4 md:p-8 text-white">Lädt...</div>;
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Seiteninhalte verwalten</h1>
-          <p className="text-gray-400">Verwalten Sie Hero-Sektionen und andere Seiteninhalte</p>
+    <div className="p-4 sm:p-5 md:p-8">
+      <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">Seiteninhalte verwalten</h1>
+          <p className="text-sm text-gray-400 sm:text-base">Verwalten Sie Hero-Sektionen und andere Seiteninhalte</p>
         </div>
         <button
+          type="button"
           onClick={() => {
             setEditingContent(null);
             setShowForm(true);
           }}
-          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-medium hover:from-blue-600 hover:to-indigo-700 transition-all"
+          className="min-h-[44px] w-full touch-manipulation rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-3 text-sm font-medium text-white transition-all hover:from-blue-600 hover:to-indigo-700 sm:w-auto sm:px-6"
         >
           Neuen Seiteninhalt hinzufügen
         </button>

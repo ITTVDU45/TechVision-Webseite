@@ -61,13 +61,13 @@ export default function LoginPage(): React.JSX.Element {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black p-4">
+    <div className="flex min-h-dvh min-h-[100svh] items-center justify-center bg-black px-4 pb-safe pt-[max(1rem,env(safe-area-inset-top,0px))]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md rounded-2xl border border-gray-800 bg-gray-900 p-8"
+        className="w-full max-w-md rounded-2xl border border-gray-800 bg-gray-900 p-6 sm:p-8"
       >
-        <h1 className="mb-2 text-3xl font-bold text-white">TechVision CMS</h1>
+        <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">TechVision CMS</h1>
         <p className="mb-8 text-gray-400">Admin-Panel Anmeldung</p>
 
         <form onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -83,8 +83,10 @@ export default function LoginPage(): React.JSX.Element {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="min-h-[48px] w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-base text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="info@it-techvision.de"
+              inputMode="email"
+              autoCapitalize="none"
             />
           </div>
 
@@ -100,7 +102,7 @@ export default function LoginPage(): React.JSX.Element {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="min-h-[48px] w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-base text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
             />
           </div>
@@ -112,7 +114,7 @@ export default function LoginPage(): React.JSX.Element {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-3 font-medium text-white transition-all hover:from-blue-600 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-[48px] w-full touch-manipulation rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-3 text-base font-medium text-white transition-all hover:from-blue-600 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Wird angemeldet…" : "Anmelden"}
           </button>

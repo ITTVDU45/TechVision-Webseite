@@ -123,22 +123,23 @@ export default function BlogsPage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-white">Lädt...</div>;
+    return <div className="p-4 md:p-8 text-white">Lädt...</div>;
   }
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 sm:p-5 md:p-8">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 md:mb-8">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Blogs verwalten</h1>
           <p className="text-sm md:text-base text-gray-400">Verwalten Sie Blog-Artikel</p>
         </div>
         <button
+          type="button"
           onClick={() => {
             setEditingBlog(null);
             setShowForm(true);
           }}
-          className="w-full md:w-auto px-4 md:px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-medium hover:from-blue-600 hover:to-indigo-700 transition-all min-h-[44px]"
+          className="min-h-[44px] w-full touch-manipulation rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-3 font-medium text-white transition-all hover:from-blue-600 hover:to-indigo-700 md:w-auto md:px-6"
         >
           Neuen Blog hinzufügen
         </button>

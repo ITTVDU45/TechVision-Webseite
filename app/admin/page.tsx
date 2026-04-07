@@ -79,7 +79,7 @@ export default function AdminDashboard() {
 
   if (status === 'loading') {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-dvh items-center justify-center px-4">
         <div className="text-white">Lädt...</div>
       </div>
     );
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
   if (!activeSession) {
     if (status === 'unauthenticated') {
       return (
-        <div className="flex min-h-screen items-center justify-center text-gray-300">
+        <div className="flex min-h-dvh items-center justify-center px-4 text-gray-300">
           Sitzung wird geprüft …
         </div>
       );
@@ -106,20 +106,20 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-        <p className="text-gray-400">Willkommen zurück, {activeSession.user?.name}</p>
+    <div className="p-4 sm:p-5 md:p-8">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">Dashboard</h1>
+        <p className="text-sm text-gray-400 sm:text-base">Willkommen zurück, {activeSession.user?.name}</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
         {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
             <a
               key={stat.label}
               href={stat.href}
-              className="bg-gray-900 border border-gray-800 rounded-lg p-6 hover:border-gray-700 transition-colors group"
+              className="group touch-manipulation rounded-lg border border-gray-800 bg-gray-900 p-5 transition-colors hover:border-gray-700 sm:p-6"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className={`p-3 rounded-lg bg-gradient-to-r ${stat.color}`}>

@@ -73,7 +73,7 @@ export default function FAQsPage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-white">Lädt...</div>;
+    return <div className="p-4 md:p-8 text-white">Lädt...</div>;
   }
 
   return (

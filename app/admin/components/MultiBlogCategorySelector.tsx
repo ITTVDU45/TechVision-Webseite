@@ -237,8 +237,8 @@ export default function MultiBlogCategorySelector({ value = [], onChange, label 
 
       {/* Dialog zum Hinzufügen neuer Kategorie */}
       {showAddDialog && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-gray-900 rounded-lg border border-gray-800 p-6 w-full max-w-md">
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/60 p-0 sm:items-center sm:bg-black/50 sm:p-4 sm:backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-t-3xl border border-x-0 border-b-0 border-gray-800 bg-gray-900 p-6 pb-[max(1.5rem,env(safe-area-inset-bottom,0px))] sm:rounded-2xl sm:border">
             <h3 className="text-lg font-bold text-white mb-4">Neue Kategorie hinzufügen</h3>
             <div className="space-y-4">
               <div>
@@ -275,7 +275,7 @@ export default function MultiBlogCategorySelector({ value = [], onChange, label 
                     setNewCategoryName('');
                     setNewCategoryIcon('📝');
                   }}
-                  className="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white hover:bg-gray-700 transition-colors"
+                  className="min-h-[44px] flex-1 touch-manipulation rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 text-white transition-colors hover:bg-gray-700"
                 >
                   Abbrechen
                 </button>
@@ -283,7 +283,7 @@ export default function MultiBlogCategorySelector({ value = [], onChange, label 
                   type="button"
                   onClick={handleAddCategory}
                   disabled={!newCategoryName.trim()}
-                  className="flex-1 px-4 py-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="min-h-[44px] flex-1 touch-manipulation rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Hinzufügen
                 </button>
