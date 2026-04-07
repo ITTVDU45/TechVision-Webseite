@@ -1,114 +1,120 @@
 "use client";
-import React, { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { signIn } from "next-auth/react";
+import { motion } from "framer-motion";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+export default function LoginPage(): React.JSX.Element {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
+    const form = e.currentTarget;
+    const emailEl = form.elements.namedItem("email") as HTMLInputElement | null;
+    const passwordEl = form.elements.namedItem("password") as HTMLInputElement | null;
+    // Browser-Autofill setzt oft nur den DOM-Wert, nicht den React-State — immer native Werte lesen
+    const emailVal = (emailEl?.value ?? email).trim().toLowerCase();
+    const passwordVal = passwordEl?.value ?? password;
+
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
+      const result = await signIn("credentials", {
+        email: emailVal,
+        password: passwordVal,
         redirect: false,
+        callbackUrl: "/admin",
       });
 
-      console.log('Login result:', result);
-      
       if (result?.error) {
-        console.error('Login error:', result.error);
-        if (result.error === 'Configuration') {
-          setError('Server-Konfigurationsfehler. Bitte kontaktieren Sie den Administrator.');
+        if (result.error === "Configuration") {
+          setError("Server-Konfigurationsfehler. Bitte NEXTAUTH_URL / NEXTAUTH_SECRET in Vercel prüfen.");
         } else if (
-          result.error === 'CredentialsSignin' ||
-          result.error.toLowerCase().includes('credentials')
+          result.error === "CredentialsSignin" ||
+          result.error.toLowerCase().includes("credentials")
         ) {
-          setError('Ungültige Anmeldedaten. Bitte überprüfen Sie E-Mail und Passwort.');
+          setError(
+            "Ungültige Anmeldedaten oder falsches gespeichertes Passwort im Browser. Passwort manuell neu eingeben (Autofill leert manchmal das Formular im Hintergrund)."
+          );
         } else {
           setError(`Login fehlgeschlagen: ${result.error}`);
         }
-        setLoading(false);
-      } else if (result?.ok) {
-        // Login erfolgreich - aktualisiere Session und leite weiter
-        console.log('✅ Login erfolgreich, leite weiter...');
-        // Kurze Verzögerung, damit die Session gesetzt wird
-        await new Promise(resolve => setTimeout(resolve, 500));
-        // Verwende router.push statt window.location für bessere Session-Handling
-        router.push('/admin');
-        router.refresh(); // Aktualisiere die Route, um Session zu laden
-      } else {
-        console.error('Unerwartetes Login-Ergebnis:', result);
-        setError('Unerwarteter Fehler beim Login. Bitte versuchen Sie es erneut.');
-        setLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error('Login exception:', error);
-      setError('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.');
+
+      if (result?.ok) {
+        // Voller Reload: Session-Cookie zuverlässig, SessionProvider sieht die Session
+        window.location.assign("/admin");
+        return;
+      }
+
+      setError("Unerwarteter Fehler beim Login. Bitte versuchen Sie es erneut.");
+    } catch (err) {
+      console.error("Login exception:", err);
+      setError("Netzwerk- oder Serverfehler. Bitte später erneut versuchen.");
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-black p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-gray-900 rounded-2xl border border-gray-800 p-8"
+        className="w-full max-w-md rounded-2xl border border-gray-800 bg-gray-900 p-8"
       >
-        <h1 className="text-3xl font-bold text-white mb-2">TechVision CMS</h1>
-        <p className="text-gray-400 mb-8">Admin-Panel Anmeldung</p>
+        <h1 className="mb-2 text-3xl font-bold text-white">TechVision CMS</h1>
+        <p className="mb-8 text-gray-400">Admin-Panel Anmeldung</p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" noValidate>
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="admin-email" className="mb-2 block text-sm font-medium text-gray-300">
               E-Mail
             </label>
             <input
+              id="admin-email"
+              name="email"
               type="email"
+              autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="admin@techvision.de"
+              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="info@it-techvision.de"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="admin-password" className="mb-2 block text-sm font-medium text-gray-300">
               Passwort
             </label>
             <input
+              id="admin-password"
+              name="password"
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="••••••••"
             />
           </div>
 
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
-              {error}
-            </div>
+            <div className="rounded-lg border border-red-500/50 bg-red-500/10 p-3 text-sm text-red-400">{error}</div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-medium hover:from-blue-600 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-3 font-medium text-white transition-all hover:from-blue-600 hover:to-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {loading ? 'Wird angemeldet...' : 'Anmelden'}
+            {loading ? "Wird angemeldet…" : "Anmelden"}
           </button>
         </form>
       </motion.div>
