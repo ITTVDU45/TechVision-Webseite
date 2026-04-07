@@ -21,7 +21,8 @@ declare module '*.svg' {
 }
 
 declare module '*.png' {
-  const content: string;
+  import type { StaticImageData } from 'next/image';
+  const content: StaticImageData;
   export default content;
 }
 

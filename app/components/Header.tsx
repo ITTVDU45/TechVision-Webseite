@@ -3,8 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-const HEADER_LOGO_SRC = "/images/techvision-logo.png";
+import headerLogo from "../assets/techvision-logo.png";
 
 const solutions = [
   { name: "KI Transformation", href: "/ki-transformation", icon: "🤖", description: "Digitale Transformation mit KI" },
@@ -103,21 +102,21 @@ export default function Header(): React.JSX.Element {
             paddingRight: "max(1rem, env(safe-area-inset-right, 0px))",
           }}
         >
-          <div className="relative z-[1] flex min-h-[44px] items-center justify-between gap-3">
+          <div className="relative z-[1] flex min-h-[52px] items-center justify-between gap-3 md:min-h-14">
             <Link
               href="/"
               className="flex shrink-0 items-center"
               aria-label="TechVision – Zur Startseite"
             >
-              {/* Direkt aus /public — umgeht /_next/image (robuster in Produktion/CDN) */}
+              {/* Import aus app/assets → gebündelt als /_next/static/... (zuverlässig auf Vercel/Custom-Domain) */}
               <img
-                src={HEADER_LOGO_SRC}
+                src={headerLogo.src}
                 alt="TechVision"
-                width={320}
-                height={80}
+                width={headerLogo.width}
+                height={headerLogo.height}
                 fetchPriority="high"
                 decoding="async"
-                className="h-11 w-auto max-h-[3.5rem] max-w-[min(16rem,85vw)] object-contain object-left sm:h-12 sm:max-h-[4rem] md:h-14 md:max-h-[4.25rem]"
+                className="h-14 w-auto max-w-[min(20rem,88vw)] object-contain object-left sm:h-16 md:h-[4.75rem] md:max-w-[24rem]"
               />
             </Link>
 
@@ -301,13 +300,13 @@ export default function Header(): React.JSX.Element {
                   aria-label="TechVision – Zur Startseite"
                 >
                   <img
-                    src={HEADER_LOGO_SRC}
+                    src={headerLogo.src}
                     alt="TechVision"
-                    width={280}
-                    height={70}
+                    width={headerLogo.width}
+                    height={headerLogo.height}
                     fetchPriority="high"
                     decoding="async"
-                    className="h-11 w-auto max-w-[11rem] object-contain object-left"
+                    className="h-14 w-auto max-w-[13rem] object-contain object-left"
                   />
                 </Link>
                 <button
