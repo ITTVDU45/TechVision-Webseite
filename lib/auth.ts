@@ -1,6 +1,17 @@
 import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import bcrypt from 'bcryptjs';
 import { getNextAuthSecret } from '@/lib/auth-secret';
+
+async function verifyPasswordAgainstHash(
+  plain: string,
+  passwordHash: string | undefined
+): Promise<boolean> {
+  if (!passwordHash || typeof passwordHash !== 'string') return false;
+  if (await bcrypt.compare(plain, passwordHash)) return true;
+  if (plain !== plain.trim() && (await bcrypt.compare(plain.trim(), passwordHash))) return true;
+  return false;
+}
 
 // Demo-Login Credentials (für Entwicklung)
 const DEMO_USER = {
@@ -88,7 +99,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await User.findOne({ email: emailNorm });
+        const user = await User.findOne({ email: emailNorm }).exec();
+
+        if (process.env.AUTH_LOGIN_DEBUG === '1') {
+          console.log('[auth] login', { emailNorm, userFound: !!user });
+        }
 
         if (!user) {
           if (
@@ -106,7 +121,11 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const isPasswordValid = await user.comparePassword(passwordRaw);
+        const hash = user.password as string;
+        const isPasswordValid = await verifyPasswordAgainstHash(passwordRaw, hash);
+        if (process.env.AUTH_LOGIN_DEBUG === '1') {
+          console.log('[auth] passwordOk', isPasswordValid);
+        }
         if (!isPasswordValid) {
           return null;
         }
@@ -115,7 +134,7 @@ export const authOptions: NextAuthOptions = {
           id: user._id.toString(),
           email: user.email,
           name: user.name,
-          role: user.role,
+          role: user.role ?? 'admin',
         };
       },
     }),

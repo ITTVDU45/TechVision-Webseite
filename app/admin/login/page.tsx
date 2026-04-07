@@ -29,7 +29,10 @@ export default function LoginPage() {
         console.error('Login error:', result.error);
         if (result.error === 'Configuration') {
           setError('Server-Konfigurationsfehler. Bitte kontaktieren Sie den Administrator.');
-        } else if (result.error.includes('credentials')) {
+        } else if (
+          result.error === 'CredentialsSignin' ||
+          result.error.toLowerCase().includes('credentials')
+        ) {
           setError('Ungültige Anmeldedaten. Bitte überprüfen Sie E-Mail und Passwort.');
         } else {
           setError(`Login fehlgeschlagen: ${result.error}`);
