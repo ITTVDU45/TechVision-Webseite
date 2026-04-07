@@ -1,5 +1,6 @@
 import { type NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { getNextAuthSecret } from '@/lib/auth-secret';
 
 // Demo-Login Credentials (für Entwicklung)
 const DEMO_USER = {
@@ -9,27 +10,26 @@ const DEMO_USER = {
   role: 'admin',
 };
 
-// Stelle sicher, dass Umgebungsvariablen gesetzt sind
-// WICHTIG: NextAuth benötigt diese Variablen beim Import
-const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || 'demo-secret-key-change-in-production-min-32-chars-long';
-const NEXTAUTH_URL = process.env.NEXTAUTH_URL || (process.env.NODE_ENV === 'production' ? 'https://yourdomain.com' : 'http://localhost:3000');
+const resolvedSecret = getNextAuthSecret();
 
-// Setze process.env für NextAuth (falls nicht bereits gesetzt)
 if (!process.env.NEXTAUTH_SECRET) {
-  process.env.NEXTAUTH_SECRET = NEXTAUTH_SECRET;
+  process.env.NEXTAUTH_SECRET = resolvedSecret;
 }
 
 if (!process.env.NEXTAUTH_URL) {
-  process.env.NEXTAUTH_URL = NEXTAUTH_URL;
+  if (process.env.VERCEL_URL) {
+    process.env.NEXTAUTH_URL = `https://${process.env.VERCEL_URL}`;
+  } else if (process.env.NODE_ENV !== 'production') {
+    process.env.NEXTAUTH_URL = 'http://localhost:3000';
+  }
 }
 
-// Validiere Secret-Länge (NextAuth benötigt mindestens 32 Zeichen)
-if (NEXTAUTH_SECRET.length < 32) {
-  console.warn('⚠️  NEXTAUTH_SECRET sollte mindestens 32 Zeichen lang sein für Produktion.');
+if (resolvedSecret.length < 32 && process.env.NODE_ENV === 'production') {
+  console.warn('⚠️  NEXTAUTH_SECRET sollte mindestens 32 Zeichen lang sein (Vercel → Environment Variables).');
 }
 
-if (process.env.NODE_ENV === 'development' && !process.env.NEXTAUTH_SECRET) {
-  console.warn('⚠️  NEXTAUTH_SECRET is not set in .env.local. Using demo secret.');
+if (process.env.NODE_ENV === 'development' && !process.env.NEXTAUTH_SECRET?.trim()) {
+  console.warn('⚠️  NEXTAUTH_SECRET fehlt in .env.local – Demo-Secret aktiv.');
 }
 
 export const authOptions: NextAuthOptions = {
@@ -178,6 +178,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  secret: NEXTAUTH_SECRET,
+  secret: resolvedSecret,
   debug: process.env.NODE_ENV === "development",
 };
