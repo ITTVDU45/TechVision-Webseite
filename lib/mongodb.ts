@@ -16,10 +16,13 @@ if (!global.mongoose) {
 }
 
 async function connectDB() {
-  let MONGODB_URI = process.env.MONGODB_URI;
+  let MONGODB_URI =
+    process.env.MONGODB_URI?.trim() || process.env.MongoDB_URI?.trim();
 
   if (!MONGODB_URI) {
-    throw new Error('MongoDB is not configured. Please set MONGODB_URI in .env.local or use demo mode.');
+    throw new Error(
+      'MongoDB is not configured. Set MONGODB_URI in .env.local (see .env.example).'
+    );
   }
 
   // Validiere und repariere die URI, falls nötig

@@ -45,8 +45,11 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Please enter your email and password');
         }
 
+        const mongoUri =
+          process.env.MONGODB_URI?.trim() || process.env.MongoDB_URI?.trim();
+
         // Demo-Modus: Hardcoded Login
-        if (!process.env.MONGODB_URI) {
+        if (!mongoUri) {
           if (credentials.email === DEMO_USER.email && credentials.password === DEMO_USER.password) {
             return {
               id: 'demo-admin',
