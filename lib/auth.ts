@@ -42,15 +42,17 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Please enter your email and password');
+          return null;
         }
 
+        const emailNorm = credentials.email.trim().toLowerCase();
+        const passwordRaw = credentials.password;
         const mongoUri =
           process.env.MONGODB_URI?.trim() || process.env.MongoDB_URI?.trim();
 
         // Demo-Modus: Hardcoded Login
         if (!mongoUri) {
-          if (credentials.email === DEMO_USER.email && credentials.password === DEMO_USER.password) {
+          if (emailNorm === DEMO_USER.email && passwordRaw === DEMO_USER.password) {
             return {
               id: 'demo-admin',
               email: DEMO_USER.email,
@@ -58,64 +60,24 @@ export const authOptions: NextAuthOptions = {
               role: DEMO_USER.role,
             };
           }
-          throw new Error('Invalid credentials');
+          return null;
         }
 
-        // MongoDB-Modus: Datenbank-Login mit Demo-Fallback
+        // MongoDB: nur Verbindung im try/catch — falsche Credentials nicht als „DB-Fehler“ behandeln
+        let connectDB: () => Promise<unknown>;
+        let User: typeof import('@/lib/models/User').default;
         try {
-          const connectDB = (await import('@/lib/mongodb')).default;
-          const User = (await import('@/lib/models/User')).default;
-
+          connectDB = (await import('@/lib/mongodb')).default;
+          User = (await import('@/lib/models/User')).default;
           await connectDB();
-
-          const user = await User.findOne({ email: credentials.email });
-
-          if (!user) {
-            // Fallback auf Demo-Login, wenn kein User in DB existiert
-            if (credentials.email === DEMO_USER.email && credentials.password === DEMO_USER.password) {
-              console.log('⚠️  Kein User in DB gefunden, verwende Demo-Login als Fallback');
-              return {
-                id: 'demo-admin',
-                email: DEMO_USER.email,
-                name: DEMO_USER.name,
-                role: DEMO_USER.role,
-              };
-            }
-            throw new Error('No user found with this email');
-          }
-
-          const isPasswordValid = await user.comparePassword(credentials.password);
-
-          if (!isPasswordValid) {
-            throw new Error('Invalid password');
-          }
-
-          return {
-            id: user._id.toString(),
-            email: user.email,
-            name: user.name,
-            role: user.role,
-          };
-        } catch (error: any) {
-          console.error('Database authentication error:', error);
-          
-          // Prüfe, ob es ein MongoDB-Verbindungsfehler ist
-          const isMongoConnectionError = 
-            error?.message?.includes('Password cannot be empty') ||
-            error?.message?.includes('MongoDB') ||
-            error?.name === 'MongoInvalidArgumentError' ||
-            error?.name === 'MongoServerSelectionError';
-          
-          if (isMongoConnectionError) {
-            console.error('⚠️  MongoDB-Verbindungsfehler:', error.message);
-            console.error('💡 Tipp: Überprüfen Sie die MONGODB_URI in .env.local');
-            console.error('   Das Passwort in der URI darf nicht leer sein.');
-            console.error('   Format: mongodb+srv://user:password@cluster...');
-          }
-          
-          // Fallback auf Demo-Login bei DB-Fehlern (z.B. Verbindungsprobleme)
-          if (credentials.email === DEMO_USER.email && credentials.password === DEMO_USER.password) {
-            console.log('⚠️  DB-Fehler, verwende Demo-Login als Fallback');
+        } catch (error: unknown) {
+          const err = error as { message?: string; name?: string };
+          console.error('[auth] MongoDB-Verbindung fehlgeschlagen:', err?.message ?? error);
+          if (
+            emailNorm === DEMO_USER.email &&
+            passwordRaw === DEMO_USER.password
+          ) {
+            console.warn('[auth] Demo-Fallback wegen DB-Verbindungsfehler');
             return {
               id: 'demo-admin',
               email: DEMO_USER.email,
@@ -123,9 +85,38 @@ export const authOptions: NextAuthOptions = {
               role: DEMO_USER.role,
             };
           }
-
-          throw new Error('Authentication failed');
+          return null;
         }
+
+        const user = await User.findOne({ email: emailNorm });
+
+        if (!user) {
+          if (
+            emailNorm === DEMO_USER.email &&
+            passwordRaw === DEMO_USER.password
+          ) {
+            console.warn('[auth] Kein User in DB — Demo-Fallback');
+            return {
+              id: 'demo-admin',
+              email: DEMO_USER.email,
+              name: DEMO_USER.name,
+              role: DEMO_USER.role,
+            };
+          }
+          return null;
+        }
+
+        const isPasswordValid = await user.comparePassword(passwordRaw);
+        if (!isPasswordValid) {
+          return null;
+        }
+
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        };
       },
     }),
   ],
