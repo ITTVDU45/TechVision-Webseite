@@ -20,6 +20,10 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL("https://techvision.de"),
+  icons: {
+    icon: [{ url: "/images/techvision-logo.png", type: "image/png" }],
+    apple: "/images/techvision-logo.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -80,8 +84,8 @@ export default function RootLayout({
     <html lang="de" className={inter.className} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/images/techvision-logo.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/images/techvision-logo.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#3B82F6" />
         <meta name="mobile-web-app-capable" content="yes" />

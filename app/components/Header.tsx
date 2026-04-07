@@ -5,8 +5,7 @@ import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-/** Volles Lockup (Icon + Schrift). Datei unter public ablegen oder ersetzen. */
-const HEADER_LOGO_SRC = "/images/logo_wei_neu.png.avif";
+const HEADER_LOGO_SRC = "/images/techvision-logo.png";
 
 const solutions = [
   { name: "KI Transformation", href: "/ki-transformation", icon: "🤖", description: "Digitale Transformation mit KI" },
