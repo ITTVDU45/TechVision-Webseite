@@ -1,8 +1,12 @@
 "use client";
 import React, { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+/** Volles Lockup (Icon + Schrift). Datei unter public ablegen oder ersetzen. */
+const HEADER_LOGO_SRC = "/images/logo_wei_neu.png.avif";
 
 const solutions = [
   { name: "KI Transformation", href: "/ki-transformation", icon: "🤖", description: "Digitale Transformation mit KI" },
@@ -102,8 +106,19 @@ export default function Header(): React.JSX.Element {
           }}
         >
           <div className="flex min-h-[44px] items-center justify-between gap-3">
-            <Link href="/" className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent shrink-0">
-              TechVision
+            <Link
+              href="/"
+              className="relative block h-9 w-[9.5rem] shrink-0 sm:h-10 sm:w-[11rem] md:h-11 md:w-[12rem]"
+              aria-label="TechVision – Zur Startseite"
+            >
+              <Image
+                src={HEADER_LOGO_SRC}
+                alt="TechVision"
+                fill
+                className="object-contain object-left"
+                priority
+                sizes="(max-width: 768px) 152px, 192px"
+              />
             </Link>
 
             <nav className="hidden md:flex items-center gap-2">
@@ -279,7 +294,20 @@ export default function Header(): React.JSX.Element {
               }}
             >
               <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 py-3 pl-1 pr-0">
-                <span className="text-lg font-bold text-white">Menü</span>
+                <Link
+                  href="/"
+                  onClick={closeSidebar}
+                  className="relative block h-9 w-36 shrink-0"
+                  aria-label="TechVision – Zur Startseite"
+                >
+                  <Image
+                    src={HEADER_LOGO_SRC}
+                    alt="TechVision"
+                    fill
+                    className="object-contain object-left"
+                    sizes="144px"
+                  />
+                </Link>
                 <button
                   type="button"
                   onClick={closeSidebar}
