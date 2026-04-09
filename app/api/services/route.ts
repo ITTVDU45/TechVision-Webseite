@@ -27,6 +27,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const page = searchParams.get('page');
     const published = searchParams.get('published');
+    /** Admin: nur exakt diese page, ohne marketing-Mix (z. B. Startseiten-Karussell-Verwaltung) */
+    const exactPage = searchParams.get('exactPage') === '1' || searchParams.get('exactPage') === 'true';
 
     const query: Record<string, unknown> = {};
 
@@ -38,7 +40,9 @@ export async function GET(request: NextRequest) {
     }
 
     if (page) {
-      if (page === 'home' || page === 'marketing') {
+      if (exactPage && isAdmin) {
+        query.page = page;
+      } else if (page === 'home' || page === 'marketing') {
         query.page = { $in: ['home', 'marketing'] };
       } else {
         query.page = page;

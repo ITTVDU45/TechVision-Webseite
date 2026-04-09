@@ -1,16 +1,16 @@
 // Lade .env.local manuell
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
-const envPath = resolve(process.cwd(), '.env.local');
+const envPath = resolve(process.cwd(), ".env.local");
 try {
-  const envFile = readFileSync(envPath, 'utf-8');
-  envFile.split('\n').forEach(line => {
+  const envFile = readFileSync(envPath, "utf-8");
+  envFile.split("\n").forEach((line) => {
     const trimmedLine = line.trim();
-    if (trimmedLine && !trimmedLine.startsWith('#')) {
-      const [key, ...valueParts] = trimmedLine.split('=');
+    if (trimmedLine && !trimmedLine.startsWith("#")) {
+      const [key, ...valueParts] = trimmedLine.split("=");
       if (key && valueParts.length > 0) {
-        const value = valueParts.join('=').trim();
+        const value = valueParts.join("=").trim();
         if (!process.env[key.trim()]) {
           process.env[key.trim()] = value;
         }
@@ -18,135 +18,83 @@ try {
     }
   });
 } catch (error) {
-  console.error('❌ Fehler beim Laden von .env.local:', error);
+  console.error("❌ Fehler beim Laden von .env.local:", error);
   process.exit(1);
 }
 
-import mongoose from 'mongoose';
-import connectDB from '../lib/mongodb';
-import Service from '../lib/models/Service';
-
-// Services-Daten aus der Homepage-Komponente
-const servicesData = [
-  {
-    icon: '🤖',
-    name: 'KI-Transformation',
-    description: 'Wir analysieren Ihre Geschäftsprozesse und identifizieren Potenziale für den Einsatz von Künstlicher Intelligenz, um Effizienz und Produktivität zu steigern.',
-    page: 'ki-transformation',
-    category: 'home',
-    order: 1,
-  },
-  {
-    icon: '⚡',
-    name: 'Workflow Automatisierung',
-    description: 'Von der Planung bis zur Umsetzung integrieren wir maßgeschneiderte KI-Lösungen nahtlos in Ihre bestehenden Systeme.',
-    page: 'workflow-automation',
-    category: 'home',
-    order: 2,
-  },
-  {
-    icon: '💻',
-    name: 'Software Entwicklung',
-    description: 'Entwicklung intelligenter Softwarelösungen, die durch KI Ihre Geschäftsabläufe optimieren und automatisieren.',
-    page: 'software-development',
-    category: 'home',
-    order: 3,
-  },
-  {
-    icon: '🎯',
-    name: 'KI für Branchen',
-    description: 'Spezialisierte KI-Lösungen für verschiedene Branchen wie IT, Bauwesen und Rechtswesen, um branchenspezifische Herausforderungen zu meistern.',
-    page: 'industry-solutions',
-    category: 'home',
-    order: 4,
-  },
-  {
-    icon: '🔒',
-    name: 'Cybersecurity',
-    description: 'Umfassender Schutz und professionelles Management Ihrer IT-Systeme, von Backup-Lösungen bis hin zu sicherer Cloud-Integration und Netzwerkarchitektur.',
-    page: 'cybersecurity',
-    category: 'home',
-    order: 5,
-  },
-  {
-    icon: '🌐',
-    name: 'Webseitenentwicklung',
-    description: 'Moderne und responsive Webauftritte für Ihren professionellen Online-Auftritt.',
-    page: 'web-development',
-    category: 'home',
-    order: 6,
-  },
-  {
-    icon: '☁️',
-    name: 'Hosting',
-    description: 'Zuverlässiges Hosting für Ihre Webseiten und Softwarelösungen mit erstklassigem Support.',
-    page: 'webhosting',
-    category: 'home',
-    order: 7,
-  },
-];
+import connectDB from "../lib/mongodb";
+import Service from "../lib/models/Service";
+import {
+  DEFAULT_HOME_SERVICES,
+  HOME_SERVICES_PLACEMENT,
+} from "../lib/home-services-defaults";
 
 async function importServices() {
   try {
-    console.log('🔄 Verbinde mit MongoDB...');
+    console.log("🔄 Verbinde mit MongoDB...");
     await connectDB();
-    console.log('✅ Verbindung erfolgreich');
+    console.log("✅ Verbindung erfolgreich");
 
     let created = 0;
     let updated = 0;
     let skipped = 0;
 
-    for (const serviceData of servicesData) {
+    for (const s of DEFAULT_HOME_SERVICES) {
       try {
-        // Prüfe, ob Service bereits existiert (basierend auf name und page)
+        const payload = {
+          icon: s.icon,
+          name: s.name,
+          description: s.description,
+          order: s.order,
+          page: HOME_SERVICES_PLACEMENT,
+          link: s.link,
+          gradient: s.gradient,
+          category: "home-carousel",
+          published: true,
+        };
+
         const existing = await Service.findOne({
-          name: serviceData.name,
-          page: serviceData.page,
+          name: s.name,
+          page: HOME_SERVICES_PLACEMENT,
         });
 
         if (existing) {
-          // Update bestehenden Service
-          await Service.findByIdAndUpdate(existing._id, {
-            ...serviceData,
-            published: true,
-          });
+          await Service.findByIdAndUpdate(existing._id, payload);
           updated++;
-          console.log(`✏️  Aktualisiert: ${serviceData.name}`);
+          console.log(`✏️  Aktualisiert: ${s.name}`);
         } else {
-          // Erstelle neuen Service
-          await Service.create({
-            ...serviceData,
-            published: true,
-          });
+          await Service.create(payload);
           created++;
-          console.log(`✨ Erstellt: ${serviceData.name}`);
+          console.log(`✨ Erstellt: ${s.name}`);
         }
       } catch (error) {
-        console.error(`❌ Fehler bei ${serviceData.name}:`, error);
+        console.error(`❌ Fehler bei ${s.name}:`, error);
         skipped++;
       }
     }
 
-    console.log('\n📊 Zusammenfassung:');
+    console.log("\n📊 Zusammenfassung:");
     console.log(`   ✨ Erstellt: ${created}`);
     console.log(`   ✏️  Aktualisiert: ${updated}`);
-    console.log(`   ⏭️  Übersprungen: ${skipped}`);
-    console.log(`   📦 Gesamt: ${servicesData.length}`);
+    console.log(`   ⏭️  Fehler: ${skipped}`);
+    console.log(`   📦 Soll: ${DEFAULT_HOME_SERVICES.length}`);
 
-    // Zeige alle Services an
-    const allServices = await Service.find({ category: 'home' }).sort({ order: 1 });
-    console.log('\n📋 Alle Services in der Datenbank:');
-    allServices.forEach((s, i) => {
-      console.log(`   ${i + 1}. ${s.icon} ${s.name} (${s.page})`);
+    const allServices = await Service.find({ page: HOME_SERVICES_PLACEMENT }).sort({
+      order: 1,
+    });
+    console.log("\n📋 Services mit page=home:");
+    allServices.forEach((svc, i) => {
+      console.log(
+        `   ${i + 1}. ${svc.icon} ${svc.name} → ${svc.link || "(kein link)"} (order ${svc.order})`
+      );
     });
 
-    console.log('\n✅ Import abgeschlossen!');
+    console.log("\n✅ Import abgeschlossen!");
     process.exit(0);
   } catch (error) {
-    console.error('❌ Fehler beim Import:', error);
+    console.error("❌ Fehler beim Import:", error);
     process.exit(1);
   }
 }
 
-// Script ausführen
 importServices();

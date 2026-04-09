@@ -1,8 +1,12 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { IconX } from '@tabler/icons-react';
-import PageSelector from './PageSelector';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { IconX } from "@tabler/icons-react";
+import {
+  HOME_SERVICES_PLACEMENT,
+  HOME_SERVICE_GRADIENT_PRESETS,
+  HOME_SERVICE_LINK_PRESETS,
+} from "@/lib/home-services-defaults";
 
 interface Service {
   _id?: string;
@@ -10,6 +14,8 @@ interface Service {
   icon: string;
   description?: string;
   page: string;
+  link?: string;
+  gradient?: string;
   category?: string;
   order: number;
   published: boolean;
@@ -20,13 +26,17 @@ interface ServiceFormProps {
   onClose: () => void;
 }
 
+const defaultGradient = HOME_SERVICE_GRADIENT_PRESETS[0]?.value ?? "from-blue-400 via-blue-500 to-indigo-500";
+
 export default function ServiceForm({ service, onClose }: ServiceFormProps) {
   const [formData, setFormData] = useState<Service>({
-    name: '',
-    icon: '',
-    description: '',
-    page: 'tools',
-    category: '',
+    name: "",
+    icon: "💼",
+    description: "",
+    page: HOME_SERVICES_PLACEMENT,
+    link: "/",
+    gradient: defaultGradient,
+    category: "",
     order: 0,
     published: true,
   });
@@ -35,13 +45,27 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
   useEffect(() => {
     if (service) {
       setFormData({
-        name: service.name || '',
-        icon: service.icon || '',
-        description: service.description || '',
-        page: service.page || 'tools',
-        category: service.category || '',
+        name: service.name || "",
+        icon: service.icon || "💼",
+        description: service.description || "",
+        page: HOME_SERVICES_PLACEMENT,
+        link: service.link?.trim() || "/",
+        gradient: service.gradient?.trim() || defaultGradient,
+        category: service.category || "",
         order: service.order || 0,
         published: service.published !== undefined ? service.published : true,
+      });
+    } else {
+      setFormData({
+        name: "",
+        icon: "💼",
+        description: "",
+        page: HOME_SERVICES_PLACEMENT,
+        link: "/",
+        gradient: defaultGradient,
+        category: "",
+        order: 0,
+        published: true,
       });
     }
   }, [service]);
@@ -51,25 +75,31 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
     setLoading(true);
 
     try {
-      const url = '/api/services';
-      const method = service ? 'PUT' : 'POST';
-      const body = service ? { ...formData, _id: service._id } : formData;
+      const url = "/api/services";
+      const method = service ? "PUT" : "POST";
+      const payload = {
+        ...formData,
+        page: HOME_SERVICES_PLACEMENT,
+        link: formData.link?.trim() || "/",
+        gradient: formData.gradient?.trim() || defaultGradient,
+      };
+      const body = service ? { ...payload, _id: service._id } : payload;
 
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        credentials: 'include', // Wichtig: Cookies (Session) mitsenden
+        credentials: "include",
       });
 
       if (res.ok) {
         onClose();
       } else {
-        alert('Fehler beim Speichern');
+        alert("Fehler beim Speichern");
       }
     } catch (error) {
-      console.error('Error saving service:', error);
-      alert('Fehler beim Speichern');
+      console.error("Error saving service:", error);
+      alert("Fehler beim Speichern");
     } finally {
       setLoading(false);
     }
@@ -87,7 +117,7 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
         >
           <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-800 bg-gray-900 p-4 sm:p-6">
             <h2 className="text-xl font-bold text-white sm:text-2xl">
-              {service ? 'Service bearbeiten' : 'Neuen Service hinzufügen'}
+              {service ? "Service bearbeiten" : "Neuen Service hinzufügen"}
             </h2>
             <button
               type="button"
@@ -100,84 +130,133 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6 p-4 sm:p-6">
-            <PageSelector
-              value={formData.page}
-              onChange={(value) => setFormData({ ...formData, page: value })}
-              showAllOption={false}
-            />
+            <p className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-gray-400">
+              Dieser Eintrag erscheint im Karussell{" "}
+              <strong className="text-gray-200">„Unsere Services“</strong> auf der Startseite (
+              <code className="text-gray-300">page = home</code>).
+            </p>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Name
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Name</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 required
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Icon (Emoji oder Icon-Name)
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Icon (Emoji)
               </label>
               <input
                 type="text"
                 value={formData.icon}
                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
                 required
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="💻 oder IconBrandReact"
+                className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="🤖"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Beschreibung (optional)
-              </label>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Beschreibung</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                rows={3}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                rows={5}
+                required
+                className="w-full resize-y rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Text für die Karte im Karussell …"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Kategorie (optional)
-                </label>
-                <input
-                  type="text"
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Link (Button „Mehr dazu“)
+              </label>
+              <select
+                aria-label="Vorlage für Ziel-Link"
+                value=""
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v) setFormData((d) => ({ ...d, link: v }));
+                }}
+                className="mb-2 w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Vorlage wählen…</option>
+                {HOME_SERVICE_LINK_PRESETS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                value={formData.link}
+                onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+                required
+                className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="/ki-transformation"
+              />
+              <p className="mt-1 text-xs text-gray-500">Pfad mit führendem Slash, z. B. /webhosting</p>
+            </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Reihenfolge
-                </label>
-                <input
-                  type="number"
-                  value={formData.order}
-                  onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">
+                Farbverlauf (Tailwind-Klassen)
+              </label>
+              <select
+                value={
+                  HOME_SERVICE_GRADIENT_PRESETS.some((p) => p.value === formData.gradient)
+                    ? formData.gradient
+                    : "__custom__"
+                }
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === "__custom__") return;
+                  setFormData({ ...formData, gradient: v });
+                }}
+                className="mb-2 w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {HOME_SERVICE_GRADIENT_PRESETS.map((p) => (
+                  <option key={p.value} value={p.value}>
+                    {p.label}
+                  </option>
+                ))}
+                <option value="__custom__">Eigene Klassen (unten bearbeiten)</option>
+              </select>
+              <input
+                type="text"
+                value={formData.gradient}
+                onChange={(e) => setFormData({ ...formData, gradient: e.target.value })}
+                required
+                className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 font-mono text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="from-blue-400 via-blue-500 to-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-gray-300">Reihenfolge</label>
+              <input
+                type="number"
+                value={formData.order}
+                onChange={(e) =>
+                  setFormData({ ...formData, order: parseInt(e.target.value, 10) || 0 })
+                }
+                className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
 
             <div className="flex items-center">
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex cursor-pointer items-center gap-2">
                 <input
                   type="checkbox"
                   checked={formData.published}
                   onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-                  className="w-5 h-5 rounded border-gray-700 bg-gray-800 text-blue-600 focus:ring-2 focus:ring-blue-500"
+                  className="h-5 w-5 rounded border-gray-700 bg-gray-800 text-blue-600 focus:ring-2 focus:ring-blue-500"
                 />
                 <span className="text-gray-300">Veröffentlicht</span>
               </label>
@@ -187,16 +266,16 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white font-medium hover:bg-gray-700 transition-colors"
+                className="flex-1 rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 font-medium text-white transition-colors hover:bg-gray-700"
               >
                 Abbrechen
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-medium hover:from-blue-600 hover:to-indigo-700 transition-all disabled:opacity-50"
+                className="flex-1 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 px-4 py-3 font-medium text-white transition-all hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50"
               >
-                {loading ? 'Wird gespeichert...' : 'Speichern'}
+                {loading ? "Wird gespeichert..." : "Speichern"}
               </button>
             </div>
           </form>

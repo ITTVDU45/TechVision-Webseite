@@ -8,12 +8,12 @@ import "slick-carousel/slick/slick-theme.css";
 import { fetchServices } from '@/lib/api';
 import { usePreferLightEffects } from '@/hooks/usePreferLightEffects';
 
-type Service = { 
-  icon?: string; 
+type Service = {
+  icon?: string;
   name?: string;
-  title?: string; 
-  description: string; 
-  gradient?: string; 
+  title?: string;
+  description: string;
+  gradient?: string;
   link?: string;
   page?: string;
   published?: boolean;
@@ -74,13 +74,23 @@ export default function Services() {
           // Filtere nur veröffentlichte und konvertiere Format
           const published = apiServices
             .filter((s: Service) => s.published !== false)
-            .map((s: Service) => ({
-              icon: s.icon || '💼',
-              title: s.name || s.title || 'Service',
-              description: s.description || '',
-              gradient: s.gradient || 'from-blue-400 via-blue-500 to-indigo-500',
-              link: s.link || '#',
-            }));
+            .map((s: Service) => {
+              const raw = (s.link || "").trim();
+              const href =
+                raw === ""
+                  ? "#"
+                  : raw.startsWith("/")
+                    ? raw
+                    : `/${raw}`;
+              return {
+                icon: s.icon || "💼",
+                title: s.name || s.title || "Service",
+                description: s.description || "",
+                gradient:
+                  s.gradient || "from-blue-400 via-blue-500 to-indigo-500",
+                link: href,
+              };
+            });
           
           if (published.length > 0) {
             setServices(published);

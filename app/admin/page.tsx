@@ -59,7 +59,7 @@ export default function AdminDashboard() {
         fetch('/api/faqs').then((r) => r.ok ? r.json() : []).catch(() => []),
         fetch('/api/blogs').then((r) => r.ok ? r.json() : []).catch(() => []),
         fetch('/api/case-studies').then((r) => r.ok ? r.json() : []).catch(() => []),
-        fetch('/api/services').then((r) => r.ok ? r.json() : []).catch(() => []),
+        fetch('/api/services?page=home&exactPage=1').then((r) => r.ok ? r.json() : []).catch(() => []),
         fetch('/api/pricing').then((r) => r.ok ? r.json() : []).catch(() => []),
         fetch('/api/testimonials').then((r) => r.ok ? r.json() : []).catch(() => []),
       ]);
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
     { label: 'FAQs', value: stats.faqs, icon: IconHelp, color: 'from-blue-500 to-blue-600', href: '/admin/faqs' },
     { label: 'Blogs', value: stats.blogs, icon: IconNews, color: 'from-purple-500 to-purple-600', href: '/admin/blogs' },
     { label: 'Case Studies', value: stats.caseStudies, icon: IconBriefcase, color: 'from-green-500 to-green-600', href: '/admin/case-studies' },
-    { label: 'Services', value: stats.services, icon: IconTools, color: 'from-orange-500 to-orange-600', href: '/admin/services' },
+    { label: 'Services (Start)', value: stats.services, icon: IconTools, color: 'from-orange-500 to-orange-600', href: '/admin/services' },
     { label: 'Pricing', value: stats.pricing, icon: IconCreditCard, color: 'from-teal-500 to-teal-600', href: '/admin/pricing' },
     { label: 'Testimonials', value: stats.testimonials, icon: IconUsers, color: 'from-pink-500 to-pink-600', href: '/admin/testimonials' },
   ];

@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed:admin": "tsx scripts/create-admin-user-info.ts"
+    "seed:admin": "tsx scripts/create-admin-user-info.ts",
+    "seed:home-services": "tsx scripts/import-services.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.52",

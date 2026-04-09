@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import DataTable from '../components/DataTable';
-import ServiceForm from '../components/ServiceForm';
-import PageSelector from '../components/PageSelector';
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import DataTable from "../components/DataTable";
+import ServiceForm from "../components/ServiceForm";
+import { HOME_SERVICES_PLACEMENT } from "@/lib/home-services-defaults";
 
 interface Service {
   _id: string;
@@ -12,6 +12,8 @@ interface Service {
   icon: string;
   description?: string;
   page: string;
+  link?: string;
+  gradient?: string;
   category?: string;
   order: number;
   published: boolean;
@@ -22,49 +24,49 @@ export default function ServicesPage() {
   const router = useRouter();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPage, setSelectedPage] = useState('all');
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     if (!session) {
-      router.push('/admin/login');
+      router.push("/admin/login");
       return;
     }
     fetchServices();
-  }, [session, selectedPage]);
+  }, [session]);
 
   const fetchServices = async () => {
     try {
-      const url = selectedPage === 'all' ? '/api/services' : `/api/services?page=${selectedPage}`;
-      const res = await fetch(url);
+      const res = await fetch(
+        `/api/services?page=${HOME_SERVICES_PLACEMENT}&exactPage=1`
+      );
       const data = await res.json();
-      setServices(data);
+      setServices(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error fetching services:', error);
+      console.error("Error fetching services:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Möchten Sie diesen Service wirklich löschen?')) return;
+    if (!confirm("Möchten Sie diesen Service wirklich löschen?")) return;
 
     try {
-      const res = await fetch(`/api/services?id=${id}`, { 
-        method: 'DELETE',
-        credentials: 'include', // Wichtig: Cookies (Session) mitsenden
+      const res = await fetch(`/api/services?id=${id}`, {
+        method: "DELETE",
+        credentials: "include",
       });
       if (res.ok) {
         fetchServices();
       }
     } catch (error) {
-      console.error('Error deleting service:', error);
+      console.error("Error deleting service:", error);
     }
   };
 
-  const handleEdit = (service: Service) => {
-    setEditingService(service);
+  const handleEdit = (svc: Service) => {
+    setEditingService(svc);
     setShowForm(true);
   };
 
@@ -82,8 +84,13 @@ export default function ServicesPage() {
     <div className="p-4 sm:p-5 md:p-8">
       <div className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">Services verwalten</h1>
-          <p className="text-sm text-gray-400 sm:text-base">Verwalten Sie Services und Karten</p>
+          <h1 className="mb-2 text-2xl font-bold text-white sm:text-3xl">
+            Startseite: Unsere Services
+          </h1>
+          <p className="text-sm text-gray-400 sm:text-base">
+            Karten im Karussell unter „Unsere Services“ – immer der Startseiten-Sektion zugeordnet (
+            <code className="text-gray-500">page=home</code>).
+          </p>
         </div>
         <button
           type="button"
@@ -97,33 +104,29 @@ export default function ServicesPage() {
         </button>
       </div>
 
-      <div className="mb-6">
-        <PageSelector
-          value={selectedPage}
-          onChange={setSelectedPage}
-          label="Seite filtern"
-        />
-      </div>
-
       <DataTable
         data={services}
         columns={[
-          { key: 'name', label: 'Name' },
-          { key: 'icon', label: 'Icon' },
-          { key: 'page', label: 'Seite' },
-          { key: 'category', label: 'Kategorie' },
-          { key: 'order', label: 'Reihenfolge' },
+          { key: "order", label: "#" },
+          { key: "name", label: "Name" },
+          { key: "icon", label: "Icon" },
+          { key: "link", label: "Link (Mehr dazu)" },
+          {
+            key: "description",
+            label: "Beschreibung",
+            multilineClamp: true,
+          },
+          {
+            key: "published",
+            label: "Live",
+            render: (v: boolean) => (v ? "Ja" : "Nein"),
+          },
         ]}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
 
-      {showForm && (
-        <ServiceForm
-          service={editingService}
-          onClose={handleFormClose}
-        />
-      )}
+      {showForm && <ServiceForm service={editingService} onClose={handleFormClose} />}
     </div>
   );
 }

@@ -4,8 +4,13 @@ export interface IService extends Document {
   name: string;
   icon: string;
   description?: string;
-  page: string; // z.B. 'tools', 'web-development', 'it-infrastructure', etc.
+  /** Platzierung im CMS: Karussell auf der Startseite = "home" */
+  page: string;
   category?: string;
+  /** Ziel für „Mehr dazu“ (z. B. /ki-transformation) */
+  link?: string;
+  /** Tailwind-Gradient-Klassen für die Karte */
+  gradient?: string;
   order?: number;
   published: boolean;
   createdAt: Date;
@@ -28,6 +33,12 @@ const ServiceSchema = new Schema<IService>(
     page: {
       type: String,
       required: [true, 'Page is required'],
+    },
+    link: {
+      type: String,
+    },
+    gradient: {
+      type: String,
     },
     category: {
       type: String,

@@ -27,7 +27,7 @@ const menuItems = [
   { href: '/admin/blogs', label: 'Blogs', icon: IconNews },
   { href: '/admin/case-studies', label: 'Case Studies', icon: IconBriefcase },
   { href: '/admin/case-study-categories', label: 'Case Study Kategorien', icon: IconTags },
-  { href: '/admin/services', label: 'Services', icon: IconTools },
+  { href: '/admin/services', label: 'Unsere Services (Start)', icon: IconTools },
   { href: '/admin/pricing', label: 'Pricing', icon: IconCreditCard },
   { href: '/admin/testimonials', label: 'Testimonials', icon: IconUsers },
   { href: '/admin/pages', label: 'Seiteninhalte', icon: IconSettings },
