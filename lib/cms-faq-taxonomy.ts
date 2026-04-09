@@ -83,12 +83,16 @@ export const faqCategoryValueSchema = z.union([
   z.literal(""),
 ]);
 
+/**
+ * Schema für generateObject / OpenAI structured output:
+ * OpenAI verlangt, dass jedes Property unter `required` steht – daher kein .optional() hier.
+ */
 export const faqAiItemSchema = z.object({
   question: z.string().min(1).max(2000),
   answer: z.string().min(1).max(20000),
   page: faqPageSlugSchema,
   category: faqCategoryValueSchema,
-  order: z.number().int().min(0).max(9999).optional(),
+  order: z.number().int().min(0).max(9999),
 });
 
 export const faqAiResponseSchema = z.object({
