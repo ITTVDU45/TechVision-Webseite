@@ -102,9 +102,12 @@ export default function TestimonialForm({ testimonial, onClose }: TestimonialFor
 
           <form onSubmit={handleSubmit} className="space-y-6 p-4 sm:p-6">
             <PageSelector
-              value={formData.page || 'all'}
-              onChange={(value) => setFormData({ ...formData, page: value === 'all' ? '' : value })}
+              value={formData.page ?? ''}
+              onChange={(value) => setFormData({ ...formData, page: value })}
               label="Seite (optional)"
+              showAllOption={false}
+              includeEmptyOption
+              emptyOptionLabel="Keine / global"
             />
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

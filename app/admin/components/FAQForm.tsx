@@ -111,6 +111,7 @@ export default function FAQForm({ faq, onClose }: FAQFormProps) {
             <PageSelector
               value={formData.page}
               onChange={(value) => setFormData({ ...formData, page: value })}
+              showAllOption={false}
             />
 
             <CategorySelector

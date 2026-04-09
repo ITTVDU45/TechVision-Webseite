@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import { IconX } from '@tabler/icons-react';
+import { FAQ_PAGE_OPTIONS_FORM } from '@/lib/cms-faq-taxonomy';
 
 interface MultiPageSelectorProps {
   value: string[];
@@ -8,17 +9,7 @@ interface MultiPageSelectorProps {
   label?: string;
 }
 
-const pages = [
-  { value: 'home', label: 'Startseite' },
-  { value: 'ki-transformation', label: 'KI Transformation' },
-  { value: 'software-development', label: 'Softwareentwicklung' },
-  { value: 'workflow-automation', label: 'Workflow Automation' },
-  { value: 'cybersecurity', label: 'Cybersecurity' },
-  { value: 'tools', label: 'Tools & KI-Agenten' },
-  { value: 'webhosting', label: 'Webhosting' },
-  { value: 'it-infrastructure', label: 'IT Infrastruktur' },
-  { value: 'web-development', label: 'Webentwicklung' },
-];
+const pages = FAQ_PAGE_OPTIONS_FORM;
 
 export default function MultiPageSelector({ value = [], onChange, label = 'Seiten' }: MultiPageSelectorProps) {
   const handleToggle = (pageValue: string) => {

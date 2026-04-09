@@ -107,6 +107,7 @@ export default function PageContentForm({ content, onClose }: PageContentFormPro
             <PageSelector
               value={formData.page}
               onChange={(value) => setFormData({ ...formData, page: value })}
+              showAllOption={false}
             />
 
             <div>

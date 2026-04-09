@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import DataTable from '../components/DataTable';
 import PageSelector from '../components/PageSelector';
 import FAQForm from '../components/FAQForm';
+import FAQBulkImportDialog from '../components/FAQBulkImportDialog';
 
 interface FAQ {
   _id: string;
@@ -23,6 +24,7 @@ export default function FAQsPage() {
   const [selectedPage, setSelectedPage] = useState('all');
   const [editingFAQ, setEditingFAQ] = useState<FAQ | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
 
   useEffect(() => {
     if (!session) {
@@ -106,6 +108,11 @@ export default function FAQsPage() {
         data={faqs}
         columns={[
           { key: 'question', label: 'Frage' },
+          {
+            key: 'answer',
+            label: 'Antwort',
+            multilineClamp: true,
+          },
           { key: 'page', label: 'Seite' },
           { key: 'category', label: 'Kategorie' },
           { key: 'order', label: 'Reihenfolge' },
@@ -120,6 +127,12 @@ export default function FAQsPage() {
           onClose={handleFormClose}
         />
       )}
+
+      <FAQBulkImportDialog
+        open={showBulkImport}
+        onClose={() => setShowBulkImport(false)}
+        onSaved={fetchFAQs}
+      />
     </div>
   );
 }

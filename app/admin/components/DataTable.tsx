@@ -6,6 +6,8 @@ interface Column {
   key: string;
   label: string;
   render?: (value: any, row: any) => React.ReactNode;
+  /** Mehrzeilige Zelle mit line-clamp (statt einzeiligem truncate) */
+  multilineClamp?: boolean;
 }
 
 interface DataTableProps {
@@ -42,7 +44,13 @@ export default function DataTable({ data, columns, onEdit, onDelete }: DataTable
                   <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">
                     {column.label}
                   </div>
-                  <div className="text-sm text-gray-300 break-words">
+                  <div
+                    className={
+                      column.multilineClamp
+                        ? 'text-sm text-gray-300 break-words line-clamp-2'
+                        : 'text-sm text-gray-300 break-words'
+                    }
+                  >
                     {column.render
                       ? column.render(cellValue, row)
                       : String(cellValue || '')}
@@ -100,7 +108,18 @@ export default function DataTable({ data, columns, onEdit, onDelete }: DataTable
                   const cellValue = row[column.key];
                   return (
                     <td key={column.key} className="px-6 py-4 text-sm text-gray-300">
-                      <div className="max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl truncate">
+                      <div
+                        className={
+                          column.multilineClamp
+                            ? 'max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl whitespace-normal break-words line-clamp-2'
+                            : 'max-w-xs md:max-w-md lg:max-w-lg xl:max-w-xl truncate'
+                        }
+                        title={
+                          column.multilineClamp && typeof cellValue === 'string'
+                            ? cellValue
+                            : undefined
+                        }
+                      >
                         {column.render
                           ? column.render(cellValue, row)
                           : String(cellValue || '')}

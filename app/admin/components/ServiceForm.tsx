@@ -103,6 +103,7 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
             <PageSelector
               value={formData.page}
               onChange={(value) => setFormData({ ...formData, page: value })}
+              showAllOption={false}
             />
 
             <div>
