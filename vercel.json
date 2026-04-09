@@ -8,6 +8,10 @@
     "NODE_ENV": "production"
   },
   "functions": {
+    "app/api/faqs/process-bulk/route.ts": {
+      "maxDuration": 120,
+      "memory": 1024
+    },
     "app/api/**/*.ts": {
       "maxDuration": 30,
       "memory": 1024

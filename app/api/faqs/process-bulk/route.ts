@@ -11,6 +11,9 @@ import {
 
 export const runtime = "nodejs";
 
+/** Vercel Serverless: OpenAI structured output kann >30s brauchen (langer Rohtext). */
+export const maxDuration = 120;
+
 const MAX_RAW_CHARS = 120_000;
 const MODEL_DEFAULT = "gpt-4o-mini";
 
