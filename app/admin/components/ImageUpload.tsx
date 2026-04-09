@@ -60,11 +60,13 @@ export default function ImageUpload({
         setPreview(url || null);
       } else {
         const err = await res.json().catch(() => ({}));
-        alert(
+        const base =
           typeof err.error === "string"
             ? err.error
-            : "Fehler beim Hochladen des Bildes"
-        );
+            : "Fehler beim Hochladen des Bildes";
+        const details =
+          typeof err.details === "string" ? `\n\nTechnisch: ${err.details}` : "";
+        alert(base + details);
       }
     } catch (error) {
       console.error("Upload error:", error);

@@ -19,7 +19,7 @@ interface CaseStudy {
 }
 
 export default function CaseStudiesPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
@@ -28,22 +28,25 @@ export default function CaseStudiesPage() {
   const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    if (!session) {
+    if (status === 'loading') return;
+    if (status === 'unauthenticated') {
       router.push('/admin/login');
       return;
     }
     fetchCaseStudies();
     fetchCategories();
-  }, [session]);
+  }, [session, status, router]);
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch('/api/case-study-categories', { cache: 'no-store' });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setCategories(data);
-        }
+      const res = await fetch('/api/case-study-categories', {
+        cache: 'no-store',
+        credentials: 'include',
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setCategories(data);
       }
     } catch (error) {
       console.error('Error fetching categories:', error);
@@ -52,11 +55,20 @@ export default function CaseStudiesPage() {
 
   const fetchCaseStudies = async () => {
     try {
-      const res = await fetch('/api/case-studies');
+      const res = await fetch('/api/case-studies', {
+        cache: 'no-store',
+        credentials: 'include',
+      });
+      if (!res.ok) {
+        console.error('Error fetching case studies:', res.status, res.statusText);
+        setCaseStudies([]);
+        return;
+      }
       const data = await res.json();
-      setCaseStudies(data);
+      setCaseStudies(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching case studies:', error);
+      setCaseStudies([]);
     } finally {
       setLoading(false);
     }

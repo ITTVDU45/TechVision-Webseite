@@ -7,6 +7,14 @@ import { v4 as uuidv4 } from "uuid";
 import { extname } from "path";
 import type { StoredImageMeta, UploadContext } from "@/lib/stored-image";
 import { normalizeUploadContext } from "@/lib/stored-image";
+import {
+  ensureBucketExists,
+  formatMinioErrorForClient,
+  getMinioClient,
+  getMinioConnectionOptions,
+  getPublicUrl,
+  isMinioEndpointBlockedOnVercel,
+} from "@/lib/minio";
 
 export const runtime = "nodejs";
 
@@ -103,9 +111,17 @@ export async function POST(request: NextRequest) {
 
     if (useMinIO) {
       try {
-        const { getMinioClient, ensureBucketExists, getPublicUrl } = await import(
-          "@/lib/minio"
-        );
+        const conn = getMinioConnectionOptions();
+        if (isMinioEndpointBlockedOnVercel(conn.endPoint)) {
+          return NextResponse.json(
+            {
+              error:
+                "MinIO-Endpoint ist auf Vercel als localhost/127.0.0.1 gesetzt – das erreicht nicht Ihren Server. Tragen Sie die öffentliche Host-Adresse Ihres MinIO (oder den Proxy) in MINIO_ENDPOINT ein, z. B. storage.example.com oder https://storage.example.com",
+            },
+            { status: 503 }
+          );
+        }
+
         const BUCKET_NAME =
           process.env.MINIO_BUCKET_NAME?.trim() || "techvision-uploads";
 
@@ -135,10 +151,16 @@ export async function POST(request: NextRequest) {
         });
       } catch (error) {
         console.error("MinIO upload error:", error);
+        const showDetails =
+          process.env.NODE_ENV === "development" ||
+          process.env.MINIO_UPLOAD_DEBUG === "1" ||
+          process.env.MINIO_UPLOAD_DEBUG === "true";
+        const detail = formatMinioErrorForClient(error);
         return NextResponse.json(
           {
             error:
-              "MinIO-Upload fehlgeschlagen. Endpoint, Keys und Bucket prüfen (kein stiller Fallback).",
+              "MinIO-Upload fehlgeschlagen. Prüfen Sie MINIO_ENDPOINT (öffentlich erreichbar von Vercel), Port, MINIO_USE_SSL, Keys und Bucket. Tipp: MINIO_ENDPOINT darf auch als vollständige URL gesetzt werden.",
+            ...(showDetails ? { details: detail } : {}),
           },
           { status: 502 }
         );

@@ -4,25 +4,39 @@ import CaseStudy from '@/lib/models/CaseStudy';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 function getMongoUri(): string | undefined {
   return process.env.MONGODB_URI?.trim() || process.env.MongoDB_URI?.trim();
+}
+
+function jsonNoStore(body: unknown, init?: ResponseInit) {
+  const headers = new Headers(init?.headers);
+  headers.set('Cache-Control', 'no-store, must-revalidate');
+  return NextResponse.json(body, { ...init, headers });
 }
 
 export async function GET(request: NextRequest) {
   try {
     if (!getMongoUri()) {
-      return NextResponse.json([]);
+      return jsonNoStore([]);
     }
 
     try {
       await connectDB();
     } catch (dbError: any) {
       console.error('MongoDB connection error in case studies API:', dbError?.message);
-      return NextResponse.json([]);
+      return jsonNoStore([]);
     }
 
-    const session = await getServerSession(authOptions);
-    const isAdmin = !!session;
+    let isAdmin = false;
+    try {
+      const session = await getServerSession(authOptions);
+      isAdmin = !!session;
+    } catch (sessionError: unknown) {
+      console.error('getServerSession error in case-studies GET:', sessionError);
+    }
 
     const { searchParams } = new URL(request.url);
     const category = searchParams.get('category');
@@ -56,12 +70,13 @@ export async function GET(request: NextRequest) {
     }
 
     const caseStudies = await CaseStudy.find(query).sort({ createdAt: -1 }).lean();
+    const plain = JSON.parse(JSON.stringify(caseStudies)) as unknown[];
 
-    return NextResponse.json(caseStudies);
+    return jsonNoStore(plain);
   } catch (error: any) {
     console.error('Error fetching case studies:', error);
     // Immer ein Array zurückgeben, auch bei Fehlern
-    return NextResponse.json([]);
+    return jsonNoStore([]);
   }
 }
 
