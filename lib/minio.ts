@@ -9,6 +9,7 @@ export interface MinioConnectionOptions {
   useSSL: boolean;
   accessKey: string;
   secretKey: string;
+  region?: string;
   pathStyle: boolean;
 }
 
@@ -16,13 +17,41 @@ export interface MinioConnectionOptions {
  * Liest MINIO_* aus der Umgebung.
  * MINIO_ENDPOINT darf auch vollständige URL sein (https://s3.example.com).
  */
+/** Entfernt optionale Anführungszeichen aus .env-Werten. */
+function stripEnvQuotes(value: string): string {
+  const t = value.trim();
+  if (
+    (t.startsWith('"') && t.endsWith('"')) ||
+    (t.startsWith("'") && t.endsWith("'"))
+  ) {
+    return t.slice(1, -1).trim();
+  }
+  return t;
+}
+
+function readEnv(name: string): string {
+  return stripEnvQuotes(process.env[name]?.trim() || "");
+}
+
+function readBooleanEnv(name: string, fallback = false): boolean {
+  const raw = readEnv(name).toLowerCase();
+  if (!raw) return fallback;
+  return raw === "1" || raw === "true" || raw === "yes" || raw === "on";
+}
+
+export function getMinioBucketName(): string {
+  const name = readEnv("MINIO_BUCKET_NAME") || readEnv("MINIO_BUCKET");
+  return name || "techvision-uploads";
+}
+
 export function getMinioConnectionOptions(): MinioConnectionOptions {
-  let raw = (process.env.MINIO_ENDPOINT || "localhost").trim();
-  let useSSL = process.env.MINIO_USE_SSL === "true";
+  let raw = readEnv("MINIO_ENDPOINT") || "localhost";
+  let useSSL = readBooleanEnv("MINIO_USE_SSL");
   let port = parseInt(process.env.MINIO_PORT || "9000", 10);
-  const accessKey = process.env.MINIO_ACCESS_KEY?.trim() || "";
-  const secretKey = process.env.MINIO_SECRET_KEY?.trim() || "";
-  const pathStyle = process.env.MINIO_PATH_STYLE === "true";
+  const accessKey = readEnv("MINIO_ACCESS_KEY");
+  const secretKey = readEnv("MINIO_SECRET_KEY");
+  const region = readEnv("MINIO_REGION") || undefined;
+  const pathStyle = readBooleanEnv("MINIO_PATH_STYLE");
 
   if (/^https?:\/\//i.test(raw)) {
     try {
@@ -53,6 +82,7 @@ export function getMinioConnectionOptions(): MinioConnectionOptions {
     useSSL,
     accessKey,
     secretKey,
+    region,
     pathStyle,
   };
 }
@@ -93,6 +123,7 @@ export function getMinioClient(): Client {
     useSSL: opts.useSSL,
     accessKey: opts.accessKey,
     secretKey: opts.secretKey,
+    region: opts.region,
     pathStyle: opts.pathStyle,
   });
   minioClientKey = key;
@@ -102,14 +133,24 @@ export function getMinioClient(): Client {
 
 export async function ensureBucketExists(bucketName: string): Promise<void> {
   const client = getMinioClient();
-  const exists = await client.bucketExists(bucketName);
+  let exists = false;
+
+  try {
+    exists = await client.bucketExists(bucketName);
+  } catch (err) {
+    console.warn(
+      "[minio] bucketExists nicht möglich, Upload wird trotzdem versucht:",
+      err
+    );
+    return;
+  }
 
   if (exists) {
     return;
   }
 
   try {
-    await client.makeBucket(bucketName, "us-east-1");
+    await client.makeBucket(bucketName, getMinioConnectionOptions().region || "us-east-1");
   } catch (err: unknown) {
     const e = err as { code?: string; name?: string };
     const ok =
@@ -144,7 +185,7 @@ export async function ensureBucketExists(bucketName: string): Promise<void> {
 }
 
 export function getPublicUrl(bucketName: string, objectName: string): string {
-  const publicBase = process.env.MINIO_PUBLIC_URL?.trim();
+  const publicBase = readEnv("MINIO_PUBLIC_URL");
   if (publicBase) {
     const base = publicBase.replace(/\/$/, "");
     return `${base}/${bucketName}/${objectName}`;

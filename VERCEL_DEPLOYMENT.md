@@ -38,7 +38,7 @@ Wichtig: Die folgenden Environment Variables müssen in Vercel gesetzt werden:
 - `MINIO_ENDPOINT` - MinIO Endpoint (für File-Uploads)
 - `MINIO_ACCESS_KEY` - MinIO Access Key
 - `MINIO_SECRET_KEY` - MinIO Secret Key
-- `MINIO_BUCKET_NAME` - MinIO Bucket Name
+- `MINIO_BUCKET_NAME` oder `MINIO_BUCKET` - MinIO-Bucket-Name (beide unterstützt)
 
 ### Build-Konfiguration
 

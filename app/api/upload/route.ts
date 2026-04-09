@@ -10,6 +10,7 @@ import { normalizeUploadContext } from "@/lib/stored-image";
 import {
   ensureBucketExists,
   formatMinioErrorForClient,
+  getMinioBucketName,
   getMinioClient,
   getMinioConnectionOptions,
   getPublicUrl,
@@ -23,11 +24,8 @@ function getMongoUri(): string | undefined {
 }
 
 function isMinioConfigured(): boolean {
-  return Boolean(
-    process.env.MINIO_ENDPOINT?.trim() &&
-      process.env.MINIO_ACCESS_KEY?.trim() &&
-      process.env.MINIO_SECRET_KEY?.trim()
-  );
+  const conn = getMinioConnectionOptions();
+  return Boolean(conn.endPoint && conn.accessKey && conn.secretKey);
 }
 
 async function logMediaAsset(params: {
@@ -122,8 +120,7 @@ export async function POST(request: NextRequest) {
           );
         }
 
-        const BUCKET_NAME =
-          process.env.MINIO_BUCKET_NAME?.trim() || "techvision-uploads";
+        const BUCKET_NAME = getMinioBucketName();
 
         await ensureBucketExists(BUCKET_NAME);
         const client = getMinioClient();
