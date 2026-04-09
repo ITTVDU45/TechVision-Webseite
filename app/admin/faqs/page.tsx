@@ -85,15 +85,25 @@ export default function FAQsPage() {
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">FAQs verwalten</h1>
           <p className="text-sm md:text-base text-gray-400">Verwalten Sie häufig gestellte Fragen</p>
         </div>
-        <button
-          onClick={() => {
-            setEditingFAQ(null);
-            setShowForm(true);
-          }}
-          className="w-full md:w-auto px-4 md:px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-medium hover:from-blue-600 hover:to-indigo-700 transition-all min-h-[44px]"
-        >
-          Neue FAQ hinzufügen
-        </button>
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-end">
+          <button
+            type="button"
+            onClick={() => setShowBulkImport(true)}
+            className="w-full sm:w-auto px-4 md:px-6 py-3 rounded-lg border border-violet-500/50 text-violet-200 font-medium hover:bg-violet-500/10 transition-all min-h-[44px]"
+          >
+            Massenimport (KI)
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setEditingFAQ(null);
+              setShowForm(true);
+            }}
+            className="w-full sm:w-auto px-4 md:px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-medium hover:from-blue-600 hover:to-indigo-700 transition-all min-h-[44px]"
+          >
+            Neue FAQ hinzufügen
+          </button>
+        </div>
       </div>
 
       <div className="mb-6">
