@@ -1,34 +1,55 @@
 /** @type {import('next').NextConfig} */
+
+const remotePatterns = [
+  {
+    protocol: "http",
+    hostname: "localhost",
+    port: "3000",
+    pathname: "/**",
+  },
+  {
+    protocol: "https",
+    hostname: "via.placeholder.com",
+    pathname: "/**",
+  },
+  {
+    protocol: "http",
+    hostname: "localhost",
+    port: "9000",
+    pathname: "/**",
+  },
+];
+
+if (process.env.MINIO_PUBLIC_URL) {
+  try {
+    const u = new URL(process.env.MINIO_PUBLIC_URL);
+    const entry = {
+      protocol: u.protocol.replace(":", ""),
+      hostname: u.hostname,
+      pathname: "/**",
+    };
+    if (u.port) entry.port = u.port;
+    remotePatterns.push(entry);
+  } catch {
+    // ignorieren
+  }
+}
+
 const nextConfig = {
   outputFileTracingRoot: process.cwd(),
   images: {
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'via.placeholder.com',
-        pathname: '/**',
-      },
-    ],
+    remotePatterns,
     unoptimized: false,
   },
   trailingSlash: false,
   poweredByHeader: false,
-  // React 19 Strict Mode
   reactStrictMode: true,
-  // ESLint-Fehler sollen den Build nicht stoppen (nur Warnungen)
   eslint: {
-    ignoreDuringBuilds: true, // Ignoriere ESLint-Fehler während des Builds
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: false, // TypeScript-Fehler sollen den Build stoppen
+    ignoreBuildErrors: false,
   },
 };
 
 export default nextConfig;
-

@@ -1,4 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { storedImageMetaSchema } from '@/lib/models/storedImageMetaSchema';
+import type { StoredImageMeta } from '@/lib/stored-image';
 
 export interface IPageContent extends Document {
   page: string; // z.B. 'home', 'ki-transformation', etc.
@@ -11,7 +13,7 @@ export interface IPageContent extends Document {
   updatedAt: Date;
 }
 
-const PageContentSchema = new Schema<IPageContent>(
+const PageContentSchema = new Schema(
   {
     page: {
       type: String,
@@ -29,6 +31,12 @@ const PageContentSchema = new Schema<IPageContent>(
     },
     description: {
       type: String,
+    },
+    heroImage: {
+      type: String,
+    },
+    heroImageMeta: {
+      type: storedImageMetaSchema,
     },
     content: {
       type: Schema.Types.Mixed,

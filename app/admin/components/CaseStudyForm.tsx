@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconX, IconPlus, IconTrash } from '@tabler/icons-react';
 import ImageUpload from './ImageUpload';
+import type { StoredImageMeta } from '@/lib/stored-image';
 import MultiPageSelector from './MultiPageSelector';
 import MultiCategorySelector from './MultiCategorySelector';
 
@@ -13,6 +14,7 @@ interface CaseStudy {
   subtitle: string;
   description: string;
   image: string;
+  imageMeta?: StoredImageMeta | null;
   stats: Array<{ value: string; label: string }>;
   category?: string[];
   page?: string[];
@@ -31,6 +33,7 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
     subtitle: '',
     description: '',
     image: '',
+    imageMeta: undefined,
     stats: [],
     category: [],
     page: [],
@@ -48,6 +51,7 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
         subtitle: caseStudy.subtitle || '',
         description: caseStudy.description || '',
         image: caseStudy.image || '',
+        imageMeta: (caseStudy as { imageMeta?: StoredImageMeta }).imageMeta,
         stats: caseStudy.stats || [],
         category: Array.isArray(caseStudy.category) ? caseStudy.category : (caseStudy.category ? [caseStudy.category] : []),
         page: Array.isArray(caseStudy.page) ? caseStudy.page : (caseStudy.page ? [caseStudy.page] : []),
@@ -114,7 +118,14 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
     try {
       const url = '/api/case-studies';
       const method = caseStudy ? 'PUT' : 'POST';
-      const body = caseStudy ? { ...formData, _id: caseStudy._id } : formData;
+      const body: Record<string, unknown> = caseStudy
+        ? { ...formData, _id: caseStudy._id }
+        : { ...formData };
+      if (formData.image?.trim()) {
+        if (formData.imageMeta) body.imageMeta = formData.imageMeta;
+      } else {
+        body.imageMeta = null;
+      }
 
       console.log('Sending case study data:', JSON.stringify(body, null, 2));
 
@@ -241,9 +252,12 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
             </div>
 
             <ImageUpload
+              uploadContext="case-study"
               value={formData.image}
-              onChange={(url) => setFormData({ ...formData, image: url })}
-              label="Case Study Bild (optional)"
+              onChange={({ url, meta }) =>
+                setFormData({ ...formData, image: url, imageMeta: meta })
+              }
+              label="Case Study Bild (optional, MinIO)"
             />
 
             <MultiCategorySelector

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconX } from '@tabler/icons-react';
 import ImageUpload from './ImageUpload';
+import type { StoredImageMeta } from '@/lib/stored-image';
 import MultiPageSelector from './MultiPageSelector';
 import MultiBlogCategorySelector from './MultiBlogCategorySelector';
 
@@ -15,6 +16,7 @@ interface BlogPost {
   description: string;
   content?: string;
   image: string;
+  imageMeta?: StoredImageMeta | null;
   date: string;
   readTime: string;
   category: Array<{
@@ -41,6 +43,7 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
     description: '',
     content: '',
     image: '',
+    imageMeta: undefined,
     date: new Date().toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }),
     readTime: '5 min',
     category: [],
@@ -62,6 +65,7 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
         description: blog.description || '',
         content: (blog as any).content || '',
         image: blog.image || '',
+        imageMeta: (blog as { imageMeta?: StoredImageMeta }).imageMeta,
         date: blog.date || '',
         readTime: blog.readTime || '5 min',
         category: (() => {
@@ -151,6 +155,12 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
         tags: Array.isArray(formData.tags) ? formData.tags : [],
         published: formData.published !== undefined ? formData.published : true,
       };
+
+      if (formData.image?.trim()) {
+        if (formData.imageMeta) body.imageMeta = formData.imageMeta;
+      } else {
+        body.imageMeta = null;
+      }
       
       // Stelle sicher, dass page ein Array ist
       body.page = Array.isArray(formData.page) ? formData.page : [];
@@ -298,9 +308,12 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
 
             <div>
               <ImageUpload
+                uploadContext="blog"
                 value={formData.image}
-                onChange={(url) => setFormData({ ...formData, image: url })}
-                label="Blog-Bild (optional)"
+                onChange={({ url, meta }) =>
+                  setFormData({ ...formData, image: url, imageMeta: meta })
+                }
+                label="Blog-Bild (optional, MinIO)"
               />
               {!formData.image && (
                 <p className="text-sm text-gray-400 mt-2">ℹ️ Wenn kein Bild hochgeladen wird, wird ein Platzhalter verwendet.</p>

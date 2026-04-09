@@ -1,4 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { storedImageMetaSchema } from '@/lib/models/storedImageMetaSchema';
+import type { StoredImageMeta } from '@/lib/stored-image';
 
 export interface ICaseStat {
   value: string;
@@ -24,7 +26,7 @@ const CaseStatSchema = new Schema<ICaseStat>({
   label: { type: String, required: true },
 }, { _id: false });
 
-const CaseStudySchema = new Schema<ICaseStudy>(
+const CaseStudySchema = new Schema(
   {
     id: {
       type: String,
@@ -46,6 +48,9 @@ const CaseStudySchema = new Schema<ICaseStudy>(
     image: {
       type: String,
       default: '',
+    },
+    imageMeta: {
+      type: storedImageMetaSchema,
     },
     stats: {
       type: [CaseStatSchema],

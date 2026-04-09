@@ -203,6 +203,10 @@ export async function POST(request: NextRequest) {
       blogData.page = [];
     }
 
+    if (body.imageMeta && typeof body.imageMeta === 'object') {
+      blogData.imageMeta = body.imageMeta;
+    }
+
     // Verwende new BlogPost() statt create(), um mehr Kontrolle zu haben
     const blog = new BlogPost(blogData);
     await blog.save();
@@ -312,6 +316,9 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    const shouldUnsetImageMeta =
+      !String(updateData.image || '').trim() || updateData.imageMeta === null;
+
     // Erstelle explizites Update-Objekt
     const updateQuery: any = {
       id: updateData.id,
@@ -331,6 +338,14 @@ export async function PUT(request: NextRequest) {
     // Stelle sicher, dass page ein Array ist
     updateQuery.page = Array.isArray(updateData.page) ? updateData.page : [];
 
+    if (
+      !shouldUnsetImageMeta &&
+      updateData.imageMeta &&
+      typeof updateData.imageMeta === 'object'
+    ) {
+      updateQuery.imageMeta = updateData.imageMeta;
+    }
+
     // Prüfe, ob die ID bereits von einem anderen Blog verwendet wird
     if (updateData.id) {
       const existingBlog = await BlogPost.findOne({ id: updateData.id, _id: { $ne: _id } });
@@ -341,7 +356,16 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    const blog = await BlogPost.findByIdAndUpdate(_id, updateQuery, { new: true, runValidators: true });
+    const blog = shouldUnsetImageMeta
+      ? await BlogPost.findByIdAndUpdate(
+          _id,
+          { $set: updateQuery, $unset: { imageMeta: 1 } },
+          { new: true, runValidators: true }
+        )
+      : await BlogPost.findByIdAndUpdate(_id, updateQuery, {
+          new: true,
+          runValidators: true,
+        });
 
     if (!blog) {
       return NextResponse.json({ error: 'Blog not found' }, { status: 404 });

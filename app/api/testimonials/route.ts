@@ -81,6 +81,7 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+    if (body.imageMeta === null) delete body.imageMeta;
     const testimonial = await Testimonial.create(body);
 
     return NextResponse.json(testimonial, { status: 201 });
@@ -105,7 +106,27 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { _id, ...updateData } = body;
 
-    const testimonial = await Testimonial.findByIdAndUpdate(_id, updateData, { new: true });
+    const shouldUnsetImageMeta =
+      !String(updateData.image || "").trim() || updateData.imageMeta === null;
+
+    const payload: Record<string, unknown> = { ...updateData };
+    delete payload.imageMeta;
+
+    if (
+      !shouldUnsetImageMeta &&
+      updateData.imageMeta &&
+      typeof updateData.imageMeta === "object"
+    ) {
+      payload.imageMeta = updateData.imageMeta;
+    }
+
+    const testimonial = shouldUnsetImageMeta
+      ? await Testimonial.findByIdAndUpdate(
+          _id,
+          { $set: payload, $unset: { imageMeta: 1 } },
+          { new: true }
+        )
+      : await Testimonial.findByIdAndUpdate(_id, payload, { new: true });
 
     if (!testimonial) {
       return NextResponse.json({ error: 'Testimonial not found' }, { status: 404 });

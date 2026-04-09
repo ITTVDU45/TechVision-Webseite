@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconX } from '@tabler/icons-react';
 import ImageUpload from './ImageUpload';
+import type { StoredImageMeta } from '@/lib/stored-image';
 import PageSelector from './PageSelector';
 
 interface Testimonial {
@@ -11,6 +12,7 @@ interface Testimonial {
   company: string;
   quote: string;
   image?: string;
+  imageMeta?: StoredImageMeta | null;
   page?: string;
   order: number;
   published: boolean;
@@ -40,6 +42,7 @@ export default function TestimonialForm({ testimonial, onClose }: TestimonialFor
         company: testimonial.company || '',
         quote: testimonial.quote || '',
         image: testimonial.image || '',
+        imageMeta: (testimonial as { imageMeta?: StoredImageMeta }).imageMeta,
         page: testimonial.page || '',
         order: testimonial.order || 0,
         published: testimonial.published !== undefined ? testimonial.published : true,
@@ -54,7 +57,14 @@ export default function TestimonialForm({ testimonial, onClose }: TestimonialFor
     try {
       const url = '/api/testimonials';
       const method = testimonial ? 'PUT' : 'POST';
-      const body = testimonial ? { ...formData, _id: testimonial._id } : formData;
+      const body: Record<string, unknown> = testimonial
+        ? { ...formData, _id: testimonial._id }
+        : { ...formData };
+      if (formData.image?.trim()) {
+        if (formData.imageMeta) body.imageMeta = formData.imageMeta;
+      } else {
+        body.imageMeta = null;
+      }
 
       const res = await fetch(url, {
         method,
@@ -152,9 +162,12 @@ export default function TestimonialForm({ testimonial, onClose }: TestimonialFor
             </div>
 
             <ImageUpload
+              uploadContext="testimonial"
               value={formData.image}
-              onChange={(url) => setFormData({ ...formData, image: url })}
-              label="Bild (optional)"
+              onChange={({ url, meta }) =>
+                setFormData({ ...formData, image: url, imageMeta: meta })
+              }
+              label="Bild (optional, MinIO)"
             />
 
             <div>

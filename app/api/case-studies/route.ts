@@ -78,7 +78,8 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
-    
+    if (body.imageMeta === null) delete body.imageMeta;
+
     console.log('Received case study data:', JSON.stringify(body, null, 2));
     
     // Validierung der erforderlichen Felder
@@ -209,10 +210,28 @@ export async function PUT(request: NextRequest) {
     if (Array.isArray(updateData.page)) {
       updateData.page = updateData.page.filter((p: string) => p && p !== 'all' && p !== '');
     }
-    
-    const updateQuery: any = { ...updateData };
 
-    const caseStudy = await CaseStudy.findByIdAndUpdate(_id, updateQuery, { new: true });
+    const shouldUnsetImageMeta =
+      !String(updateData.image || "").trim() || updateData.imageMeta === null;
+
+    const updateQuery: any = { ...updateData };
+    delete updateQuery.imageMeta;
+
+    if (
+      !shouldUnsetImageMeta &&
+      updateData.imageMeta &&
+      typeof updateData.imageMeta === "object"
+    ) {
+      updateQuery.imageMeta = updateData.imageMeta;
+    }
+
+    const caseStudy = shouldUnsetImageMeta
+      ? await CaseStudy.findByIdAndUpdate(
+          _id,
+          { $set: updateQuery, $unset: { imageMeta: 1 } },
+          { new: true }
+        )
+      : await CaseStudy.findByIdAndUpdate(_id, updateQuery, { new: true });
 
     if (!caseStudy) {
       return NextResponse.json({ error: 'Case study not found' }, { status: 404 });

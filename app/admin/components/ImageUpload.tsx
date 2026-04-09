@@ -1,51 +1,74 @@
 "use client";
-import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
-import { IconUpload, IconX } from '@tabler/icons-react';
+import React, { useState, useRef, useEffect } from "react";
+import { IconUpload, IconX } from "@tabler/icons-react";
+import type { StoredImageMeta, UploadContext } from "@/lib/stored-image";
+
+export interface ImageUploadResult {
+  url: string;
+  meta?: StoredImageMeta;
+}
 
 interface ImageUploadProps {
   value?: string;
-  onChange: (url: string) => void;
+  onChange: (result: ImageUploadResult) => void;
+  /** MinIO-Pfadpräfix: blog, case-study, testimonial, page-content, general */
+  uploadContext?: UploadContext;
   label?: string;
 }
 
-export default function ImageUpload({ value, onChange, label = 'Bild hochladen' }: ImageUploadProps) {
+export default function ImageUpload({
+  value,
+  onChange,
+  uploadContext = "general",
+  label = "Bild hochladen",
+}: ImageUploadProps) {
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(value || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setPreview(value?.trim() ? value.trim() : null);
+  }, [value]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Vorschau erstellen
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreview(reader.result as string);
     };
     reader.readAsDataURL(file);
 
-    // Upload
     setUploading(true);
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
+    formData.append("context", uploadContext);
 
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
+      const res = await fetch("/api/upload", {
+        method: "POST",
         body: formData,
-        credentials: 'include', // Wichtig: Cookies (Session) mitsenden
+        credentials: "include",
       });
 
       if (res.ok) {
         const data = await res.json();
-        onChange(data.url);
+        const url = typeof data.url === "string" ? data.url : "";
+        const meta = data.meta as StoredImageMeta | undefined;
+        onChange({ url, meta });
+        setPreview(url || null);
       } else {
-        alert('Fehler beim Hochladen des Bildes');
+        const err = await res.json().catch(() => ({}));
+        alert(
+          typeof err.error === "string"
+            ? err.error
+            : "Fehler beim Hochladen des Bildes"
+        );
       }
     } catch (error) {
-      console.error('Upload error:', error);
-      alert('Fehler beim Hochladen des Bildes');
+      console.error("Upload error:", error);
+      alert("Fehler beim Hochladen des Bildes");
     } finally {
       setUploading(false);
     }
@@ -53,34 +76,40 @@ export default function ImageUpload({ value, onChange, label = 'Bild hochladen' 
 
   const handleRemove = () => {
     setPreview(null);
-    onChange('');
+    onChange({ url: "", meta: undefined });
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
   return (
     <div className="space-y-2">
-      {label && <label className="block text-sm font-medium text-gray-300">{label}</label>}
-      
+      {label && (
+        <label className="block text-sm font-medium text-gray-300">{label}</label>
+      )}
+
       {preview ? (
         <div className="relative">
-          <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded-lg border border-gray-700" />
+          <img
+            src={preview}
+            alt="Vorschau"
+            className="h-48 w-full rounded-lg border border-gray-700 object-cover"
+          />
           <button
             type="button"
             onClick={handleRemove}
-            className="absolute top-2 right-2 p-2 bg-red-600 rounded-full hover:bg-red-700 transition-colors"
+            className="absolute right-2 top-2 rounded-full bg-red-600 p-2 transition-colors hover:bg-red-700"
           >
-            <IconX className="w-4 h-4 text-white" />
+            <IconX className="h-4 w-4 text-white" />
           </button>
         </div>
       ) : (
         <div
           onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-gray-700 rounded-lg p-8 text-center cursor-pointer hover:border-gray-600 transition-colors"
+          className="cursor-pointer rounded-lg border-2 border-dashed border-gray-700 p-8 text-center transition-colors hover:border-gray-600"
         >
-          <IconUpload className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-          <p className="text-gray-400 mb-2">Klicken Sie hier, um ein Bild hochzuladen</p>
+          <IconUpload className="mx-auto mb-4 h-12 w-12 text-gray-500" />
+          <p className="mb-2 text-gray-400">Klicken Sie hier, um ein Bild hochzuladen</p>
           <p className="text-sm text-gray-500">oder ziehen Sie eine Datei hierher</p>
           <input
             ref={fileInputRef}
@@ -94,7 +123,7 @@ export default function ImageUpload({ value, onChange, label = 'Bild hochladen' 
       )}
 
       {uploading && (
-        <div className="text-sm text-blue-400">Bild wird hochgeladen...</div>
+        <div className="text-sm text-blue-400">Bild wird hochgeladen…</div>
       )}
     </div>
   );

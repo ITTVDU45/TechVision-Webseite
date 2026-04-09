@@ -1,4 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { storedImageMetaSchema } from '@/lib/models/storedImageMetaSchema';
+import type { StoredImageMeta } from '@/lib/stored-image';
 
 export interface ITestimonial extends Document {
   name: string;
@@ -12,7 +14,7 @@ export interface ITestimonial extends Document {
   updatedAt: Date;
 }
 
-const TestimonialSchema = new Schema<ITestimonial>(
+const TestimonialSchema = new Schema(
   {
     name: {
       type: String,
@@ -28,6 +30,9 @@ const TestimonialSchema = new Schema<ITestimonial>(
     },
     image: {
       type: String,
+    },
+    imageMeta: {
+      type: storedImageMetaSchema,
     },
     page: {
       type: String,

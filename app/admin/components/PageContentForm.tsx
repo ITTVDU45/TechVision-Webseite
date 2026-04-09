@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconX } from '@tabler/icons-react';
 import PageSelector from './PageSelector';
+import ImageUpload from './ImageUpload';
+import type { StoredImageMeta } from '@/lib/stored-image';
 
 interface PageContent {
   _id?: string;
@@ -11,7 +13,9 @@ interface PageContent {
   title?: string;
   subtitle?: string;
   description?: string;
-  content?: Record<string, any>;
+  heroImage?: string;
+  heroImageMeta?: StoredImageMeta | null;
+  content?: Record<string, unknown>;
 }
 
 interface PageContentFormProps {
@@ -33,6 +37,8 @@ export default function PageContentForm({ content, onClose }: PageContentFormPro
     title: '',
     subtitle: '',
     description: '',
+    heroImage: '',
+    heroImageMeta: undefined,
     content: {},
   });
   const [loading, setLoading] = useState(false);
@@ -45,6 +51,8 @@ export default function PageContentForm({ content, onClose }: PageContentFormPro
         title: content.title || '',
         subtitle: content.subtitle || '',
         description: content.description || '',
+        heroImage: content.heroImage || '',
+        heroImageMeta: content.heroImageMeta,
         content: content.content || {},
       });
     }
@@ -57,7 +65,14 @@ export default function PageContentForm({ content, onClose }: PageContentFormPro
     try {
       const url = '/api/page-content';
       const method = content ? 'PUT' : 'POST';
-      const body = content ? { ...formData, _id: content._id } : formData;
+      const body: Record<string, unknown> = content
+        ? { ...formData, _id: content._id }
+        : { ...formData };
+      if (formData.heroImage?.trim()) {
+        if (formData.heroImageMeta) body.heroImageMeta = formData.heroImageMeta;
+      } else {
+        body.heroImageMeta = null;
+      }
 
       const res = await fetch(url, {
         method,
@@ -162,6 +177,15 @@ export default function PageContentForm({ content, onClose }: PageContentFormPro
                 className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               />
             </div>
+
+            <ImageUpload
+              uploadContext="page-content"
+              value={formData.heroImage}
+              onChange={({ url, meta }) =>
+                setFormData({ ...formData, heroImage: url, heroImageMeta: meta })
+              }
+              label="Sektionsbild / Hero (optional, MinIO)"
+            />
 
             <div className="flex gap-4 pt-4">
               <button

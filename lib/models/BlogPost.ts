@@ -1,4 +1,6 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { storedImageMetaSchema } from '@/lib/models/storedImageMetaSchema';
+import type { StoredImageMeta } from '@/lib/stored-image';
 
 export interface IBlogPost extends Document {
   id: string;
@@ -22,7 +24,7 @@ export interface IBlogPost extends Document {
   updatedAt: Date;
 }
 
-const BlogPostSchema = new Schema<IBlogPost>(
+const BlogPostSchema = new Schema(
   {
     id: {
       type: String,
@@ -44,6 +46,9 @@ const BlogPostSchema = new Schema<IBlogPost>(
     image: {
       type: String,
       default: '',
+    },
+    imageMeta: {
+      type: storedImageMetaSchema,
     },
     date: {
       type: String,

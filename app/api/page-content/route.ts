@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+    if (body.heroImageMeta === null) delete body.heroImageMeta;
     const content = await PageContent.create(body);
 
     return NextResponse.json(content, { status: 201 });
@@ -82,11 +83,32 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { _id, page, section, ...updateData } = body;
 
-    const content = await PageContent.findOneAndUpdate(
-      { page, section },
-      updateData,
-      { new: true, upsert: true }
-    );
+    const shouldUnsetHeroMeta =
+      !String(updateData.heroImage || "").trim() ||
+      updateData.heroImageMeta === null;
+
+    const $set: Record<string, unknown> = { ...updateData };
+    delete $set.heroImageMeta;
+
+    if (
+      !shouldUnsetHeroMeta &&
+      updateData.heroImageMeta &&
+      typeof updateData.heroImageMeta === "object"
+    ) {
+      $set.heroImageMeta = updateData.heroImageMeta;
+    }
+
+    const content = shouldUnsetHeroMeta
+      ? await PageContent.findOneAndUpdate(
+          { page, section },
+          { $set, $unset: { heroImageMeta: 1 } },
+          { new: true, upsert: true }
+        )
+      : await PageContent.findOneAndUpdate(
+          { page, section },
+          $set,
+          { new: true, upsert: true }
+        );
 
     return NextResponse.json(content);
   } catch (error) {
