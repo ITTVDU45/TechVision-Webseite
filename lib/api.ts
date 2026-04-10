@@ -1,9 +1,10 @@
 // API Helper für Frontend-Komponenten
 // Lädt Daten aus API mit Fallback auf statische Daten
 
+/** Ohne `page`: alle FAQs (zentrale /faq-Seite). Mit `page`: nur für diese Seite (z. B. eingebettete Sektionen). */
 export async function fetchFAQs(page?: string) {
   try {
-    const url = page ? `/api/faqs?page=${page}` : '/api/faqs';
+    const url = page ? `/api/faqs?page=${encodeURIComponent(page)}` : '/api/faqs';
     const res = await fetch(url, { cache: 'no-store' });
     if (res.ok) {
       return await res.json();

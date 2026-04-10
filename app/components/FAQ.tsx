@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { fetchFAQs } from "@/lib/api";
+import Header from "./Header";
+import Footer from "./Footer";
 
 interface FAQ {
   question: string;
@@ -39,7 +41,8 @@ export default function FAQ() {
   useEffect(() => {
     const loadFAQs = async () => {
       try {
-        const apiFAQs = await fetchFAQs('faq');
+        // Kein page-Filter: auf /faq immer alle FAQs aus dem Backend (unabhängig von „Seite“ im CMS)
+        const apiFAQs = await fetchFAQs();
         if (apiFAQs && Array.isArray(apiFAQs) && apiFAQs.length > 0) {
           const sorted = apiFAQs.sort((a: FAQ, b: FAQ) => (a.order || 0) - (b.order || 0));
           setFaqs(sorted);
@@ -193,6 +196,7 @@ export default function FAQ() {
 
   return (
     <div className="min-h-screen w-full bg-black text-white">
+      <Header />
       {/* Hero Section */}
       <section className="pt-32 pb-16 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-green-950/20 to-black" />
@@ -382,6 +386,8 @@ export default function FAQ() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }
