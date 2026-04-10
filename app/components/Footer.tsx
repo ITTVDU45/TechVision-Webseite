@@ -1,6 +1,8 @@
 "use client";
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from '@/lib/site-logo';
 
 const quickLinks = [
   { name: 'Home', href: '/' },
@@ -21,7 +23,19 @@ export default function Footer(): React.JSX.Element {
       <div className="container mx-auto px-4 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
           <div className="lg:col-span-2">
-            <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent inline-block mb-4">TechVision</Link>
+            <Link
+              href="/"
+              className="relative mb-6 inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 rounded-sm"
+              aria-label="TechVision – Zur Startseite"
+            >
+              <Image
+                src={SITE_LOGO_PATH}
+                alt="TechVision"
+                width={SITE_LOGO_WIDTH}
+                height={SITE_LOGO_HEIGHT}
+                className="h-16 w-auto max-w-[min(22rem,88vw)] object-contain object-left sm:h-20 md:h-28 lg:h-32 md:max-w-[28rem] lg:max-w-[32rem]"
+              />
+            </Link>
             <p className="text-gray-400 leading-relaxed mb-6">
               Innovation trifft auf Expertise – Wir treiben die digitale Transformation mit KI, IT-Beratung und Cybersecurity-Lösungen voran.
             </p>

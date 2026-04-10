@@ -20,6 +20,9 @@ const HeroSpline = dynamic(() => import('./HeroSpline'), {
   ),
 });
 
+/** Unternehmens-Logo-Leiste unter dem Hero – vorübergehend aus; auf `true` setzen, wenn Logos/Daten aktualisiert sind. */
+const SHOW_HERO_TRUST_LOGOS = false;
+
 type Props = {
   isLoading?: boolean;
 }
@@ -209,37 +212,39 @@ export default function HeroSection({ isLoading = false }: Props) {
         </div>
       </motion.div>
 
-      {/* Floating Logo Bar */}
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 1 }}
-        className="absolute bottom-4 left-0 right-0 z-20 hidden md:flex justify-center px-8"
-      >
-        <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex items-center justify-center gap-12 md:gap-20 group relative overflow-hidden max-w-5xl w-full">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+      {SHOW_HERO_TRUST_LOGOS && (
+        /* Floating Logo Bar */
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="absolute bottom-4 left-0 right-0 z-20 hidden md:flex justify-center px-8"
+        >
+          <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex items-center justify-center gap-12 md:gap-20 group relative overflow-hidden max-w-5xl w-full">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
-          {[
-            { src: '/images/white-linqint-logo.png', alt: 'Linqint' },
-            { src: '/images/RechtlyLogo.png', alt: 'Rechtly' },
-            { src: '/images/PikoshLogo.png', alt: 'Pikosh' },
-            { src: '/images/ViusLogo.png', alt: 'Vius' },
-            { src: '/images/planenadler-logo-white.png', alt: 'Planenadler' }
-          ].map((logo, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.1, y: -2 }}
-              className="relative flex items-center justify-center"
-            >
-              <img
-                src={logo.src}
-                alt={logo.alt}
-                className="h-7 md:h-9 w-auto object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500"
-              />
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
+            {[
+              { src: '/images/white-linqint-logo.png', alt: 'Linqint' },
+              { src: '/images/RechtlyLogo.png', alt: 'Rechtly' },
+              { src: '/images/PikoshLogo.png', alt: 'Pikosh' },
+              { src: '/images/ViusLogo.png', alt: 'Vius' },
+              { src: '/images/planenadler-logo-white.png', alt: 'Planenadler' },
+            ].map((logo, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.1, y: -2 }}
+                className="relative flex items-center justify-center"
+              >
+                <img
+                  src={logo.src}
+                  alt={logo.alt}
+                  className="h-7 md:h-9 w-auto object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500"
+                />
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
       <div
         className="pointer-events-none z-[1] absolute inset-0 hidden bg-gradient-to-br from-black/40 via-black/30 to-transparent md:block"
