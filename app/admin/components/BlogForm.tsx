@@ -55,6 +55,7 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Nur bei gewechseltem Blog / Neu — nicht bei formData.title (sonst Reset bei Titel-Eingabe, Bild weg).
   useEffect(() => {
     if (blog) {
       setFormData({
@@ -69,11 +70,9 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
         date: blog.date || '',
         readTime: blog.readTime || '5 min',
         category: (() => {
-          // Wenn category bereits ein Array ist, verwende es direkt
           if (Array.isArray(blog.category)) {
             return blog.category;
           }
-          // Wenn category ein Objekt ist (altes Format), konvertiere es zu Array
           if (blog.category && typeof blog.category === 'object' && 'name' in blog.category) {
             const cat = blog.category as any;
             if (cat.name) {
@@ -85,7 +84,6 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
               }];
             }
           }
-          // Fallback: leeres Array
           return [];
         })(),
         tags: (blog as any).tags || [],
@@ -94,20 +92,25 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
           : ((blog as any).page ? [(blog as any).page] : []),
         published: blog.published !== undefined ? blog.published : true,
       });
-    } else {
-      // Generate ID and slug from title for new blog
-      const generateSlug = (title: string) => {
-        return title
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/(^-|-$)/g, '');
-      };
-      if (formData.title && !formData.id) {
-        const slug = generateSlug(formData.title);
-        setFormData((prev) => ({ ...prev, id: slug, slug: slug }));
-      }
+      return;
     }
-  }, [blog, formData.title]);
+    setFormData({
+      id: '',
+      slug: '',
+      title: '',
+      subtitle: '',
+      description: '',
+      content: '',
+      image: '',
+      imageMeta: undefined,
+      date: new Date().toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' }),
+      readTime: '5 min',
+      category: [],
+      tags: [],
+      page: [],
+      published: true,
+    });
+  }, [blog]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -311,7 +314,7 @@ export default function BlogForm({ blog, onClose }: BlogFormProps) {
                 uploadContext="blog"
                 value={formData.image}
                 onChange={({ url, meta }) =>
-                  setFormData({ ...formData, image: url, imageMeta: meta })
+                  setFormData((prev) => ({ ...prev, image: url, imageMeta: meta }))
                 }
                 label="Blog-Bild (optional, MinIO)"
               />

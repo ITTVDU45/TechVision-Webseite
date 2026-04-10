@@ -43,6 +43,8 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
   const [error, setError] = useState<string>('');
   const [newStat, setNewStat] = useState({ value: '', label: '' });
 
+  // Nur bei gewechseltem Bearbeitungsziel / Neu anlegen — nicht bei formData.title,
+  // sonst wird bei jeder Titel-Eingabe das Formular zurückgesetzt (Bild/Änderungen weg).
   useEffect(() => {
     if (caseStudy) {
       setFormData({
@@ -57,19 +59,21 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
         page: Array.isArray(caseStudy.page) ? caseStudy.page : (caseStudy.page ? [caseStudy.page] : []),
         published: caseStudy.published !== undefined ? caseStudy.published : true,
       });
-    } else {
-      // Generate ID from title for new case study
-      if (formData.title && !formData.id) {
-        const generateId = (title: string) => {
-          return title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '');
-        };
-        setFormData((prev) => ({ ...prev, id: generateId(prev.title) }));
-      }
+      return;
     }
-  }, [caseStudy, formData.title]);
+    setFormData({
+      id: '',
+      title: '',
+      subtitle: '',
+      description: '',
+      image: '',
+      imageMeta: undefined,
+      stats: [],
+      category: [],
+      page: [],
+      published: true,
+    });
+  }, [caseStudy]);
 
   const addStat = () => {
     if (newStat.value && newStat.label) {
@@ -265,7 +269,7 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
               uploadContext="case-study"
               value={formData.image}
               onChange={({ url, meta }) =>
-                setFormData({ ...formData, image: url, imageMeta: meta })
+                setFormData((prev) => ({ ...prev, image: url, imageMeta: meta }))
               }
               label="Case Study Bild (optional, MinIO)"
             />

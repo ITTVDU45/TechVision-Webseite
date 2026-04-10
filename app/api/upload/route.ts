@@ -24,8 +24,10 @@ function getMongoUri(): string | undefined {
 }
 
 function isMinioConfigured(): boolean {
+  const rawEndpoint = process.env.MINIO_ENDPOINT?.trim();
+  if (!rawEndpoint) return false;
   const conn = getMinioConnectionOptions();
-  return Boolean(conn.endPoint && conn.accessKey && conn.secretKey);
+  return Boolean(conn.accessKey && conn.secretKey);
 }
 
 async function logMediaAsset(params: {
