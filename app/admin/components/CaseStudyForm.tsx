@@ -118,10 +118,12 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
     try {
       const url = '/api/case-studies';
       const method = caseStudy ? 'PUT' : 'POST';
+      const resolvedImage =
+        formData.image?.trim() || formData.imageMeta?.url?.trim() || '';
       const body: Record<string, unknown> = caseStudy
-        ? { ...formData, _id: caseStudy._id }
-        : { ...formData };
-      if (formData.image?.trim()) {
+        ? { ...formData, image: resolvedImage, _id: caseStudy._id }
+        : { ...formData, image: resolvedImage };
+      if (resolvedImage) {
         if (formData.imageMeta) body.imageMeta = formData.imageMeta;
       } else {
         body.imageMeta = null;
@@ -246,9 +248,17 @@ export default function CaseStudyForm({ caseStudy, onClose }: CaseStudyFormProps
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 required
-                rows={4}
+                rows={12}
+                placeholder={"Schreiben Sie die Case Study mit Abschnitten.\n\nBeispiel:\nAusgangslage\nKurze Einleitung...\n\nHerausforderungen\n- Punkt 1\n- Punkt 2\n\nErgebnisse\nZeitersparnis: 40%\nBessere Planung: zentrale Disposition"}
                 className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y text-base"
               />
+              <p className="mt-2 text-sm text-gray-400">
+                Tipp: Überschriften in eine eigene Zeile schreiben. Zeilen mit
+                <code className="mx-1 rounded bg-gray-800 px-1.5 py-0.5 text-xs text-gray-200">Titel: Inhalt</code>
+                oder
+                <code className="mx-1 rounded bg-gray-800 px-1.5 py-0.5 text-xs text-gray-200">- Listenpunkt</code>
+                werden im Frontend automatisch strukturierter dargestellt.
+              </p>
             </div>
 
             <ImageUpload

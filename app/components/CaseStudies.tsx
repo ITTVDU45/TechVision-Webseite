@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import Image from "next/image";
+import type { StoredImageMeta } from "@/lib/stored-image";
 import { categorizedCases } from "../data/caseStudies";
 import { fetchCaseStudies } from "@/lib/api";
 import { usePreferLightEffects } from "@/hooks/usePreferLightEffects";
@@ -13,6 +13,7 @@ interface CaseStudy {
   subtitle?: string;
   description: string;
   image?: string;
+  imageMeta?: StoredImageMeta | null;
   category?: string | string[];
   stats?: Array<{ value: string; label: string }>;
   id: string; // Required, nicht optional
@@ -75,16 +76,16 @@ const CaseStudies: React.FC<CaseStudiesProps> = ({ apiPage }) => {
     if (apiCaseStudies.length > 0) {
       const grouped: Record<string, Array<{ id: string; title: string; subtitle: string; description: string; image: string; stats: Array<{ value: string; label: string }> }>> = {};
       apiCaseStudies.forEach((cs) => {
-        // Stelle sicher, dass id immer ein string ist
-        const caseId = cs._id || cs.id || Math.random().toString();
-        if (!caseId) return; // Skip wenn keine ID
+        // Frontend-Routen sollen immer die fachliche slug/id nutzen, nicht die MongoDB _id.
+        const caseId = typeof cs.id === "string" ? cs.id.trim() : "";
+        if (!caseId) return;
         
         // Unterstütze sowohl Array als auch String (für Rückwärtskompatibilität)
         const categories = Array.isArray(cs.category) ? cs.category : (cs.category ? [cs.category] : []);
         
         // Stelle sicher, dass subtitle immer ein string ist (required für CaseStudy)
         const subtitle = cs.subtitle || '';
-        const image = cs.image || '';
+        const image = cs.image || cs.imageMeta?.url || '';
         
         // Wenn keine Kategorien, verwende 'software' als Standard
         if (categories.length === 0) {
@@ -216,11 +217,10 @@ const CaseStudies: React.FC<CaseStudiesProps> = ({ apiPage }) => {
                 <Link href={`/case-studies/${caseItem.id}`} className="group block h-full">
                   <div className="relative h-52 overflow-hidden">
                     {caseItem.image ? (
-                      <Image
+                      <img
                         src={caseItem.image}
                         alt={caseItem.title}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
                       <div className="h-full w-full bg-gradient-to-br from-blue-600/30 via-indigo-600/20 to-transparent" />

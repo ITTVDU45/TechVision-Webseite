@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { caseStudies, categorizedCases, categories as caseStudyCategories } from "../data/caseStudies";
 import Script from "next/script";
@@ -19,8 +18,124 @@ type CaseStudy = {
   results?: string[];
 };
 
-export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
-  const others = Object.values(caseStudies).filter((c) => c.id !== data.id) as CaseStudy[];
+type ContentBlock =
+  | { type: "paragraph"; text: string }
+  | { type: "list"; items: string[] }
+  | { type: "facts"; items: Array<{ label: string; text: string }> };
+
+type ContentSection = {
+  heading?: string;
+  blocks: ContentBlock[];
+};
+
+function isHeadingLine(line: string, nextLine?: string): boolean {
+  if (!line || !nextLine) return false;
+  if (line.includes(":")) return false;
+  if (/[.!?]$/.test(line)) return false;
+  const words = line.split(/\s+/).filter(Boolean);
+  return words.length > 0 && words.length <= 8 && line.length <= 72;
+}
+
+function splitCaseStudyContent(text: string | undefined): ContentSection[] {
+  const lines = (text || "")
+    .replace(/\r\n/g, "\n")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const sections: ContentSection[] = [];
+  let current: ContentSection = { blocks: [] };
+
+  const pushSection = () => {
+    if (current.heading || current.blocks.length > 0) {
+      sections.push(current);
+    }
+    current = { blocks: [] };
+  };
+
+  const pushParagraph = (value: string) => {
+    current.blocks.push({ type: "paragraph", text: value });
+  };
+
+  const pushList = (items: string[]) => {
+    current.blocks.push({ type: "list", items });
+  };
+
+  const pushFacts = (items: Array<{ label: string; text: string }>) => {
+    current.blocks.push({ type: "facts", items });
+  };
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    const nextLine = lines[index + 1];
+
+    if (isHeadingLine(line, nextLine)) {
+      pushSection();
+      current.heading = line;
+      continue;
+    }
+
+    if (/^[-*•]\s+/.test(line)) {
+      const items: string[] = [];
+      let cursor = index;
+      while (cursor < lines.length && /^[-*•]\s+/.test(lines[cursor])) {
+        items.push(lines[cursor].replace(/^[-*•]\s+/, "").trim());
+        cursor += 1;
+      }
+      pushList(items);
+      index = cursor - 1;
+      continue;
+    }
+
+    if (/^\d+\.\s+/.test(line)) {
+      const items: string[] = [];
+      let cursor = index;
+      while (cursor < lines.length && /^\d+\.\s+/.test(lines[cursor])) {
+        items.push(lines[cursor].replace(/^\d+\.\s+/, "").trim());
+        cursor += 1;
+      }
+      pushList(items);
+      index = cursor - 1;
+      continue;
+    }
+
+    const factMatch = line.match(/^([^:]{2,80}):\s+(.+)$/);
+    if (factMatch) {
+      const items: Array<{ label: string; text: string }> = [];
+      let cursor = index;
+      while (cursor < lines.length) {
+        const match = lines[cursor].match(/^([^:]{2,80}):\s+(.+)$/);
+        if (!match) break;
+        items.push({ label: match[1].trim(), text: match[2].trim() });
+        cursor += 1;
+      }
+      pushFacts(items);
+      index = cursor - 1;
+      continue;
+    }
+
+    pushParagraph(line);
+  }
+
+  pushSection();
+  return sections.length > 0 ? sections : [{ blocks: [{ type: "paragraph", text: text || "" }] }];
+}
+
+export default function CaseStudyTemplate({
+  data,
+  othersOverride,
+}: {
+  data: CaseStudy;
+  /** Wenn gesetzt (z. B. aus MongoDB), statt statischer „Weitere Projekte“-Liste. */
+  othersOverride?: CaseStudy[];
+}) {
+  let others: CaseStudy[] = othersOverride
+    ? othersOverride.filter((c) => c.id !== data.id)
+    : (Object.values(caseStudies).filter((c) => c.id !== data.id) as CaseStudy[]);
+
+  if (othersOverride && others.length === 0) {
+    others = Object.values(caseStudies).filter((c) => c.id !== data.id) as CaseStudy[];
+  }
   const currentCategoryId =
     Object.entries(categorizedCases).find(([, items]) => items.some((item) => item.id === data.id))?.[0] ?? null;
   const currentCategoryName =
@@ -37,6 +152,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
         .filter((value) => value.length >= 3)
     )
   ).slice(0, 10);
+  const contentSections = splitCaseStudyContent(data.description || data.summary || "");
 
   // helper: render gallery - special layout for cms-webentwicklung (2x2)
   const renderGallery = () => {
@@ -47,7 +163,7 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
       <div className={gridClass}>
         {imgs.map((src, i) => (
           <div key={i} className="w-full aspect-[4/3] relative rounded-lg overflow-hidden">
-            <Image src={src} alt={`${data.title} ${i}`} fill className="object-cover" />
+            <img src={src} alt={`${data.title} ${i}`} className="h-full w-full object-cover" />
           </div>
         ))}
       </div>
@@ -87,7 +203,11 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
             {(data.heroImage || data.image) && (
               <div className="w-full h-80 relative rounded-2xl overflow-hidden mb-8 glass">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-700/10 via-indigo-700/6 to-transparent" />
-                <Image src={data.heroImage || data.image || ''} alt={data.title} fill className="object-cover transition-transform duration-700 ease-out hover:scale-105" />
+                <img
+                  src={data.heroImage || data.image || ""}
+                  alt={data.title}
+                  className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-105"
+                />
               </div>
             )}
           </div>
@@ -98,30 +218,93 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
         <section className="py-16" aria-labelledby="cs-summary-title">
           <div className="container mx-auto px-4">
             <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-              <div className="prose prose-invert max-w-none">
-                <h2 id="cs-summary-title">Zusammenfassung</h2>
-                <p>{data.description || data.summary || ''}</p>
+              <div className="space-y-10">
+                <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-2xl shadow-black/20 backdrop-blur-xl md:p-8">
+                  <h2 id="cs-summary-title" className="mb-6 text-2xl font-semibold text-white">
+                    Zusammenfassung
+                  </h2>
+                  <div className="space-y-8">
+                    {contentSections.map((section, sectionIndex) => (
+                      <section key={`${section.heading || "section"}-${sectionIndex}`} className="space-y-5">
+                        {section.heading && (
+                          <div className="border-l-2 border-blue-500/70 pl-4">
+                            <h3 className="text-xl font-semibold text-white">{section.heading}</h3>
+                          </div>
+                        )}
+                        {section.blocks.map((block, blockIndex) => {
+                          if (block.type === "paragraph") {
+                            return (
+                              <p
+                                key={`paragraph-${blockIndex}`}
+                                className="max-w-none text-base leading-8 text-gray-300 md:text-lg"
+                              >
+                                {block.text}
+                              </p>
+                            );
+                          }
+
+                          if (block.type === "list") {
+                            return (
+                              <ul key={`list-${blockIndex}`} className="grid gap-3">
+                                {block.items.map((item, itemIndex) => (
+                                  <li
+                                    key={`item-${itemIndex}`}
+                                    className="rounded-2xl border border-white/8 bg-black/30 px-4 py-3 text-sm leading-7 text-gray-300 md:text-base"
+                                  >
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            );
+                          }
+
+                          return (
+                            <div key={`facts-${blockIndex}`} className="grid gap-3">
+                              {block.items.map((item, itemIndex) => (
+                                <div
+                                  key={`fact-${itemIndex}`}
+                                  className="rounded-2xl border border-blue-500/15 bg-blue-500/[0.06] p-4"
+                                >
+                                  <h4 className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-blue-300">
+                                    {item.label}
+                                  </h4>
+                                  <p className="text-sm leading-7 text-gray-300 md:text-base">
+                                    {item.text}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          );
+                        })}
+                      </section>
+                    ))}
+                  </div>
+                </section>
 
                 {data.challenges && (
-                  <>
-                    <h3>Herausforderungen</h3>
-                    <ul>
+                  <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl md:p-8">
+                    <h3 className="mb-4 text-xl font-semibold text-white">Herausforderungen</h3>
+                    <ul className="grid gap-3">
                       {data.challenges.map((c, i) => (
-                        <li key={i} className="mb-2">{c}</li>
+                        <li key={i} className="rounded-2xl border border-white/8 bg-black/30 px-4 py-3 text-gray-300">
+                          {c}
+                        </li>
                       ))}
                     </ul>
-                  </>
+                  </section>
                 )}
 
                 {data.results && (
-                  <>
-                    <h3>Ergebnisse</h3>
-                    <ul>
+                  <section className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl md:p-8">
+                    <h3 className="mb-4 text-xl font-semibold text-white">Ergebnisse</h3>
+                    <ul className="grid gap-3">
                       {data.results.map((r, i) => (
-                        <li key={i} className="mb-2">{r}</li>
+                        <li key={i} className="rounded-2xl border border-white/8 bg-black/30 px-4 py-3 text-gray-300">
+                          {r}
+                        </li>
                       ))}
                     </ul>
-                  </>
+                  </section>
                 )}
 
                 {renderGallery()}
@@ -206,7 +389,13 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
                     aria-label={`Öffne Case Study ${o.title}`}
                   >
                     <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
-                      {(o.heroImage || o.image) && <Image src={o.heroImage || o.image || ''} alt={o.title} fill className="object-cover" />}
+                      {(o.heroImage || o.image) && (
+                        <img
+                          src={o.heroImage || o.image || ""}
+                          alt={o.title}
+                          className="h-full w-full object-cover"
+                        />
+                      )}
                     </div>
                     <h3 className="text-xl font-semibold mb-1">{o.title}</h3>
                     {o.subtitle && <p className="text-sm text-gray-400 mb-2">{o.subtitle}</p>}
@@ -221,5 +410,4 @@ export default function CaseStudyTemplate({ data }: { data: CaseStudy }) {
     </div>
   );
 }
-
 
