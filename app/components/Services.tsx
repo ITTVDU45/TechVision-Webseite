@@ -21,8 +21,9 @@ type Service = {
   image?: string;
 };
 
+/** NFD: passt zu macOS-Dateinamen (z. B. „ä“ als a + Kombinierzeichen), sonst 404 trotz korrektem Dateinamen. */
 function publicImageFile(name: string): string {
-  return `/images/${encodeURIComponent(name)}`;
+  return `/images/${encodeURIComponent(name.normalize("NFD"))}`;
 }
 
 const staticServices: Service[] = [
@@ -33,7 +34,7 @@ const staticServices: Service[] = [
       "Wir analysieren Ihre Geschäftsprozesse und identifizieren Potenziale für den Einsatz von Künstlicher Intelligenz, um Effizienz und Produktivität zu steigern.",
     gradient: "from-blue-400 via-blue-500 to-indigo-500",
     link: "/ki-transformation",
-    image: publicImageFile("Futuristische KI und Industrievernetzung.png"),
+    image: publicImageFile("AI-basierte Geschäftsvernetzung in der Zukunft.png"),
   },
   {
     icon: "⚡",
@@ -60,7 +61,7 @@ const staticServices: Service[] = [
       "Spezialisierte KI-Lösungen für verschiedene Branchen wie IT, Bauwesen und Rechtswesen, um branchenspezifische Herausforderungen zu meistern.",
     gradient: "from-blue-500 via-indigo-500 to-purple-500",
     link: "/industry-solutions",
-    image: publicImageFile("AI-basierte Geschäftsvernetzung in der Zukunft.png"),
+    image: publicImageFile("Futuristische KI und Industrievernetzung.png"),
   },
   {
     icon: "🔒",
@@ -87,6 +88,30 @@ const staticServices: Service[] = [
   },
 ];
 
+/** Gleicher Pfad wie aus dem CMS (z. B. /ki-transformation) */
+function normalizeServicePath(raw: string): string {
+  const t = raw.trim();
+  if (!t || t === "#") return "";
+  const withSlash = t.startsWith("/") ? t : `/${t}`;
+  const noTrail = withSlash.replace(/\/+$/, "");
+  return noTrail || "/";
+}
+
+function staticFallbackForApiService(
+  href: string,
+  apiName?: string,
+  apiTitle?: string
+): Service | undefined {
+  const norm = normalizeServicePath(href === "#" ? "" : href);
+  const byLink = staticServices.find(
+    (st) => normalizeServicePath(st.link || "") === norm
+  );
+  if (byLink) return byLink;
+  const label = (apiName || apiTitle || "").trim();
+  if (!label) return undefined;
+  return staticServices.find((st) => (st.title || "").trim() === label);
+}
+
 function resolveServiceImageUrl(s: Service): string | undefined {
   const u = s.image?.trim();
   if (u) return u;
@@ -100,16 +125,16 @@ function ServiceCardMedia({ service }: { service: Service }) {
 
   if (src) {
     return (
-      <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-neutral-900">
+      <div className="relative h-44 w-full shrink-0 overflow-hidden rounded-t-2xl bg-neutral-900 sm:h-48 md:h-52">
         <Image
           src={src}
           alt={alt}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover"
+          className="object-cover object-center"
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
           aria-hidden
         />
       </div>
@@ -118,7 +143,7 @@ function ServiceCardMedia({ service }: { service: Service }) {
 
   return (
     <div
-      className={`relative flex aspect-[16/10] w-full shrink-0 items-center justify-center bg-gradient-to-br ${g} text-5xl text-white/95 shadow-inner`}
+      className={`relative flex h-44 w-full shrink-0 items-center justify-center rounded-t-2xl bg-gradient-to-br ${g} text-5xl text-white/95 shadow-inner sm:h-48 md:h-52`}
       aria-hidden
     >
       <span>{service.icon || "💼"}</span>
@@ -137,7 +162,7 @@ function ServiceSlide({
 
   const cardInner = (
     <div
-      className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-white/10 shadow-2xl transition-colors duration-300 ${
+      className={`relative flex h-full min-h-[480px] w-full flex-col overflow-hidden rounded-2xl border border-white/10 shadow-2xl transition-colors duration-300 md:min-h-[540px] ${
         preferLightEffects
           ? "bg-neutral-950/90 group-hover:border-white/20 group-hover:bg-neutral-900/95"
           : "bg-white/[0.03] backdrop-blur-xl group-hover:border-white/20 group-hover:bg-white/[0.05]"
@@ -150,16 +175,18 @@ function ServiceSlide({
 
       <ServiceCardMedia service={service} />
 
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col p-6 md:p-8">
-        <h3 className="mb-3 text-xl font-bold text-white transition-all group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 group-hover:bg-clip-text group-hover:text-transparent md:text-2xl">
+      <div className="relative z-10 flex min-h-0 flex-1 flex-col border-t border-white/10 bg-black/90 px-6 pb-6 pt-5 md:px-8 md:pb-8 md:pt-6">
+        <h3 className="mb-3 shrink-0 text-xl font-bold leading-snug text-white md:text-2xl">
           {service.title}
         </h3>
 
-        <p className="mb-6 line-clamp-4 flex-grow leading-relaxed text-gray-400 transition-colors group-hover:text-gray-300">
-          {service.description}
-        </p>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <p className="text-sm leading-relaxed text-gray-300 md:text-base">
+            {service.description}
+          </p>
+        </div>
 
-        <div className="mt-auto">
+        <div className="mt-5 shrink-0">
           <Link href={service.link ?? "/"} className="block">
             {preferLightEffects ? (
               <button
@@ -193,7 +220,7 @@ function ServiceSlide({
 
   if (preferLightEffects) {
     return (
-      <div className="group relative min-h-[420px] md:h-[520px] md:min-h-0">
+      <div className="group relative h-full min-h-[480px] md:min-h-[540px]">
         <div
           className={`absolute -inset-2 rounded-2xl bg-gradient-to-r ${g} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20`}
           aria-hidden
@@ -205,7 +232,7 @@ function ServiceSlide({
 
   return (
     <motion.div
-      className="group relative h-[520px]"
+      className="group relative h-full min-h-[480px] md:min-h-[540px]"
       whileHover={{ y: -5 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
@@ -271,12 +298,18 @@ export default function Services() {
                 (typeof s.image === "string" && s.image.trim()) ||
                 (s.imageMeta?.url && String(s.imageMeta.url).trim()) ||
                 undefined;
+              const fallback = staticFallbackForApiService(href, s.name, s.title);
+              const descFromApi =
+                typeof s.description === "string" ? s.description.trim() : "";
               return {
-                icon: s.icon || "💼",
-                image: img,
-                title: s.name || s.title || "Service",
-                description: s.description || "",
-                gradient: s.gradient || "from-blue-400 via-blue-500 to-indigo-500",
+                icon: s.icon || fallback?.icon || "💼",
+                image: img || fallback?.image,
+                title: (s.name || s.title || fallback?.title || "Service").trim(),
+                description: descFromApi || fallback?.description || "",
+                gradient:
+                  (s.gradient && s.gradient.trim()) ||
+                  fallback?.gradient ||
+                  "from-blue-400 via-blue-500 to-indigo-500",
                 link: href,
               };
             });

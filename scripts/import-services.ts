@@ -49,6 +49,7 @@ async function importServices() {
           page: HOME_SERVICES_PLACEMENT,
           link: s.link,
           gradient: s.gradient,
+          ...(s.image ? { image: s.image } : {}),
           category: "home-carousel",
           published: true,
         };
