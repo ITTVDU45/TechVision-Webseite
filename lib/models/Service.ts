@@ -1,8 +1,13 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { storedImageMetaSchema } from '@/lib/models/storedImageMetaSchema';
+import type { StoredImageMeta } from '@/lib/stored-image';
 
 export interface IService extends Document {
   name: string;
   icon: string;
+  /** Kartenbild (URL, z. B. /images/… oder MinIO) */
+  image?: string;
+  imageMeta?: StoredImageMeta;
   description?: string;
   /** Platzierung im CMS: Karussell auf der Startseite = "home" */
   page: string;
@@ -25,7 +30,14 @@ const ServiceSchema = new Schema<IService>(
     },
     icon: {
       type: String,
-      required: [true, 'Icon is required'],
+      default: '💼',
+    },
+    image: {
+      type: String,
+      default: '',
+    },
+    imageMeta: {
+      type: storedImageMetaSchema,
     },
     description: {
       type: String,

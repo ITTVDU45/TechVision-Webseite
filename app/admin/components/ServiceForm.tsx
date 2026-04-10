@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IconX } from "@tabler/icons-react";
+import ImageUpload from "./ImageUpload";
+import type { StoredImageMeta } from "@/lib/stored-image";
 import {
   HOME_SERVICES_PLACEMENT,
   HOME_SERVICE_GRADIENT_PRESETS,
@@ -12,6 +14,8 @@ interface Service {
   _id?: string;
   name: string;
   icon: string;
+  image?: string;
+  imageMeta?: StoredImageMeta | null;
   description?: string;
   page: string;
   link?: string;
@@ -28,18 +32,22 @@ interface ServiceFormProps {
 
 const defaultGradient = HOME_SERVICE_GRADIENT_PRESETS[0]?.value ?? "from-blue-400 via-blue-500 to-indigo-500";
 
+const emptyForm: Service = {
+  name: "",
+  icon: "💼",
+  image: "",
+  imageMeta: undefined,
+  description: "",
+  page: HOME_SERVICES_PLACEMENT,
+  link: "/",
+  gradient: defaultGradient,
+  category: "",
+  order: 0,
+  published: true,
+};
+
 export default function ServiceForm({ service, onClose }: ServiceFormProps) {
-  const [formData, setFormData] = useState<Service>({
-    name: "",
-    icon: "💼",
-    description: "",
-    page: HOME_SERVICES_PLACEMENT,
-    link: "/",
-    gradient: defaultGradient,
-    category: "",
-    order: 0,
-    published: true,
-  });
+  const [formData, setFormData] = useState<Service>(emptyForm);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -47,6 +55,8 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
       setFormData({
         name: service.name || "",
         icon: service.icon || "💼",
+        image: service.image || "",
+        imageMeta: service.imageMeta ?? undefined,
         description: service.description || "",
         page: HOME_SERVICES_PLACEMENT,
         link: service.link?.trim() || "/",
@@ -56,17 +66,7 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
         published: service.published !== undefined ? service.published : true,
       });
     } else {
-      setFormData({
-        name: "",
-        icon: "💼",
-        description: "",
-        page: HOME_SERVICES_PLACEMENT,
-        link: "/",
-        gradient: defaultGradient,
-        category: "",
-        order: 0,
-        published: true,
-      });
+      setFormData({ ...emptyForm });
     }
   }, [service]);
 
@@ -75,17 +75,30 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
     setLoading(true);
 
     try {
-      const url = "/api/services";
       const method = service ? "PUT" : "POST";
-      const payload = {
-        ...formData,
+      const resolvedImage =
+        formData.image?.trim() || formData.imageMeta?.url?.trim() || "";
+      const payload: Record<string, unknown> = {
+        name: formData.name,
+        icon: formData.icon || "💼",
+        description: formData.description,
         page: HOME_SERVICES_PLACEMENT,
         link: formData.link?.trim() || "/",
         gradient: formData.gradient?.trim() || defaultGradient,
+        category: formData.category,
+        order: formData.order,
+        published: formData.published,
+        image: resolvedImage,
       };
+      if (resolvedImage) {
+        if (formData.imageMeta) payload.imageMeta = formData.imageMeta;
+      } else {
+        payload.imageMeta = null;
+      }
+
       const body = service ? { ...payload, _id: service._id } : payload;
 
-      const res = await fetch(url, {
+      const res = await fetch("/api/services", {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -133,7 +146,9 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
             <p className="rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm text-gray-400">
               Dieser Eintrag erscheint im Karussell{" "}
               <strong className="text-gray-200">„Unsere Services“</strong> auf der Startseite (
-              <code className="text-gray-300">page = home</code>).
+              <code className="text-gray-300">page = home</code>). Optional ein{" "}
+              <strong className="text-gray-200">Kartenbild</strong> (volle Breite oben); ohne Bild
+              wird das Icon als Fallback angezeigt.
             </p>
 
             <div>
@@ -147,15 +162,23 @@ export default function ServiceForm({ service, onClose }: ServiceFormProps) {
               />
             </div>
 
+            <ImageUpload
+              uploadContext="service"
+              value={formData.image}
+              onChange={({ url, meta }) =>
+                setFormData((prev) => ({ ...prev, image: url, imageMeta: meta }))
+              }
+              label="Kartenbild (optional, empfohlen)"
+            />
+
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-300">
-                Icon (Emoji)
+                Icon (Emoji, Fallback ohne Bild)
               </label>
               <input
                 type="text"
                 value={formData.icon}
                 onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
-                required
                 className="w-full rounded-lg border border-gray-700 bg-gray-800 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="🤖"
               />

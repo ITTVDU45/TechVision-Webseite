@@ -283,7 +283,7 @@ export default function Header(): React.JSX.Element {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "tween", duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed top-0 right-0 z-[160] flex h-[100dvh] w-full max-w-[min(100%,22rem)] flex-col border-l border-white/15 bg-neutral-950/95 shadow-2xl shadow-black/40 backdrop-blur-2xl md:hidden"
+              className="fixed top-0 right-0 z-[160] flex h-[100dvh] max-h-[100dvh] w-full max-w-[min(100%,22rem)] flex-col overflow-hidden border-l border-white/15 bg-neutral-950/95 shadow-2xl shadow-black/40 backdrop-blur-2xl md:hidden"
               style={{
                 paddingTop: "env(safe-area-inset-top, 0px)",
                 paddingBottom: "max(1rem, env(safe-area-inset-bottom, 0px))",
@@ -323,7 +323,7 @@ export default function Header(): React.JSX.Element {
               </div>
 
               <nav
-                className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-y-contain py-5 [-webkit-overflow-scrolling:touch]"
+                className="min-h-0 flex-1 space-y-5 overflow-y-auto overflow-x-hidden overscroll-y-contain py-5 [-webkit-overflow-scrolling:touch] touch-pan-y"
                 aria-label="Seiten"
               >
                 <section>

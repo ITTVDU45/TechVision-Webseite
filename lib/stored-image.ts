@@ -19,6 +19,7 @@ export const UPLOAD_CONTEXTS = [
   "case-study",
   "testimonial",
   "page-content",
+  "service",
   "general",
 ] as const;
 

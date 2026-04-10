@@ -94,9 +94,29 @@ export async function PUT(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
-    const { _id, ...updateData } = body;
+    const { _id, ...raw } = body;
 
-    const service = await Service.findByIdAndUpdate(_id, updateData, { new: true });
+    const shouldUnsetImageMeta =
+      !String(raw.image || "").trim() || raw.imageMeta === null;
+
+    const updateQuery: Record<string, unknown> = { ...raw };
+    delete updateQuery.imageMeta;
+
+    if (
+      !shouldUnsetImageMeta &&
+      raw.imageMeta &&
+      typeof raw.imageMeta === "object"
+    ) {
+      (updateQuery as { imageMeta?: unknown }).imageMeta = raw.imageMeta;
+    }
+
+    const service = shouldUnsetImageMeta
+      ? await Service.findByIdAndUpdate(
+          _id,
+          { $set: updateQuery, $unset: { imageMeta: 1 } },
+          { new: true }
+        )
+      : await Service.findByIdAndUpdate(_id, updateQuery, { new: true });
 
     if (!service) {
       return NextResponse.json({ error: 'Service not found' }, { status: 404 });

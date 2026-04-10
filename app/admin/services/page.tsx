@@ -5,11 +5,14 @@ import { useRouter } from "next/navigation";
 import DataTable from "../components/DataTable";
 import ServiceForm from "../components/ServiceForm";
 import { HOME_SERVICES_PLACEMENT } from "@/lib/home-services-defaults";
+import type { StoredImageMeta } from "@/lib/stored-image";
 
 interface Service {
   _id: string;
   name: string;
   icon: string;
+  image?: string;
+  imageMeta?: StoredImageMeta | null;
   description?: string;
   page: string;
   link?: string;
@@ -109,6 +112,16 @@ export default function ServicesPage() {
         columns={[
           { key: "order", label: "#" },
           { key: "name", label: "Name" },
+          {
+            key: "image",
+            label: "Bild",
+            render: (_: unknown, row: Service) =>
+              row.image || row.imageMeta?.url ? (
+                <span className="text-green-400">Ja</span>
+              ) : (
+                <span className="text-gray-500">—</span>
+              ),
+          },
           { key: "icon", label: "Icon" },
           { key: "link", label: "Link (Mehr dazu)" },
           {
