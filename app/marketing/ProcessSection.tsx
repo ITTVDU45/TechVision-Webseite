@@ -6,171 +6,138 @@ import { usePreferLightEffects } from '@/hooks/usePreferLightEffects';
 
 const steps = [
   {
-    title: "Analyse & Strategie",
-    description: "Wir starten mit einer umfassenden Analyse Ihrer bestehenden Systeme, Prozesse und Ziele. Darauf aufbauend entwickeln wir eine maßgeschneiderte Strategie.",
-    image: "/images/Ai Voice Assistant 4.png",
-    accent: "from-blue-400 to-blue-600"
+    title: 'Analyse & Strategie',
+    description:
+      'Wir starten mit einer umfassenden Analyse Ihrer bestehenden Systeme, Prozesse und Ziele. Darauf aufbauend entwickeln wir eine maßgeschneiderte Strategie.',
+    image: '/images/Ai Voice Assistant 4.png',
   },
   {
-    title: "Konzeption & Planung",
-    description: "Gemeinsam definieren wir den Fahrplan: Welche Lösungen bringen den größten Mehrwert? Wie lassen sich bestehende Systeme einbinden?",
-    image: "/images/multiple-devices-background.webp.png",
-    accent: "from-indigo-400 to-indigo-600"
+    title: 'Konzeption & Planung',
+    description:
+      'Gemeinsam definieren wir den Fahrplan: Welche Lösungen bringen den größten Mehrwert? Wie lassen sich bestehende Systeme sinnvoll einbinden?',
+    image: '/images/multiple-devices-background.webp.png',
   },
   {
-    title: "Umsetzung & Integration",
-    description: "Wir entwickeln die Lösungen und integrieren sie nahtlos in Ihre bestehende IT-Landschaft – mit klarem Fokus auf Benutzerfreundlichkeit, Sicherheit und Skalierbarkeit.",
-    image: "/images/Automation-Dashboard.png",
-    accent: "from-blue-500 to-indigo-600"
+    title: 'Umsetzung & Integration',
+    description:
+      'Wir entwickeln die Lösungen und integrieren sie nahtlos in Ihre bestehende IT‑Landschaft – mit klarem Fokus auf Benutzerfreundlichkeit, Sicherheit und Skalierbarkeit.',
+    image: '/images/Automation-Dashboard.png',
   },
   {
-    title: "Test & Qualitätssicherung",
-    description: "Vor dem Go-Live durchlaufen alle Lösungen umfassende Tests – funktional, sicherheitstechnisch und im Live-Betrieb.",
-    image: "/images/bitwarden-business-og.png",
-    accent: "from-violet-400 to-violet-600"
+    title: 'Test & Qualitätssicherung',
+    description:
+      'Vor dem Go‑Live durchlaufen alle Lösungen umfassende Tests – funktional, sicherheitstechnisch und im Live‑Betrieb.',
+    image: '/images/bitwarden-business-og.png',
   },
   {
-    title: "Monitoring & Support",
-    description: "Auch nach Abschluss des Projekts bleiben wir an Ihrer Seite: mit Monitoring, regelmäßigen Sicherheitsupdates und kontinuierlicher Optimierung.",
-    image: "/images/system-integration-network.jpg",
-    accent: "from-purple-400 to-blue-600"
-  }
+    title: 'Monitoring & Support',
+    description:
+      'Auch nach Abschluss des Projekts bleiben wir an Ihrer Seite: mit Monitoring, regelmäßigen Sicherheitsupdates und kontinuierlicher Optimierung.',
+    image: '/images/system-integration-network.jpg',
+  },
 ];
 
 export default function ProcessSection() {
   const router = useRouter();
   const preferLight = usePreferLightEffects();
-  const slidePx = preferLight ? 0 : 36;
-  const enterDuration = preferLight ? 0.28 : 0.55;
-  const imageSizes = '(max-width: 768px) 100vw, (max-width: 1280px) 85vw, 640px';
+  const enterDuration = preferLight ? 0.28 : 0.5;
+  const imageSizes = '(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 560px';
 
   return (
-    <section id="process" className="py-32 bg-black relative overflow-hidden">
-      {/* Smooth Transition Overlays */}
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-20 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-20 pointer-events-none" />
-
-      {/* Große Blur-Orbs sind auf Mobile sehr teuer — nur ab md */}
-      <div className="absolute top-0 left-0 hidden md:block w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[140px] -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 hidden md:block w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2 pointer-events-none" />
-
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center mb-24">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
+    <section id="process" className="section-y relative overflow-hidden bg-[#050a12]">
+      <div className="section-container relative z-10">
+        <div className="mx-auto max-w-3xl text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6"
+            className="eyebrow"
           >
-            Unser Prozess bei Projekten
-          </motion.div>
+            Projektprozess
+          </motion.span>
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-6xl font-bold mb-8 text-white leading-[1.1]"
+            transition={{ duration: 0.5, delay: 0.05 }}
+            className="heading-display mt-4 text-3xl md:text-5xl"
           >
-            Von der Idee zum Launch in <br className="hidden md:block" />
-            <span className="relative inline-block px-4 py-1 mt-2">
-              <span className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 skew-x-[-12deg] rounded-lg border border-blue-500/30" />
-              <span className="relative bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                5 einfachen Schritten
-              </span>
-            </span>
+            Von der Idee zum Launch in fünf Schritten
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-gray-400 max-w-2xl mx-auto"
-          >
-            Eine transparente und strukturierte Zusammenarbeit ist der Schlüssel zu erfolgreichen Projekten. So begleiten wir Sie Schritt für Schritt:
-          </motion.p>
+          <p className="mt-4 text-base leading-relaxed text-slate-400 md:text-lg">
+            Ein transparenter, strukturierter Ablauf ist die Grundlage jedes erfolgreichen Projekts.
+            So begleiten wir Sie – vom ersten Gespräch bis zum laufenden Betrieb.
+          </p>
         </div>
 
-        <div className="max-w-7xl mx-auto space-y-32 md:space-y-48">
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 md:gap-24`}
-            >
-              {/* Text Side */}
-              <motion.div
-                initial={{ opacity: 0, x: index % 2 === 0 ? -slidePx : slidePx }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.15, margin: '0px 0px -8% 0px' }}
-                transition={{ duration: enterDuration, ease: 'easeOut' }}
-                className="flex-1 text-center md:text-left"
-              >
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br ${step.accent} text-white font-bold text-xl mb-6 shadow-lg shadow-blue-500/20`}>
-                  {index + 1}
-                </div>
-                <h3 className="text-3xl md:text-5xl font-bold mb-6 text-white leading-tight">
-                  {step.title}
-                </h3>
-                <p className="text-lg md:text-xl text-gray-400 leading-relaxed mb-10">
-                  {step.description}
-                </p>
-                <div className={`h-1.5 w-24 bg-gradient-to-r ${step.accent} rounded-full mx-auto md:mx-0`} />
-              </motion.div>
-
-              {/* Image Side */}
-              <motion.div
-                initial={{ opacity: 0, x: index % 2 === 0 ? slidePx : -slidePx }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.15, margin: '0px 0px -8% 0px' }}
-                transition={{ duration: enterDuration, ease: 'easeOut' }}
-                className="flex-1 relative group w-full"
-              >
+        <ol className="mx-auto mt-16 max-w-6xl space-y-16 md:mt-20 md:space-y-24">
+          {steps.map((step, index) => {
+            const reverse = index % 2 === 1;
+            return (
+              <li key={step.title} className="scroll-mt-24">
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${step.accent} rounded-full scale-90 md:group-hover:scale-110 transition-transform duration-1000 pointer-events-none ${
-                    preferLight ? 'hidden' : 'opacity-10 blur-[100px] md:opacity-10'
-                  }`}
-                />
-
-                <div
-                  className={`relative w-full overflow-hidden rounded-3xl border border-white/10 bg-gray-900/40 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-700 md:group-hover:scale-[1.03] md:group-hover:border-white/20 ${
-                    preferLight ? '' : 'backdrop-blur-sm'
+                  className={`grid items-center gap-8 md:gap-14 md:grid-cols-2 ${
+                    reverse ? 'md:[&>*:first-child]:order-2' : ''
                   }`}
                 >
-                  <div className="relative aspect-[4/3] w-full bg-neutral-950">
-                    <Image
-                      src={step.image}
-                      alt={step.title}
-                      fill
-                      sizes={imageSizes}
-                      className="object-cover opacity-90 transition-opacity group-hover:opacity-100"
-                      loading={index < 2 ? 'eager' : 'lazy'}
-                      decoding="async"
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 pointer-events-none" />
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: enterDuration }}
+                    className="text-center md:text-left"
+                  >
+                    <div className="mb-5 inline-flex items-center gap-3">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-full border border-sky-500/30 bg-sky-500/10 text-sm font-semibold text-sky-300">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                        Schritt {index + 1} / {steps.length}
+                      </span>
+                    </div>
+                    <h3 className="mb-4 text-2xl font-semibold leading-tight text-white md:text-3xl">
+                      {step.title}
+                    </h3>
+                    <p className="text-base leading-relaxed text-slate-400 md:text-lg">
+                      {step.description}
+                    </p>
+                  </motion.div>
 
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-tr from-white/5 to-transparent" />
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: enterDuration }}
+                    className="relative w-full"
+                  >
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0a1220]">
+                      <Image
+                        src={step.image}
+                        alt={step.title}
+                        fill
+                        sizes={imageSizes}
+                        className="object-cover"
+                        loading={index < 2 ? 'eager' : 'lazy'}
+                        decoding="async"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-[#050a12]/60 via-transparent to-transparent" aria-hidden />
+                    </div>
+                  </motion.div>
                 </div>
-              </motion.div>
-            </div>
-          ))}
-        </div>
+              </li>
+            );
+          })}
+        </ol>
 
-        {/* Final CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-40 text-center"
-        >
-          <motion.button
+        <div className="mt-16 text-center">
+          <button
+            type="button"
             onClick={() => router.push('/offer')}
-            whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.2)" }}
-            whileTap={{ scale: 0.95 }}
-            className="px-10 py-5 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 text-white rounded-full text-xl font-bold transition-all shadow-lg hover:shadow-blue-500/20"
+            className="btn-primary focus-ring"
           >
-            Jetzt einen kostenlosen Ersttermin vereinbaren
-          </motion.button>
-        </motion.div>
+            Kostenloses Erstgespräch vereinbaren
+          </button>
+        </div>
       </div>
     </section>
   );

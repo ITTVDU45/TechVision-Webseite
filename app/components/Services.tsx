@@ -29,37 +29,37 @@ function publicImageFile(name: string): string {
 const staticServices: Service[] = [
   {
     icon: "🤖",
-    title: "KI-Transformation",
+    title: "KI‑Transformation",
     description:
-      "Wir analysieren Ihre Geschäftsprozesse und identifizieren Potenziale für den Einsatz von Künstlicher Intelligenz, um Effizienz und Produktivität zu steigern.",
-    gradient: "from-blue-400 via-blue-500 to-indigo-500",
+      "Analyse Ihrer Prozesse, Identifikation echter KI‑Use‑Cases und schrittweise Umsetzung mit klarem ROI.",
+    gradient: "from-sky-500 to-cyan-500",
     link: "/ki-transformation",
     image: publicImageFile("AI-basierte Geschäftsvernetzung in der Zukunft.png"),
   },
   {
     icon: "⚡",
-    title: "Workflow Automatisierung",
+    title: "Workflow‑Automatisierung",
     description:
-      "Von der Planung bis zur Umsetzung integrieren wir maßgeschneiderte KI-Lösungen nahtlos in Ihre bestehenden Systeme.",
-    gradient: "from-blue-500 via-indigo-500 to-purple-500",
+      "Automatisierte End‑to‑End‑Prozesse zwischen Ihren Systemen – integriert, überwacht und wartbar.",
+    gradient: "from-cyan-500 to-teal-500",
     link: "/workflow-automation",
     image: publicImageFile("Futuristische Automatisierung in Aktion.png"),
   },
   {
     icon: "💻",
-    title: "Software Entwicklung",
+    title: "Software‑Entwicklung",
     description:
-      "Entwicklung intelligenter Softwarelösungen, die durch KI Ihre Geschäftsabläufe optimieren und automatisieren.",
-    gradient: "from-purple-400 via-pink-500 to-red-500",
+      "Individuelle Web‑ und Backend‑Anwendungen, sauber architektiert, dokumentiert und langfristig wartbar.",
+    gradient: "from-sky-500 to-indigo-500",
     link: "/software-development",
     image: publicImageFile("Futuristische Software-Entwicklungsumgebung.png"),
   },
   {
     icon: "🎯",
-    title: "KI für Branchen",
+    title: "Branchen‑Lösungen",
     description:
-      "Spezialisierte KI-Lösungen für verschiedene Branchen wie IT, Bauwesen und Rechtswesen, um branchenspezifische Herausforderungen zu meistern.",
-    gradient: "from-blue-500 via-indigo-500 to-purple-500",
+      "Fachlich zugeschnittene Anwendungen für Recht, Bau, Handel, Logistik – mit branchenspezifischen Regeln.",
+    gradient: "from-teal-500 to-emerald-500",
     link: "/industry-solutions",
     image: publicImageFile("Futuristische KI und Industrievernetzung.png"),
   },
@@ -67,28 +67,27 @@ const staticServices: Service[] = [
     icon: "🔒",
     title: "Cybersecurity",
     description:
-      "Umfassender Schutz und professionelles Management Ihrer IT-Systeme, von Backup-Lösungen bis hin zu sicherer Cloud-Integration und Netzwerkarchitektur.",
-    gradient: "from-indigo-400 via-purple-500 to-purple-600",
+      "Absicherung Ihrer IT nach BSI‑Grundschutz und ISO‑27001‑Prinzipien: Backups, Zugriffe, Monitoring.",
+    gradient: "from-slate-400 to-slate-600",
     link: "/cybersecurity",
   },
   {
     icon: "🌐",
-    title: "Webseitenentwicklung",
-    description: "Moderne und responsive Webauftritte für Ihren professionellen Online-Auftritt.",
-    gradient: "from-indigo-500 via-purple-500 to-pink-500",
+    title: "Web‑Entwicklung",
+    description: "Performante, barrierearme Websites und Web‑Apps mit sauberem SEO‑Fundament.",
+    gradient: "from-indigo-500 to-sky-500",
     link: "/web-development",
   },
   {
     icon: "☁️",
-    title: "Hosting",
+    title: "Hosting & Betrieb",
     description:
-      "Zuverlässiges Hosting für Ihre Webseiten und Softwarelösungen mit erstklassigem Support.",
-    gradient: "from-blue-400 via-indigo-500 to-purple-500",
+      "Zuverlässiger Betrieb Ihrer Anwendungen in europäischen Rechenzentren mit Monitoring und Backups.",
+    gradient: "from-cyan-500 to-blue-500",
     link: "/webhosting",
   },
 ];
 
-/** Gleicher Pfad wie aus dem CMS (z. B. /ki-transformation) */
 function normalizeServicePath(raw: string): string {
   const t = raw.trim();
   if (!t || t === "#") return "";
@@ -121,29 +120,26 @@ function resolveServiceImageUrl(s: Service): string | undefined {
 function ServiceCardMedia({ service }: { service: Service }) {
   const src = resolveServiceImageUrl(service);
   const alt = service.title || service.name || "Service";
-  const g = service.gradient || "from-blue-400 via-blue-500 to-indigo-500";
+  const g = service.gradient || "from-sky-500 to-cyan-500";
 
   if (src) {
     return (
-      <div className="relative h-44 w-full shrink-0 overflow-hidden rounded-t-2xl bg-neutral-900 sm:h-48 md:h-52">
+      <div className="relative h-44 w-full shrink-0 overflow-hidden rounded-t-2xl bg-neutral-900 sm:h-48 md:h-56">
         <Image
           src={src}
           alt={alt}
           fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover object-center"
+          sizes="(max-width: 768px) 100vw, 42vw"
+          className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
         />
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"
-          aria-hidden
-        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050a12]/85 via-[#050a12]/25 to-transparent" aria-hidden />
       </div>
     );
   }
 
   return (
     <div
-      className={`relative flex h-44 w-full shrink-0 items-center justify-center rounded-t-2xl bg-gradient-to-br ${g} text-5xl text-white/95 shadow-inner sm:h-48 md:h-52`}
+      className={`relative flex h-44 w-full shrink-0 items-center justify-center rounded-t-2xl bg-gradient-to-br ${g} text-5xl text-white/95 sm:h-48 md:h-56`}
       aria-hidden
     >
       <span>{service.icon || "💼"}</span>
@@ -151,131 +147,69 @@ function ServiceCardMedia({ service }: { service: Service }) {
   );
 }
 
-function ServiceSlide({
-  service,
-  preferLightEffects,
-}: {
-  service: Service;
-  preferLightEffects: boolean;
-}) {
-  const g = service.gradient || "from-blue-400 via-blue-500 to-indigo-500";
-
-  const cardInner = (
-    <div
-      className={`relative flex h-full min-h-[480px] w-full flex-col overflow-hidden rounded-2xl border border-white/10 shadow-2xl transition-colors duration-300 md:min-h-[540px] ${
-        preferLightEffects
-          ? "bg-neutral-950/90 group-hover:border-white/20 group-hover:bg-neutral-900/95"
-          : "bg-white/[0.03] backdrop-blur-xl group-hover:border-white/20 group-hover:bg-white/[0.05]"
-      }`}
-    >
-      <div
-        className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${g} opacity-0 transition-opacity duration-500 group-hover:opacity-[0.03]`}
-        aria-hidden
-      />
-
-      <ServiceCardMedia service={service} />
-
-      <div className="relative z-10 flex min-h-0 flex-1 flex-col border-t border-white/10 bg-black/90 px-6 pb-6 pt-5 md:px-8 md:pb-8 md:pt-6">
-        <h3 className="mb-3 shrink-0 text-xl font-bold leading-snug text-white md:text-2xl">
-          {service.title}
-        </h3>
-
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
-          <p className="text-sm leading-relaxed text-gray-300 md:text-base">
+function ServiceSlide({ service }: { service: Service }) {
+  return (
+    <article className="group relative h-full">
+      <div className="relative flex h-full min-h-[440px] w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0a1220] transition-colors duration-300 group-hover:border-white/20 md:min-h-[500px]">
+        <ServiceCardMedia service={service} />
+        <div className="relative z-10 flex min-h-0 flex-1 flex-col border-t border-white/10 px-6 pb-6 pt-5 md:px-7 md:pb-7 md:pt-6">
+          <h3 className="mb-2 shrink-0 text-lg font-semibold leading-snug text-white md:text-xl">
+            {service.title}
+          </h3>
+          <p className="mb-6 flex-1 text-sm leading-relaxed text-slate-300 md:text-[15px]">
             {service.description}
           </p>
-        </div>
-
-        <div className="mt-5 shrink-0">
-          <Link href={service.link ?? "/"} className="block">
-            {preferLightEffects ? (
-              <button
-                type="button"
-                className={`group/button relative w-full overflow-hidden rounded-xl bg-gradient-to-r ${g} px-4 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-300 active:scale-[0.98]`}
-              >
-                <span className="relative z-10">Mehr dazu</span>
-                <div className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover/button:opacity-20" />
-              </button>
-            ) : (
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className={`group/button relative w-full overflow-hidden rounded-xl bg-gradient-to-r ${g} px-4 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-300`}
-              >
-                <span className="relative z-10">Mehr dazu</span>
-                <div className="absolute inset-0 bg-white opacity-0 transition-opacity duration-300 group-hover/button:opacity-20" />
-              </motion.button>
-            )}
+          <Link
+            href={service.link ?? "/"}
+            className="focus-ring inline-flex items-center gap-2 text-sm font-semibold text-sky-300 transition-colors hover:text-sky-200"
+          >
+            Mehr erfahren
+            <svg className="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
           </Link>
         </div>
       </div>
-
-      <div
-        className={`pointer-events-none absolute -right-12 -top-12 h-24 w-24 bg-gradient-to-br ${g} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20`}
-        aria-hidden
-      />
-    </div>
-  );
-
-  if (preferLightEffects) {
-    return (
-      <div className="group relative h-full min-h-[480px] md:min-h-[540px]">
-        <div
-          className={`absolute -inset-2 rounded-2xl bg-gradient-to-r ${g} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20`}
-          aria-hidden
-        />
-        {cardInner}
-      </div>
-    );
-  }
-
-  return (
-    <motion.div
-      className="group relative h-full min-h-[480px] md:min-h-[540px]"
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
-      <div
-        className={`absolute -inset-2 rounded-2xl bg-gradient-to-r ${g} opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-20`}
-        aria-hidden
-      />
-      {cardInner}
-    </motion.div>
+    </article>
   );
 }
 
-const PrevArrow = (props: { onClick?: () => void }) => {
-  const { onClick } = props;
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="absolute left-[-60px] top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white backdrop-blur-md transition-all hover:border-white/20 hover:bg-white/10 lg:flex"
-      aria-label="Vorherige"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-6 w-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-      </svg>
-    </button>
-  );
-};
+const PrevArrow = (props: { onClick?: () => void }) => (
+  <button
+    type="button"
+    onClick={props.onClick}
+    className="focus-ring absolute left-[-56px] top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white transition-all hover:border-white/25 hover:bg-white/[0.08] lg:flex"
+    aria-label="Vorheriger Service"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+    </svg>
+  </button>
+);
 
-const NextArrow = (props: { onClick?: () => void }) => {
-  const { onClick } = props;
+const NextArrow = (props: { onClick?: () => void }) => (
+  <button
+    type="button"
+    onClick={props.onClick}
+    className="focus-ring absolute right-[-56px] top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/[0.04] text-white transition-all hover:border-white/25 hover:bg-white/[0.08] lg:flex"
+    aria-label="Nächster Service"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-5 w-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+    </svg>
+  </button>
+);
+
+function ServiceSkeleton() {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="absolute right-[-60px] top-1/2 z-20 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white backdrop-blur-md transition-all hover:border-white/20 hover:bg-white/10 lg:flex"
-      aria-label="Nächste"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-6 w-6">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-      </svg>
-    </button>
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {Array.from({ length: 2 }).map((_, i) => (
+        <div key={i} className="skeleton h-[440px] md:h-[500px]" aria-hidden />
+      ))}
+      <span className="sr-only">Services werden geladen</span>
+    </div>
   );
-};
+}
 
 export default function Services() {
   const [services, setServices] = useState<Service[]>([]);
@@ -309,7 +243,7 @@ export default function Services() {
                 gradient:
                   (s.gradient && s.gradient.trim()) ||
                   fallback?.gradient ||
-                  "from-blue-400 via-blue-500 to-indigo-500",
+                  "from-sky-500 to-cyan-500",
                 link: href,
               };
             });
@@ -333,69 +267,73 @@ export default function Services() {
     loadServices();
   }, []);
 
-  const settings = useMemo(
-    () => ({
+  const settings = useMemo(() => {
+    const slidesToShow = 2;
+    return {
       dots: true,
-      infinite: true,
-      speed: preferLightEffects ? 320 : 800,
-      cssEase: preferLightEffects ? "ease-out" : "ease-in-out",
-      slidesToShow: 2,
+      infinite: services.length > slidesToShow,
+      speed: 500,
+      cssEase: "cubic-bezier(0.22, 1, 0.36, 1)",
+      slidesToShow,
       slidesToScroll: 1,
-      autoplay: !preferLightEffects,
-      autoplaySpeed: 2500,
-      pauseOnHover: true,
+      autoplay: false,
       arrows: true,
+      swipeToSlide: true,
       prevArrow: <PrevArrow />,
       nextArrow: <NextArrow />,
       responsive: [
-        {
-          breakpoint: 1024,
-          settings: {
-            slidesToShow: 2,
-          },
-        },
-        {
-          breakpoint: 768,
-          settings: {
-            slidesToShow: 1,
-          },
-        },
+        { breakpoint: 1024, settings: { slidesToShow: 2 } },
+        { breakpoint: 768, settings: { slidesToShow: 1, arrows: false } },
       ],
-    }),
-    [preferLightEffects]
-  );
+    };
+  }, [services.length]);
 
   return (
-    <section id="services" className="relative overflow-hidden bg-black py-32">
-      <div className="pointer-events-none absolute left-0 right-0 top-0 z-20 h-32 bg-gradient-to-b from-black to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-20 h-32 bg-gradient-to-t from-black to-transparent" />
+    <section id="services" className="section-y relative overflow-hidden bg-[#050a12]">
+      <div className="section-container relative z-10">
+        <div className="mb-12 flex flex-col gap-4 md:mb-16 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <motion.span
+              initial={{ opacity: 0, y: 8 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+              className="eyebrow"
+            >
+              Leistungen
+            </motion.span>
+            <motion.h2
+              initial={preferLightEffects ? false : { opacity: 0, y: 12 }}
+              whileInView={preferLightEffects ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+              transition={{ duration: 0.5 }}
+              className="heading-display mt-4 text-3xl md:text-5xl"
+            >
+              Was wir für Sie umsetzen
+            </motion.h2>
+            <p className="mt-4 max-w-xl text-base text-slate-400">
+              Strategie, Umsetzung und Betrieb – aus einer Hand. Wir kombinieren KI, Softwareentwicklung und Automatisierung
+              zu belastbaren Lösungen für Ihr Unternehmen.
+            </p>
+          </div>
+        </div>
 
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-5" />
-        <div className="absolute bottom-0 left-0 h-[500px] w-[500px] -translate-x-1/2 translate-y-1/2 rounded-full bg-blue-600/5 blur-[120px]" />
-        <div className="absolute right-0 top-1/2 h-[400px] w-[400px] -translate-y-1/2 translate-x-1/3 rounded-full bg-indigo-600/5 blur-[100px]" />
-      </div>
-
-      <div className="container relative z-10 mx-auto px-6">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mb-16 text-center text-4xl font-bold md:text-5xl"
-        >
-          Unsere Services
-        </motion.h2>
-
-        <div className="services-carousel relative z-10 -mx-4">
+        <div className="services-carousel relative -mx-4">
           {loading ? (
-            <div className="py-16 text-center text-gray-400">Lädt Services...</div>
+            <div className="px-4">
+              <ServiceSkeleton />
+            </div>
           ) : services.length === 0 ? (
-            <div className="py-16 text-center text-gray-400">Keine Services verfügbar</div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-16 text-center text-slate-400">
+              Keine Services verfügbar
+            </div>
           ) : (
             <Slider {...settings}>
               {services.map((service, index) => (
-                <div key={`${service.link ?? ""}-${service.title ?? index}-${index}`} className="h-full px-4 pb-12">
-                  <ServiceSlide service={service} preferLightEffects={preferLightEffects} />
+                <div
+                  key={`${service.link ?? ""}-${service.title ?? index}-${index}`}
+                  className="h-full px-4 pb-12"
+                >
+                  <ServiceSlide service={service} />
                 </div>
               ))}
             </Slider>
@@ -403,27 +341,6 @@ export default function Services() {
         </div>
       </div>
 
-      <style jsx global>{`
-        .services-carousel .slick-dots {
-          bottom: -20px;
-        }
-        .services-carousel .slick-dots li button:before {
-          color: rgba(255, 255, 255, 0.3);
-          font-size: 10px;
-        }
-        .services-carousel .slick-dots li.slick-active button:before {
-          color: #3b82f6;
-        }
-        .services-carousel .slick-track {
-          display: flex !important;
-        }
-        .services-carousel .slick-slide {
-          height: inherit !important;
-        }
-        .services-carousel .slick-slide > div {
-          height: 100%;
-        }
-      `}</style>
     </section>
   );
 }

@@ -2,10 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+.services-carousel .slick-dots { bottom: -6px; }
+.services-carousel .slick-dots li button::before { color: rgb(255 255 255 / 25%); font-size: 8px; }
+.services-carousel .slick-dots li.slick-active button::before { color: #38bdf8; }
+.services-carousel .slick-track { display: flex !important; }
+.services-carousel .slick-slide { height: inherit !important; }
+.services-carousel .slick-slide > div { height: 100%; }
+
 :root {
-  --brand-500: #06b6d4;
-  --brand-600: #0891b2;
-  --ink-900: #0f172a;
+  /* Marken-Palette: warmes Deep-Teal statt generisches Blau/Indigo */
+  --brand-400: #38bdf8;
+  --brand-500: #0ea5e9;
+  --brand-600: #0284c7;
+  --brand-700: #0369a1;
+  --accent-400: #34d399;
+  --accent-500: #10b981;
+  --ink-950: #050a12;
+  --ink-900: #0a1220;
+  --ink-800: #0f1a2c;
+  --ink-700: #1a2540;
+  --ink-500: #64748b;
+  --ink-400: #94a3b8;
+  --ink-300: #cbd5e1;
+  --line: rgba(255, 255, 255, 0.06);
+  --line-strong: rgba(255, 255, 255, 0.12);
 }
 
 html.lenis,
@@ -97,5 +117,165 @@ body {
   }
   .pb-safe {
     padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* -------------------------------------------------------------
+ * Section-System: konsistente Rhythmus- und Farb-Utilities für /marketing
+ * ------------------------------------------------------------- */
+@layer components {
+  .section-y {
+    padding-top: clamp(4rem, 8vw, 7rem);
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+  .section-y-tight {
+    padding-top: clamp(3rem, 6vw, 5rem);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .section-container {
+    margin-inline: auto;
+    max-width: 78rem;
+    padding-inline: clamp(1rem, 4vw, 2rem);
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    background: rgba(14, 165, 233, 0.08);
+    color: #7dd3fc;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 9999px;
+    background: currentColor;
+  }
+  .heading-display {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: #f8fafc;
+  }
+  .surface-card {
+    position: relative;
+    border-radius: 1.25rem;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+  }
+  .surface-card--hover {
+    transition: border-color 0.25s ease, transform 0.25s ease, background 0.25s ease;
+  }
+  .surface-card--hover:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-2px);
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.5rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 60%, #0f766e 100%);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    box-shadow: 0 12px 30px -12px rgba(14, 165, 233, 0.45);
+    transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 20px 40px -14px rgba(14, 165, 233, 0.55);
+    filter: brightness(1.05);
+  }
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.4rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.04);
+    color: #e5e7eb;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.22);
+  }
+  .focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #0b1120, 0 0 0 4px #38bdf8;
+    border-radius: 0.5rem;
+  }
+  .hairline-top {
+    position: relative;
+  }
+  .hairline-top::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.09), transparent);
+    pointer-events: none;
+  }
+}
+
+/* Optionale sanfte reveal-Klasse ohne Framer-Overhead */
+@keyframes tv-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+.reveal-fade-up {
+  animation: tv-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Skeleton-Shimmer */
+@keyframes tv-shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  animation: tv-shimmer 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+  .reveal-fade-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

@@ -2,8 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import gsap from 'gsap';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { usePreferLightEffects } from '@/hooks/usePreferLightEffects';
 
@@ -14,33 +13,36 @@ const HeroSpline = dynamic(() => import('./HeroSpline'), {
   ssr: false,
   loading: () => (
     <div
-      className="absolute inset-0 bg-gradient-to-br from-slate-950 via-black to-slate-900"
+      className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(14,165,233,0.18),transparent_55%),radial-gradient(circle_at_75%_60%,rgba(15,118,110,0.18),transparent_55%),#050a12]"
       aria-hidden
     />
   ),
 });
 
-/** Unternehmens-Logo-Leiste unter dem Hero – vorübergehend aus; auf `true` setzen, wenn Logos/Daten aktualisiert sind. */
-const SHOW_HERO_TRUST_LOGOS = false;
-
 type Props = {
   isLoading?: boolean;
 }
 
+const trustPoints = [
+  'KI‑Beratung nach BSI IT‑Grundschutz',
+  'Individualsoftware & System‑Integration',
+  'Prozessautomatisierung & KI‑Agenten',
+  'Deutscher Anbieter · DSGVO‑konform',
+];
+
 export default function HeroSection({ isLoading = false }: Props) {
   const heroRef = useRef<HTMLElement | null>(null);
-  const textRef = useRef<HTMLDivElement | null>(null);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [shouldRenderSpline, setShouldRenderSpline] = useState(false);
   const [isNarrowHero, setIsNarrowHero] = useState(false);
   const preferLightEffects = usePreferLightEffects();
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
     setReduceMotion(mq.matches);
     const onChange = () => setReduceMotion(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   useEffect(() => {
@@ -51,30 +53,30 @@ export default function HeroSection({ isLoading = false }: Props) {
       if (narrow) setShouldRenderSpline(false);
     };
     sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
   }, []);
 
   useEffect(() => {
     const section = heroRef.current;
     if (!section) return;
     if (preferLightEffects) return;
-    if (typeof window !== "undefined" && window.matchMedia(narrowHeroQuery).matches) return;
+    if (typeof window !== 'undefined' && window.matchMedia(narrowHeroQuery).matches) return;
 
     const win = window as Window & {
-      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number
-      cancelIdleCallback?: (id: number) => void
-    }
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
 
-    let idleId: number | null = null
-    let usedIdleCallback = false
+    let idleId: number | null = null;
+    let usedIdleCallback = false;
     const startSpline = () => {
-      if (typeof win.requestIdleCallback === "function") {
-        usedIdleCallback = true
-        idleId = win.requestIdleCallback(() => setShouldRenderSpline(true), { timeout: 250 });
+      if (typeof win.requestIdleCallback === 'function') {
+        usedIdleCallback = true;
+        idleId = win.requestIdleCallback(() => setShouldRenderSpline(true), { timeout: 400 });
         return;
       }
-      idleId = window.setTimeout(() => setShouldRenderSpline(true), 16);
+      idleId = window.setTimeout(() => setShouldRenderSpline(true), 60);
     };
 
     const observer = new IntersectionObserver(
@@ -83,7 +85,7 @@ export default function HeroSection({ isLoading = false }: Props) {
         startSpline();
         observer.disconnect();
       },
-      { root: null, rootMargin: "350px 0px", threshold: 0.01 }
+      { root: null, rootMargin: '350px 0px', threshold: 0.01 }
     );
 
     observer.observe(section);
@@ -91,7 +93,7 @@ export default function HeroSection({ isLoading = false }: Props) {
     return () => {
       observer.disconnect();
       if (idleId === null) return;
-      if (usedIdleCallback && typeof win.cancelIdleCallback === "function") {
+      if (usedIdleCallback && typeof win.cancelIdleCallback === 'function') {
         win.cancelIdleCallback(idleId);
         return;
       }
@@ -99,34 +101,8 @@ export default function HeroSection({ isLoading = false }: Props) {
     };
   }, [preferLightEffects]);
 
-  const { scrollYProgress } = useScroll({
-    target: heroRef,
-    offset: ["start start", "end start"],
-  });
   const router = useRouter();
-
-  const light = reduceMotion || preferLightEffects || isNarrowHero;
-  const rotateX = useTransform(scrollYProgress, [0, 1], [0, light ? 0 : 12]);
-  const rotateY = useTransform(scrollYProgress, [0, 1], [0, light ? 0 : 6]);
-  const scale = useTransform(scrollYProgress, [0, 1], [1, light ? 1 : 0.94]);
-  const perspective = "1000px";
-
-  useEffect(() => {
-    if (!isLoading) {
-      const initialAnimation = gsap.timeline({ delay: 0.5 });
-      if (textRef.current) {
-        initialAnimation.fromTo(textRef.current.children,
-          { opacity: 0, y: 100, rotateX: 45, transformPerspective: 1000 },
-          { opacity: 1, y: 0, rotateX: 0, duration: 1.2, stagger: 0.2, ease: "power3.out" }
-        );
-      }
-    }
-  }, [isLoading]);
-
-  const scrollToServices = () => {
-    const servicesSection = document.getElementById('services');
-    if (servicesSection) servicesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  const suppressMotion = reduceMotion || preferLightEffects;
 
   const navigateToOfferPage = () => router.push('/offer');
 
@@ -134,8 +110,9 @@ export default function HeroSection({ isLoading = false }: Props) {
     <section
       id="hero"
       ref={heroRef}
-      className="min-h-[100dvh] h-[100dvh] flex items-end justify-start relative overflow-hidden bg-black [contain:layout_paint]"
+      className="relative flex min-h-[100dvh] w-full items-center overflow-hidden bg-[#050a12] [contain:layout_paint]"
     >
+      {/* Background layer */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 md:hidden">
           <Image
@@ -146,112 +123,117 @@ export default function HeroSection({ isLoading = false }: Props) {
             sizes="100vw"
             className="object-cover object-center"
           />
-          <div
-            className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/55 to-black/90"
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-tr from-cyan-950/35 via-transparent to-indigo-950/25"
-            aria-hidden
-          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#050a12]/70 via-[#050a12]/60 to-[#050a12]" aria-hidden />
         </div>
 
         <div className="absolute inset-0 hidden md:block">
-          {reduceMotion || preferLightEffects || !shouldRenderSpline ? (
+          {suppressMotion || !shouldRenderSpline ? (
             <div
-              className="absolute inset-0 bg-gradient-to-br from-cyan-950/40 via-black to-indigo-950/30"
+              className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(14,165,233,0.22),transparent_55%),radial-gradient(circle_at_78%_60%,rgba(15,118,110,0.18),transparent_60%),#050a12]"
               aria-hidden
             />
           ) : (
             <HeroSpline
               scene="https://prod.spline.design/Ijn60NuaQiGIVPWQ/scene.splinecode"
               style={{
-                width: "100%",
-                height: "100%",
-                transform: "scale(1.25)",
-                transformOrigin: "center center",
+                width: '100%',
+                height: '100%',
+                transform: 'scale(1.15)',
+                transformOrigin: 'center center',
               }}
             />
           )}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#050a12] via-[#050a12]/70 to-transparent" aria-hidden />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#050a12] to-transparent" aria-hidden />
         </div>
       </div>
 
-      <motion.div ref={textRef} className="z-10 relative px-8 md:px-16 pb-28 md:pb-52 max-w-3xl" initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} style={{ perspective, rotateX, rotateY, scale }}>
-        <motion.h1 className="text-4xl md:text-6xl font-bold mb-4 text-white [text-shadow:_0_4px_12px_rgba(0,0,0,0.5)] leading-tight" whileHover={{ scale: 1.02 }} transition={{ type: 'spring', stiffness: 300 }}>
-          <span className="whitespace-nowrap">Ihr Vorsprung durch</span>{' '}Automatisierung und KI-Transformation
-        </motion.h1>
-
-        <motion.p className="text-lg md:text-xl text-gray-300 mb-8 [text-shadow:_0_2px_8px_rgba(0,0,0,0.5)]" whileHover={{ scale: 1.02 }}>
-          Lassen Sie Technologie für Sie arbeiten – intelligenter, schneller, effizienter.
-        </motion.p>
-
-        <div className="flex flex-col md:flex-row gap-5">
-          <motion.button
-            onClick={navigateToOfferPage}
-            className="px-8 py-4 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 text-white rounded-full text-lg font-bold flex items-center gap-2 transition-all shadow-lg hover:shadow-blue-500/20"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+      {/* Content */}
+      <div className="section-container relative z-10 grid w-full pb-16 pt-28 md:pb-24 md:pt-32">
+        <div className="max-w-2xl lg:max-w-3xl">
+          <motion.span
+            initial={suppressMotion ? false : { opacity: 0, y: 8 }}
+            animate={suppressMotion || isLoading ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="eyebrow"
           >
-            kostenloses Erstgespräch vereinbaren
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
-            </svg>
-          </motion.button>
+            IT · KI · Automatisierung
+          </motion.span>
 
-          <motion.button
-            onClick={() => {
-              const el = document.getElementById('success-stories');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="px-8 py-4 border border-white/40 rounded-full text-lg font-bold text-white hover:bg-white/10 transition-all backdrop-blur-sm"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <motion.h1
+            initial={suppressMotion ? false : { opacity: 0, y: 12 }}
+            animate={suppressMotion || isLoading ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.06, ease: 'easeOut' }}
+            className="heading-display mt-5 text-4xl sm:text-5xl md:text-6xl lg:text-7xl"
           >
-            Referenzen
-          </motion.button>
-        </div>
-      </motion.div>
+            Software, KI und Automatisierung –<br className="hidden md:block" /> gebaut für messbare Ergebnisse.
+          </motion.h1>
 
-      {SHOW_HERO_TRUST_LOGOS && (
-        /* Floating Logo Bar */
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 1 }}
-          className="absolute bottom-4 left-0 right-0 z-20 hidden md:flex justify-center px-8"
-        >
-          <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 flex items-center justify-center gap-12 md:gap-20 group relative overflow-hidden max-w-5xl w-full">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+          <motion.p
+            initial={suppressMotion ? false : { opacity: 0, y: 12 }}
+            animate={suppressMotion || isLoading ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.12, ease: 'easeOut' }}
+            className="mt-6 max-w-xl text-lg leading-relaxed text-slate-300 md:text-xl"
+          >
+            Wir konzipieren, entwickeln und betreiben individuelle Softwarelösungen, KI‑Agenten und Prozess‑Automatisierung
+            für mittelständische Unternehmen – strategisch, integrativ und langfristig verlässlich.
+          </motion.p>
 
-            {[
-              { src: '/images/white-linqint-logo.png', alt: 'Linqint' },
-              { src: '/images/RechtlyLogo.png', alt: 'Rechtly' },
-              { src: '/images/PikoshLogo.png', alt: 'Pikosh' },
-              { src: '/images/ViusLogo.png', alt: 'Vius' },
-              { src: '/images/planenadler-logo-white.png', alt: 'Planenadler' },
-            ].map((logo, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.1, y: -2 }}
-                className="relative flex items-center justify-center"
+          <motion.div
+            initial={suppressMotion ? false : { opacity: 0, y: 12 }}
+            animate={suppressMotion || isLoading ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.18, ease: 'easeOut' }}
+            className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
+          >
+            <button
+              type="button"
+              onClick={navigateToOfferPage}
+              className="btn-primary focus-ring"
+            >
+              Kostenloses Erstgespräch
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.4} stroke="currentColor" className="h-4 w-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                const el = document.getElementById('success-stories');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="btn-secondary focus-ring"
+            >
+              Referenzen ansehen
+            </button>
+          </motion.div>
+
+          {/* Trust chips – reale Kompetenz-Beschreibungen, keine erfundenen Kundenlogos */}
+          <motion.ul
+            initial={suppressMotion ? false : { opacity: 0 }}
+            animate={suppressMotion || isLoading ? undefined : { opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.28 }}
+            className="mt-10 flex flex-wrap gap-x-3 gap-y-2"
+            aria-label="Kompetenzbereiche"
+          >
+            {trustPoints.map((t) => (
+              <li
+                key={t}
+                className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300"
               >
-                <img
-                  src={logo.src}
-                  alt={logo.alt}
-                  className="h-7 md:h-9 w-auto object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500"
-                />
-              </motion.div>
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-sky-400" />
+                {t}
+              </li>
             ))}
-          </div>
-        </motion.div>
-      )}
+          </motion.ul>
+        </div>
+      </div>
 
-      <div
-        className="pointer-events-none z-[1] absolute inset-0 hidden bg-gradient-to-br from-black/40 via-black/30 to-transparent md:block"
-        aria-hidden
-      />
+      {/* Scroll hint */}
+      <div className="pointer-events-none absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-500 md:flex">
+        <span className="h-8 w-px bg-gradient-to-b from-transparent via-slate-500 to-transparent" />
+        Scroll
+      </div>
     </section>
   );
 }
-
-// wrapper removed; local implementation above is the source of truth
