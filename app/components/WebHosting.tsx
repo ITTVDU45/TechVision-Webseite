@@ -23,6 +23,8 @@ import {
 } from '../webhosting/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 import { toBlogPosts } from "@/lib/content";
+import ServiceProof from "@/app/components/service-pages/ServiceProof";
+import { serviceById } from "@/app/data/services";
 
 export default function WebHosting() {
   const { faqs, pricing, blogs } = usePageContent({
@@ -48,6 +50,7 @@ export default function WebHosting() {
       <Header />
       <main>
       <HeroSection />
+      <ServiceProof service={serviceById["webhosting"]} />
       <PricingSection plans={displayPricing} />
       <ExpertiseSection features={expertiseFeaturesData} />
       <WhyDifferentSection

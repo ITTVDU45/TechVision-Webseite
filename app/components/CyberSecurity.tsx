@@ -23,6 +23,8 @@ import {
 } from "../cybersecurity/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
 import { toBlogPosts } from "@/lib/content";
+import ServiceProof from "@/app/components/service-pages/ServiceProof";
+import { serviceById } from "@/app/data/services";
 
 export default function CyberSecurity() {
   const { faqs, services, blogs, caseStudies } = usePageContent({
@@ -75,6 +77,7 @@ export default function CyberSecurity() {
       <main>
 
       <HeroSection />
+      <ServiceProof service={serviceById["cybersecurity"]} reference={{ title: "Cybersecurityberatung", href: "/case-studies/cybersecurityberatung" }} />
 
       <ServicesSection services={displayServices} />
 

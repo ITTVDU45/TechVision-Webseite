@@ -21,6 +21,8 @@ import {
 } from '../web-development/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 import { toBlogPosts } from "@/lib/content";
+import ServiceProof from "@/app/components/service-pages/ServiceProof";
+import { serviceById } from "@/app/data/services";
 
 export default function WebDevelopment() {
   const { faqs, testimonials, blogs, caseStudies } = usePageContent({
@@ -67,6 +69,7 @@ export default function WebDevelopment() {
       <Header />
       <main>
       <HeroSection />
+      <ServiceProof service={serviceById["web-development"]} reference={{ title: "CMS Webentwicklung", href: "/case-studies/cms-webentwicklung" }} />
       <ExpertiseSection expertise={expertiseData} />
       <CaseStudiesSection caseStudies={displayCaseStudies} />
       <TestimonialsSection testimonials={displayTestimonials} />

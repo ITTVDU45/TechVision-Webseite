@@ -117,6 +117,10 @@ export default function Header(): React.JSX.Element {
                     </Link>
                   ))}
                 </div>
+                <Link href="/leistungen" className="focus-ring mt-2 flex items-center justify-between rounded-xl border-t border-white/10 px-4 py-3 text-sm font-semibold text-sky-300 transition-colors hover:bg-white/[0.05]">
+                  Alle Leistungen im Überblick
+                  <span aria-hidden="true">→</span>
+                </Link>
               </div>
             ) : null}
           </div>
@@ -151,6 +155,9 @@ export default function Header(): React.JSX.Element {
                     <span className="mt-1 block text-xs leading-5 text-slate-500">{service.description}</span>
                   </Link>
                 ))}
+                <Link href="/leistungen" className="focus-ring block rounded-xl px-3 py-3 text-sm font-semibold text-sky-300 transition-colors hover:bg-white/[0.05]">
+                  Alle Leistungen im Überblick <span aria-hidden="true">→</span>
+                </Link>
               </div>
               <p className="mb-2 mt-6 px-3 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Unternehmen</p>
               <div className="grid grid-cols-2 gap-1">

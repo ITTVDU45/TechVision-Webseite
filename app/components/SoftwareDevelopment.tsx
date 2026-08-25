@@ -16,6 +16,8 @@ import {
 } from "../software-development/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
 import { toBlogPosts } from "@/lib/content";
+import ServiceProof from "@/app/components/service-pages/ServiceProof";
+import { serviceById } from "@/app/data/services";
 
 export default function SoftwareDevelopment() {
   const { faqs, blogs } = usePageContent({
@@ -34,6 +36,7 @@ export default function SoftwareDevelopment() {
       <main>
 
       <HeroSection />
+      <ServiceProof service={serviceById["software-development"]} reference={{ title: "CRAFTGO Mitarbeiter-App", href: "/case-studies/microsoft-dynamics-integration" }} />
 
       <SuccessfulProjects projects={projectsData} />
 

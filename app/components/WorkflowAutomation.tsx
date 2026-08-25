@@ -20,6 +20,8 @@ import {
 } from '../workflow-automation/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 import { toBlogPosts } from "@/lib/content";
+import ServiceProof from "@/app/components/service-pages/ServiceProof";
+import { serviceById } from "@/app/data/services";
 
 export default function WorkflowAutomation() {
   const { faqs, blogs } = usePageContent({
@@ -36,6 +38,7 @@ export default function WorkflowAutomation() {
       <Header />
       <main>
       <HeroSection />
+      <ServiceProof service={serviceById["workflow-automation"]} />
       <KIAgentsSection features={kiAgentFeaturesData} />
       <AutomationBenefitsSection benefits={automationBenefitsData} />
       <UseCasesSection useCases={useCasesData} />

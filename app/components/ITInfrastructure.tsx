@@ -17,6 +17,8 @@ import {
   faqsData,
 } from '../it-infrastructure/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
+import ServiceProof from "@/app/components/service-pages/ServiceProof";
+import { serviceById } from "@/app/data/services";
 
 export default function ITInfrastructure() {
   const { faqs, blogs } = usePageContent({
@@ -41,6 +43,7 @@ export default function ITInfrastructure() {
       <Header />
       <main>
       <HeroSection />
+      <ServiceProof service={serviceById["it-infrastructure"]} />
       <InfrastructureSolutionsSection solutions={infrastructureSolutionsData} />
       <ITInfrastructurePlanningSection features={planningFeaturesData} />
       <BenefitsSection benefits={benefitsData} />

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { fetchServices } from "@/lib/api";
 import ServiceList, { type ServiceEntry } from "./ServiceList";
+import { services as serviceProfiles } from "@/app/data/services";
 
 /**
  * Leistungen der Startseite, mit CMS-Anbindung.
@@ -13,72 +14,14 @@ import ServiceList, { type ServiceEntry } from "./ServiceList";
  * statt über die Sektion verteilt.
  */
 
-const STATIC_SERVICES: ServiceEntry[] = [
-  {
-    title: "KI-Strategie & Entwicklung",
-    description:
-      "Wir identifizieren belastbare Einsatzfelder und integrieren KI-Lösungen sicher in bestehende Abläufe und Systeme.",
-    audience: "Für Unternehmen, die wissen wollen, wo KI trägt – und wo nicht.",
-    href: "/ki-transformation",
-    image: "/images/KITransofmation.webp",
-  },
-  {
-    title: "Workflow-Automatisierung",
-    description:
-      "Wir verbinden Systeme und automatisieren wiederkehrende Prozesse nachvollziehbar, überwacht und wartbar.",
-    audience: "Wenn dieselben Daten mehrfach von Hand übertragen werden.",
-    href: "/workflow-automation",
-    image: "/images/automation-dashboard.webp",
-  },
-  {
-    title: "Individuelle Software",
-    description:
-      "Wir entwickeln Web-, Backend- und Fachanwendungen für Abläufe, die mit Standardsoftware nicht sauber abbildbar sind.",
-    audience: "Wenn das Standardprodukt den eigenen Ablauf verbiegt.",
-    href: "/software-development",
-    image: "/images/laptop-software-mockup.webp",
-  },
-  {
-    title: "Branchenlösungen",
-    description:
-      "Wir übersetzen branchenspezifische Regeln und Engpässe in praktikable digitale Werkzeuge und Plattformen.",
-    audience: "Für Rechtswesen, Handel und Bahnbetrieb.",
-    href: "/industry-solutions",
-    image: "/images/legaltech.webp",
-  },
-  {
-    title: "Cybersecurity",
-    description:
-      "Wir priorisieren Risiken und stärken Zugriffe, Backups, Systeme und Sicherheitsprozesse mit klarem Maßnahmenplan.",
-    audience: "Wenn Sicherheit bisher aus einzelnen Werkzeugen besteht.",
-    href: "/cybersecurity",
-    image: "/images/cybersecurity.webp",
-  },
-  {
-    title: "Webentwicklung",
-    description:
-      "Wir bauen performante, barrierearme Websites und Webanwendungen mit tragfähigem SEO- und Tracking-Fundament.",
-    audience: "Wenn die Website Anfragen bringen soll, nicht nur existieren.",
-    href: "/web-development",
-    image: "/images/cms-development.webp",
-  },
-  {
-    title: "IT-Infrastruktur",
-    description:
-      "Wir planen, betreiben und betreuen Netze, Server und Arbeitsplätze mit klarer Zuständigkeit.",
-    audience: "Wenn die IT wächst, aber niemand sie verantwortet.",
-    href: "/it-infrastructure",
-    image: "/images/system-integration-network.webp",
-  },
-  {
-    title: "Hosting & Betrieb",
-    description:
-      "Wir betreiben geschäftskritische Anwendungen zuverlässig – mit Monitoring, Backups und klarer Verantwortung.",
-    audience: "Wenn Ausfälle Geld kosten.",
-    href: "/webhosting",
-    image: "/images/multiple-devices-background.webp",
-  },
-];
+/** Aus der zentralen Leistungsquelle abgeleitet - nicht hier gepflegt. */
+const STATIC_SERVICES: ServiceEntry[] = serviceProfiles.map((service) => ({
+  title: service.title,
+  description: service.description,
+  audience: service.audience,
+  href: service.href,
+  image: service.image,
+}));
 
 function normalizePath(value?: string) {
   const path = value?.trim();

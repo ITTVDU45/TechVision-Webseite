@@ -19,6 +19,8 @@ import {
 } from '../tools/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 import { toBlogPosts } from "@/lib/content";
+import ServiceProof from "@/app/components/service-pages/ServiceProof";
+import { serviceById } from "@/app/data/services";
 
 export default function Tools() {
   const { faqs, blogs } = usePageContent({
@@ -35,6 +37,7 @@ export default function Tools() {
       <Header />
       <main>
       <HeroSection />
+      <ServiceProof service={serviceById["tools"]} reference={{ title: "KI-gestützter Personal Assistant", href: "/case-studies/personal-assistant" }} />
       <OpenSourceToolsSection tools={openSourceToolsData} />
       <KIAgentsSection agents={kiAgentsData} />
       <IntegrationSection

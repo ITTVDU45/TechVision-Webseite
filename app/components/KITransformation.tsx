@@ -19,6 +19,8 @@ import {
 } from "../ki-transformation/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
 import { toBlogPosts } from "@/lib/content";
+import ServiceProof from "@/app/components/service-pages/ServiceProof";
+import { serviceById } from "@/app/data/services";
 
 export default function KITransformation() {
   const { faqs, blogs } = usePageContent({
@@ -40,6 +42,7 @@ export default function KITransformation() {
       <main>
 
       <HeroSection />
+      <ServiceProof service={serviceById["ki-transformation"]} reference={{ title: "KI Transformation", href: "/case-studies/ki-transformation" }} />
 
       <WhatIsKITransformation features={whatIsFeatures} />
 
