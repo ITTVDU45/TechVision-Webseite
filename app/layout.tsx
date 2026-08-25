@@ -1,8 +1,45 @@
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from "@/lib/site-logo";
 import "./styles/globals.css";
 import "./styles/slick-overrides.css";
 import AppChrome from "./components/AppChrome";
+
+/**
+ * Archivo traegt die Ueberschriften, Inter den Fliesstext.
+ *
+ * Selbst gehostet statt ueber next/font/google: Dessen Download zur Bauzeit
+ * faellt bei fehlendem Netz stillschweigend auf eine Ersatzschrift zurueck,
+ * ohne den Build abzubrechen. Genau so entstand der urspruengliche Fehler -
+ * im CSS stand "Inter", geladen wurde nie etwas.
+ * Dateien holen: node scripts/fetch-fonts.mjs
+ *
+ * Die Fallback-Metriken verhindern den Sprung beim Schriftwechsel;
+ * adjustFontFallback gleicht x-Hoehe und Breite der Ersatzschrift an.
+ */
+const archivo = localFont({
+  src: [
+    { path: "./fonts/archivo-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/archivo-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/archivo-700.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-display",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "Segoe UI", "sans-serif"],
+  adjustFontFallback: "Arial",
+});
+
+const inter = localFont({
+  src: [
+    { path: "./fonts/inter-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/inter-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/inter-600.woff2", weight: "600", style: "normal" },
+  ],
+  variable: "--font-body",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "Segoe UI", "sans-serif"],
+  adjustFontFallback: "Arial",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -78,7 +115,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" suppressHydrationWarning>
+    <html lang="de" className={`${archivo.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <link rel="icon" href={SITE_LOGO_PATH} type="image/png" />
