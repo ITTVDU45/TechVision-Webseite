@@ -94,7 +94,7 @@ export default function CTA() {
             >
               <div className="relative aspect-square w-full">
                 <Image
-                  src="/images/Tolgahan Vardar.jpeg"
+                  src="/images/Tolgahan Vardar.webp"
                   alt="Tolgahan Vardar, CEO TechVision"
                   fill
                   sizes="(max-width: 1280px) 320px, 400px"

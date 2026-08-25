@@ -107,7 +107,7 @@ export const caseStudiesData: CaseStudy[] = [
       "ISO 27001 Zertifizierung erreicht",
       "Erfolgreiche BSI-Grundschutz-Implementierung",
     ],
-    image: "/images/cybersecurity.jpg",
+    image: "/images/cybersecurity.webp",
     link: "/case-studies/cybersecurityberatung",
   },
   {
@@ -119,7 +119,7 @@ export const caseStudiesData: CaseStudy[] = [
       "Vollständige NIST-Framework-Integration",
       "Automatisierte Sicherheitsprozesse",
     ],
-    image: "/images/system-integration-network.jpg",
+    image: "/images/system-integration-network.webp",
     link: "/case-studies/cybersecurityberatung",
   },
   {
@@ -131,7 +131,7 @@ export const caseStudiesData: CaseStudy[] = [
       "Sichere Skalierung der IT-Infrastruktur",
       "24/7 Sicherheitsmonitoring",
     ],
-    image: "/images/cms-development.jpg",
+    image: "/images/cms-development.webp",
     link: "/case-studies/cybersecurityberatung",
   },
 ];
@@ -206,7 +206,7 @@ export const securityInsightsPosts: BlogPost[] = [
     description: "Wie Sie Ihr Unternehmen vor modernen Bedrohungen schützen",
     category: { name: "Security" },
     date: "2024-03-18",
-    image: "/images/cybersecurity.jpg",
+    image: "/images/cybersecurity.webp",
     link: "/blog/cybersecurity-best-practices",
   },
   {
@@ -215,7 +215,7 @@ export const securityInsightsPosts: BlogPost[] = [
     description: "Implementierung des Zero-Trust-Modells in modernen Unternehmen",
     category: { name: "Security Architecture" },
     date: "2024-03-16",
-    image: "/images/system-integration-network.jpg",
+    image: "/images/system-integration-network.webp",
     link: "/blog/zero-trust-security",
   },
   {
@@ -224,7 +224,7 @@ export const securityInsightsPosts: BlogPost[] = [
     description: "Neue Herausforderungen in der Cloud-Sicherheit und wie Sie ihnen begegnen",
     category: { name: "Cloud" },
     date: "2024-03-14",
-    image: "/images/cms-development.jpg",
+    image: "/images/cms-development.webp",
     link: "/blog/cloud-security-2024",
   },
 ];

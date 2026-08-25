@@ -50,7 +50,7 @@ export default function AIStrategySection() {
           >
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl border border-white/10 bg-[#0a1220]">
               <Image
-                src="/images/KITransofmation.jpg"
+                src="/images/KITransofmation.webp"
                 alt="KI‑Strategie und Entwicklung im Unternehmen"
                 fill
                 sizes="(max-width: 1024px) 100vw, 45vw"

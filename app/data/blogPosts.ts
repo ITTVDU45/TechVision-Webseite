@@ -18,7 +18,7 @@ export const blogPosts: BlogPost[] = [
     title: "Cybersecurity Trends 2024",
     subtitle: "IT-Sicherheit",
     description: "Die wichtigsten Sicherheitsstrategien zum Schutz Ihrer digitalen Assets in einer vernetzten Welt.",
-    image: "/images/cybersecurity.jpg",
+    image: "/images/cybersecurity.webp",
     date: "2024-03-15",
     readTime: "7 min",
     category: { name: "Sicherheit", icon: "🔒" }
@@ -38,7 +38,7 @@ export const blogPosts: BlogPost[] = [
     title: "Die Zukunft der Webentwicklung",
     subtitle: "Technologie",
     description: "Von Headless CMS bis Edge Computing – was die nächste Generation des Webs ausmacht.",
-    image: "/images/cms-development.jpg",
+    image: "/images/cms-development.webp",
     date: "2024-03-05",
     readTime: "8 min",
     category: { name: "Tech", icon: "💻" }

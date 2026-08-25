@@ -90,7 +90,7 @@ export const newsBlogPosts: BlogPost[] = [
     description: "Entdecken Sie die neuesten Trends und Technologien, die die Softwareentwicklung revolutionieren.",
     category: { name: "Trends" },
     date: "2024-03-20",
-    image: "/images/cms-development.jpg",
+    image: "/images/cms-development.webp",
     link: "/blog/trends-softwareentwicklung",
   },
   {
@@ -99,7 +99,7 @@ export const newsBlogPosts: BlogPost[] = [
     description: "Erfahren Sie, wie Sie Ihre Softwareprojekte effizient und erfolgreich umsetzen können.",
     category: { name: "Best Practices" },
     date: "2024-03-18",
-    image: "/images/system-integration-network.jpg",
+    image: "/images/system-integration-network.webp",
     link: "/blog/best-practices-softwareentwicklung",
   },
   {

@@ -283,7 +283,7 @@ export const insightsBlogPosts: BlogPost[] = [
     description: "Praktische Anwendungsbeispiele für KI in mittelständischen Unternehmen.",
     category: { name: "Best Practices" },
     date: "2024-03-10",
-    image: "/images/KITransofmation.jpg",
+    image: "/images/KITransofmation.webp",
     link: "/blog/machine-learning-mittelstand",
   },
   {

@@ -9,13 +9,13 @@ const steps = [
     title: 'Analyse & Strategie',
     description:
       'Wir starten mit einer umfassenden Analyse Ihrer bestehenden Systeme, Prozesse und Ziele. Darauf aufbauend entwickeln wir eine maßgeschneiderte Strategie.',
-    image: '/images/Ai Voice Assistant 4.png',
+    image: '/images/Ai Voice Assistant 4.webp',
   },
   {
     title: 'Konzeption & Planung',
     description:
       'Gemeinsam definieren wir den Fahrplan: Welche Lösungen bringen den größten Mehrwert? Wie lassen sich bestehende Systeme sinnvoll einbinden?',
-    image: '/images/multiple-devices-background.webp.png',
+    image: '/images/multiple-devices-background.webp',
   },
   {
     title: 'Umsetzung & Integration',
@@ -27,13 +27,13 @@ const steps = [
     title: 'Test & Qualitätssicherung',
     description:
       'Vor dem Go‑Live durchlaufen alle Lösungen umfassende Tests – funktional, sicherheitstechnisch und im Live‑Betrieb.',
-    image: '/images/bitwarden-business-og.png',
+    image: '/images/bitwarden-business-og.webp',
   },
   {
     title: 'Monitoring & Support',
     description:
       'Auch nach Abschluss des Projekts bleiben wir an Ihrer Seite: mit Monitoring, regelmäßigen Sicherheitsupdates und kontinuierlicher Optimierung.',
-    image: '/images/system-integration-network.jpg',
+    image: '/images/system-integration-network.webp',
   },
 ];
 

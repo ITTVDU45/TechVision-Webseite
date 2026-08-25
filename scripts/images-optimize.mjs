@@ -23,6 +23,14 @@ const CODE_DIRS = ["app", "lib"];
 const MAX_WIDTH = 2000;
 const WEBP_QUALITY = 82;
 
+/**
+ * public/uploads/ bleibt unangetastet: Diese Pfade stehen als URL in der
+ * Datenbank (CMS-Uploads). Eine Umbenennung dort würde Verweise brechen,
+ * die dieses Skript nicht mitziehen kann.
+ * Das Logo bleibt PNG - harte Kanten leiden unter verlustbehafteter Kompression.
+ */
+const SKIP = [/[\\/]uploads[\\/]/, /techvision-logo\.png$/i];
+
 const args = process.argv.slice(2);
 const DRY = args.includes("--dry");
 const REPLACE = args.includes("--replace");
@@ -62,9 +70,9 @@ const mb = (bytes) => (bytes / 1024 / 1024).toFixed(2);
 async function main() {
   const used = ONLY_USED ? await referencedNames() : null;
 
-  const files = (await walk(PUBLIC_DIR)).filter((f) =>
-    [".png", ".jpg", ".jpeg"].includes(extname(f).toLowerCase()),
-  );
+  const files = (await walk(PUBLIC_DIR))
+    .filter((f) => [".png", ".jpg", ".jpeg"].includes(extname(f).toLowerCase()))
+    .filter((f) => !SKIP.some((re) => re.test(f)));
 
   let before = 0;
   let after = 0;
@@ -74,7 +82,8 @@ async function main() {
     if (used && !used.has(basename(file))) continue;
 
     const { size } = await stat(file);
-    const target = join(dirname(file), basename(file, extname(file)) + ".webp");
+    const stem = basename(file, extname(file)).replace(/\.webp$/i, "");
+    const target = join(dirname(file), stem + ".webp");
     const shortPath = relative(PUBLIC_DIR, file).split("\\").join("/");
 
     let pipeline;

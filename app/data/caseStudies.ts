@@ -17,7 +17,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "Cybersecurityberatung",
       subtitle: "IT-Sicherheit",
       description: "Umfassende Sicherheitsanalyse und Implementierung von Schutzmaßnahmen für kritische Infrastrukturen.",
-      image: "/images/cybersecurity.jpg",
+      image: "/images/cybersecurity.webp",
       stats: [
         { value: "100%", label: "Compliance" },
         { value: "90%", label: "Risikominderung" },
@@ -43,7 +43,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "CMS Webentwicklung",
       subtitle: "Content Management",
       description: "Entwicklung einer modernen Website mit headless CMS und Next.js Frontend.",
-      image: "/images/cms-development.jpg",
+      image: "/images/cms-development.webp",
       stats: [
         { value: "300%", label: "Schneller" },
         { value: "99%", label: "SEO Score" },
@@ -57,7 +57,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "CRM mit KI-Agenten",
       subtitle: "Kundenmanagement",
       description: "Integration von KI-Agenten in bestehende CRM-Systeme für automatisierte Kundenbetreuung.",
-      image: "/images/crm-entwicklung.jpg",
+      image: "/images/crm-entwicklung.webp",
       stats: [
         { value: "45%", label: "Schnellere Reaktion" },
         { value: "30%", label: "Mehr Zufriedenheit" },
@@ -81,7 +81,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "Kanzlei Digitalisierung",
       subtitle: "Legal Tech",
       description: "Digitale Transformation einer Anwaltskanzlei mit KI-gestützten Prozessen.",
-      image: "/images/legaltech.jpg",
+      image: "/images/legaltech.webp",
       stats: [
         { value: "65%", label: "Effizienter" },
         { value: "50%", label: "Schneller" },
@@ -95,7 +95,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "E-Commerce Lösungen mit Shopify",
       subtitle: "Online-Handel",
       description: "Entwicklung skalierbarer E-Commerce Plattformen mit Shopify und WooCommerce.",
-      image: "/images/onlineshop.jpg",
+      image: "/images/onlineshop.webp",
       stats: [
         { value: "200%", label: "Mehr Umsatz" },
         { value: "45%", label: "Conversion Rate" },
@@ -121,7 +121,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "KI Telefonie",
       subtitle: "Automatisierung",
       description: "Implementation von KI-gestützten Telefoniesystemen für verbesserten Kundenservice.",
-      image: "/images/aitelefonie.jpg",
+      image: "/images/aitelefonie.webp",
       stats: [
         { value: "90%", label: "Annahmequote" },
         { value: "75%", label: "Zeitersparnis" },
@@ -133,7 +133,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "Passwortmanager",
       subtitle: "Sicherheit & Komfort",
       description: "Implementierung eines sicheren Passwortmanagers für Unternehmen.",
-      image: "/images/Passwordmanageraufmacher.png",
+      image: "/images/Passwordmanageraufmacher.webp",
       stats: [
         { value: "99%", label: "Sicherheit" },
         { value: "100%", label: "Benutzerfreundlichkeit" },
@@ -145,7 +145,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "KI-gestützter Personal Assistant",
       subtitle: "Effizienz und Komfort",
       description: "Implementierung eines KI-gestützten Personal Assistants zur Steigerung der Produktivität.",
-      image: "/images/KIAGENTBILD.jpeg",
+      image: "/images/KIAGENTBILD.webp",
       stats: [
         { value: "70%", label: "Produktivitätssteigerung" },
         { value: "60%", label: "Effizienz" },
