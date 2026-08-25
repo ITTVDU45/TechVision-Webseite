@@ -91,3 +91,6 @@ CONTENT_INTEGRATION_CHECKLIST.md
 codesnippets.md
 ADMIN_PANEL_README.md
 MONGODB_SETUP.md
+
+# Claude Code: lokale Einstellungen (nicht teilen)
+.claude/settings.local.json
