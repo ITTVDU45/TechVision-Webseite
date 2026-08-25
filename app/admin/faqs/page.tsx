@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import DataTable from '../components/DataTable';
@@ -17,7 +17,7 @@ interface FAQ {
 }
 
 export default function FAQsPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,15 +26,7 @@ export default function FAQsPage() {
   const [showForm, setShowForm] = useState(false);
   const [showBulkImport, setShowBulkImport] = useState(false);
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/admin/login');
-      return;
-    }
-    fetchFAQs();
-  }, [session, selectedPage]);
-
-  const fetchFAQs = async () => {
+  const fetchFAQs = useCallback(async () => {
     try {
       const url = selectedPage === 'all' ? '/api/faqs' : `/api/faqs?page=${selectedPage}`;
       const res = await fetch(url);
@@ -45,7 +37,16 @@ export default function FAQsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedPage]);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      router.push('/admin/login');
+      return;
+    }
+    fetchFAQs();
+  }, [session, status, router, fetchFAQs]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Möchten Sie diese FAQ wirklich löschen?')) return;

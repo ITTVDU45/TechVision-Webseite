@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import DataTable from '../components/DataTable';
@@ -16,22 +16,14 @@ interface PageContent {
 }
 
 export default function PagesPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [contents, setContents] = useState<PageContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingContent, setEditingContent] = useState<PageContent | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/admin/login');
-      return;
-    }
-    fetchContents();
-  }, [session]);
-
-  const fetchContents = async () => {
+  const fetchContents = useCallback(async () => {
     try {
       const res = await fetch('/api/page-content');
       const data = await res.json();
@@ -41,7 +33,16 @@ export default function PagesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      router.push('/admin/login');
+      return;
+    }
+    fetchContents();
+  }, [session, status, router, fetchContents]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Möchten Sie diesen Seiteninhalt wirklich löschen?')) return;

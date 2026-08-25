@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { IconPlus, IconTrash, IconEdit } from '@tabler/icons-react';
@@ -13,7 +13,7 @@ interface Category {
 }
 
 export default function CaseStudyCategoriesPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,15 +22,7 @@ export default function CaseStudyCategoriesPage() {
   const [formData, setFormData] = useState({ name: '', order: 0 });
   const [error, setError] = useState<string>('');
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/admin/login');
-      return;
-    }
-    fetchCategories();
-  }, [session]);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const res = await fetch('/api/case-study-categories', { cache: 'no-store' });
       if (res.ok) {
@@ -73,7 +65,16 @@ export default function CaseStudyCategoriesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      router.push('/admin/login');
+      return;
+    }
+    fetchCategories();
+  }, [session, status, router, fetchCategories]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

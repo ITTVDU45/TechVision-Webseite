@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import DataTable from '../components/DataTable';
@@ -19,7 +19,7 @@ interface PricingPlan {
 }
 
 export default function PricingPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [plans, setPlans] = useState<PricingPlan[]>([]);
   const [loading, setLoading] = useState(true);
@@ -27,15 +27,7 @@ export default function PricingPage() {
   const [editingPlan, setEditingPlan] = useState<PricingPlan | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/admin/login');
-      return;
-    }
-    fetchPlans();
-  }, [session, selectedPage]);
-
-  const fetchPlans = async () => {
+  const fetchPlans = useCallback(async () => {
     try {
       const url = selectedPage === 'all' ? '/api/pricing' : `/api/pricing?page=${selectedPage}`;
       const res = await fetch(url);
@@ -46,7 +38,16 @@ export default function PricingPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedPage]);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      router.push('/admin/login');
+      return;
+    }
+    fetchPlans();
+  }, [session, status, router, fetchPlans]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Möchten Sie diesen Preisplan wirklich löschen?')) return;

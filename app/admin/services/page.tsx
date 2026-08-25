@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import DataTable from "../components/DataTable";
@@ -23,22 +23,14 @@ interface Service {
 }
 
 export default function ServicesPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    if (!session) {
-      router.push("/admin/login");
-      return;
-    }
-    fetchServices();
-  }, [session]);
-
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
     try {
       const res = await fetch(
         `/api/services?page=${HOME_SERVICES_PLACEMENT}&exactPage=1`
@@ -50,7 +42,16 @@ export default function ServicesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session) {
+      router.push("/admin/login");
+      return;
+    }
+    fetchServices();
+  }, [session, status, router, fetchServices]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Möchten Sie diesen Service wirklich löschen?")) return;

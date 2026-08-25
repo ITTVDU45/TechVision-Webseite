@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import DataTable from '../components/DataTable';
@@ -17,22 +17,14 @@ interface Testimonial {
 }
 
 export default function TestimonialsPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    if (!session) {
-      router.push('/admin/login');
-      return;
-    }
-    fetchTestimonials();
-  }, [session]);
-
-  const fetchTestimonials = async () => {
+  const fetchTestimonials = useCallback(async () => {
     try {
       const res = await fetch('/api/testimonials');
       const data = await res.json();
@@ -42,7 +34,16 @@ export default function TestimonialsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      router.push('/admin/login');
+      return;
+    }
+    fetchTestimonials();
+  }, [session, status, router, fetchTestimonials]);
 
   const handleDelete = async (id: string) => {
     if (!confirm('Möchten Sie dieses Testimonial wirklich löschen?')) return;
