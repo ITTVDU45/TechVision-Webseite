@@ -1,5 +1,9 @@
 import { Icon } from "@tabler/icons-react";
 
+// BlogPost, BlogCategory und FAQ kommen aus dem gemeinsamen Modell.
+// Vorher war jeder dieser Typen hier neu definiert - mit abweichenden Formen.
+export type { BlogPost, BlogCategory, FAQ } from "@/lib/types/content";
+
 export interface Service {
   icon: string;
   title: string;
@@ -47,20 +51,4 @@ export interface ProcessStep {
   description: string;
   color: string;
   iconColor: string;
-}
-
-export interface BlogPost {
-  title: string;
-  subtitle?: string;
-  excerpt?: string;
-  image?: string;
-  link?: string;
-  category?: string;
-  date?: string;
-}
-
-export interface FAQ {
-  question: string;
-  answer: string;
-  icon?: string;
 }

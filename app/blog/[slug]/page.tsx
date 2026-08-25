@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { blogPosts as fallbackPosts } from "../../data/blogPosts";
 import { fetchBlogPosts } from "@/lib/api";
+import { formatDate, isoDate } from "@/lib/format";
 
 interface Category { id?: string; name: string }
 interface BlogPost {
@@ -107,7 +108,7 @@ export default function BlogDetailPage() {
                   <div className="mt-8 flex flex-wrap gap-2">{categoriesOf(blog).map((category) => <Link key={category.id || category.name} href={`/blog/category/${category.id || toSlug(category.name)}`} className="eyebrow focus-ring">{category.name}</Link>)}</div>
                   <h1 className="heading-display mt-6 max-w-5xl text-4xl sm:text-6xl lg:text-7xl">{blog.title}</h1>
                   {blog.subtitle ? <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">{blog.subtitle}</p> : null}
-                  <div className="mt-7 flex flex-wrap gap-4 text-sm text-slate-500">{blog.date ? <time>{blog.date}</time> : null}<span>{blog.readTime || "Artikel"}</span></div>
+                  <div className="mt-7 flex flex-wrap gap-4 text-sm text-slate-500">{blog.date ? <time dateTime={isoDate(blog.date)}>{formatDate(blog.date)}</time> : null}<span>{blog.readTime || "Artikel"}</span></div>
                 </div>
               </header>
 

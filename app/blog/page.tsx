@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { blogPosts as fallbackPosts } from "../data/blogPosts";
 import { fetchBlogPosts } from "@/lib/api";
+import { formatDate, isoDate } from "@/lib/format";
 
 interface Category { id?: string; name: string; icon?: string }
 interface BlogPost {
@@ -93,7 +94,7 @@ export default function BlogPage() {
                         </div>
                       ) : null}
                       <div className="p-6">
-                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">{category ? <span className="font-semibold uppercase tracking-wider text-sky-300">{category}</span> : null}{post.date ? <time>{post.date}</time> : null}</div>
+                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">{category ? <span className="font-semibold uppercase tracking-wider text-sky-300">{category}</span> : null}{post.date ? <time dateTime={isoDate(post.date)}>{formatDate(post.date)}</time> : null}</div>
                         <h2 className="mt-4 text-xl font-semibold leading-snug"><Link href={slug ? `/blog/${slug}` : "/blog"} className="focus-ring rounded-sm hover:text-sky-300">{post.title}</Link></h2>
                         <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{post.description || post.subtitle}</p>
                         <div className="mt-6 flex items-center justify-between border-t border-white/[0.06] pt-4 text-xs text-slate-500"><span>{post.readTime || "Artikel"}</span><span aria-hidden="true">→</span></div>

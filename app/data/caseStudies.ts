@@ -1,13 +1,6 @@
-export type CaseStat = { value: string; label: string };
+import type { CaseStudy, CaseStat } from "@/lib/types/content";
 
-export type CaseStudy = {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  image: string;
-  stats: CaseStat[];
-};
+export type { CaseStudy, CaseStat };
 
 export const categories = [
   { id: "beratung", name: "Beratung" },

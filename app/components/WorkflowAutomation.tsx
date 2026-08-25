@@ -19,6 +19,7 @@ import {
   faqsData,
 } from '../workflow-automation/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
+import { toBlogPosts } from "@/lib/content";
 
 export default function WorkflowAutomation() {
   const { faqs, blogs } = usePageContent({
@@ -28,15 +29,7 @@ export default function WorkflowAutomation() {
   });
 
   const displayFAQs = faqs.length > 0 ? faqs : faqsData;
-  const displayBlogs = blogs.length > 0 ? blogs.map((b: any) => ({
-    title: b.title,
-    subtitle: b.subtitle,
-    description: b.excerpt || b.description || b.content?.substring(0, 150) || '',
-    image: b.image,
-    link: b.slug ? `/blog/${b.slug}` : b.link || '#',
-    category: typeof b.category === 'object' && b.category !== null ? b.category : { name: b.category || 'Automatisierung', icon: '⚡' },
-    date: b.date || new Date(b.createdAt).toLocaleDateString('de-DE'),
-  })) : workflowInsightsData;
+  const displayBlogs = toBlogPosts(blogs, { name: "Automatisierung", icon: "\u26A1" }, workflowInsightsData);
 
   return (
     <div className="min-h-screen w-full bg-black text-white">

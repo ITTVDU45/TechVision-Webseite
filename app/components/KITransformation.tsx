@@ -18,6 +18,7 @@ import {
   faqsData,
 } from "../ki-transformation/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
+import { toBlogPosts } from "@/lib/content";
 
 export default function KITransformation() {
   const { faqs, blogs } = usePageContent({
@@ -30,31 +31,7 @@ export default function KITransformation() {
   const displayFAQs = faqs.length > 0 ? faqs : faqsData;
   
   // Formatiere Blogs für BlogSection
-  const displayBlogs = blogs.length > 0 ? blogs.map((b: any) => {
-    // Normalisiere category zu String
-    let categoryString = 'Allgemein';
-    if (Array.isArray(b.category) && b.category.length > 0) {
-      categoryString = b.category[0].name || b.category[0].id || 'Allgemein';
-    } else if (b.category?.name) {
-      categoryString = b.category.name;
-    } else if (typeof b.category === 'string') {
-      categoryString = b.category;
-    }
-    
-    return {
-      title: b.title || '',
-      subtitle: b.subtitle || '',
-      excerpt: b.description || b.content?.substring(0, 200) || '',
-      image: b.image || 'https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Blog+Image',
-      link: b.slug ? `/blog/${b.slug}` : (b.id ? `/blog/${b.id}` : '#'),
-      category: categoryString,
-      date: b.date || new Date(b.createdAt || Date.now()).toLocaleDateString('de-DE', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      }),
-    };
-  }) : [];
+  const displayBlogs = toBlogPosts(blogs, { name: "KI & Innovation" }, []);
 
   return (
     <div className="min-h-screen w-full bg-black text-white">

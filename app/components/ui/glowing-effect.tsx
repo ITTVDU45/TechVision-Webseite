@@ -1,6 +1,5 @@
 "use client";
 import React, { memo, useCallback, useEffect, useRef } from 'react';
-import { animate } from 'motion';
 
 type Props = {
   blur?: number;
@@ -30,11 +29,13 @@ const GlowingEffect = memo(({ blur = 0, glow = true, borderWidth = 1, spread = 2
     if (distance < proximity) {
       const opacity = Math.max(0, 1 - distance / proximity);
       if (glowRef.current) {
-        animate(glowRef.current, { opacity, transform: `translate(${x - centerX}px, ${y - centerY}px)` }, { duration: 0.1 });
+        glowRef.current.style.opacity = String(opacity);
+        glowRef.current.style.transform = `translate(${x - centerX}px, ${y - centerY}px)`;
       }
     } else {
       if (glowRef.current) {
-        animate(glowRef.current, { opacity: 0, transform: 'translate(0, 0)' }, { duration: 0.1 });
+        glowRef.current.style.opacity = '0';
+        glowRef.current.style.transform = 'translate(0, 0)';
       }
     }
   }, [disabled, proximity]);
@@ -49,7 +50,7 @@ const GlowingEffect = memo(({ blur = 0, glow = true, borderWidth = 1, spread = 2
   return (
     <div ref={containerRef} className={className}>
       {glow && (
-        <div ref={glowRef} className="pointer-events-none absolute inset-0" style={{ opacity: 0, borderRadius: 'inherit', transition: 'opacity 0.2s', background: `radial-gradient(circle at center, rgba(255,255,255,${inactiveZone}) 0%, transparent ${spread}%)`, filter: `blur(${blur}px)` }} />
+        <div ref={glowRef} className="pointer-events-none absolute inset-0" style={{ opacity: 0, borderRadius: 'inherit', transition: 'opacity 0.2s, transform 0.1s', background: `radial-gradient(circle at center, rgba(255,255,255,${inactiveZone}) 0%, transparent ${spread}%)`, filter: `blur(${blur}px)` }} />
       )}
       {children}
     </div>

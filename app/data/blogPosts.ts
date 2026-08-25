@@ -1,17 +1,6 @@
-export type BlogPost = {
-  id: string;
-  slug?: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  image: string;
-  date: string;
-  readTime: string;
-  category: {
-    name: string;
-    icon: string;
-  };
-};
+import type { BlogPost } from "@/lib/types/content";
+
+export type { BlogPost };
 
 export const blogPosts: BlogPost[] = [
   {
@@ -20,7 +9,7 @@ export const blogPosts: BlogPost[] = [
     subtitle: "KI & Automatisierung",
     description: "Wie Unternehmen KI erfolgreich in ihre Geschäftsprozesse integrieren und messbare Erfolge erzielen.",
     image: "",
-    date: "22. März 2024",
+    date: "2024-03-22",
     readTime: "5 min",
     category: { name: "KI & Innovation", icon: "🤖" }
   },
@@ -30,7 +19,7 @@ export const blogPosts: BlogPost[] = [
     subtitle: "IT-Sicherheit",
     description: "Die wichtigsten Sicherheitsstrategien zum Schutz Ihrer digitalen Assets in einer vernetzten Welt.",
     image: "/images/cybersecurity.jpg",
-    date: "15. März 2024",
+    date: "2024-03-15",
     readTime: "7 min",
     category: { name: "Sicherheit", icon: "🔒" }
   },
@@ -40,7 +29,7 @@ export const blogPosts: BlogPost[] = [
     subtitle: "Automatisierung",
     description: "Wie Sie tägliche Aufgaben durch intelligente Agenten automatisieren und Zeit für das Wesentliche gewinnen.",
     image: "",
-    date: "10. März 2024",
+    date: "2024-03-10",
     readTime: "6 min",
     category: { name: "Produktivität", icon: "⚡" }
   },
@@ -50,7 +39,7 @@ export const blogPosts: BlogPost[] = [
     subtitle: "Technologie",
     description: "Von Headless CMS bis Edge Computing – was die nächste Generation des Webs ausmacht.",
     image: "/images/cms-development.jpg",
-    date: "05. März 2024",
+    date: "2024-03-05",
     readTime: "8 min",
     category: { name: "Tech", icon: "💻" }
   }

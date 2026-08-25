@@ -1,19 +1,14 @@
 import Link from "next/link";
+import { formatDate, isoDate } from "@/lib/format";
+import type { BlogPost } from "@/lib/types/content";
 
-export interface ServiceBlogPost {
-  title: string;
-  subtitle?: string;
-  excerpt?: string;
-  image?: string;
-  link?: string;
-  category?: string;
-  date?: string;
-}
+// Beibehaltener Name fuer die bestehenden Importstellen.
+export type ServiceBlogPost = BlogPost;
 
 interface BlogSectionProps {
   title?: string;
   subtitle?: string;
-  blogPosts?: ServiceBlogPost[];
+  blogPosts?: BlogPost[];
 }
 
 export default function BlogSection({
@@ -48,13 +43,13 @@ export default function BlogSection({
                 ) : null}
                 <div className="p-6">
                   <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
-                    {post.category ? <span className="font-semibold uppercase tracking-wider text-sky-300">{post.category}</span> : null}
-                    {post.date ? <time>{post.date}</time> : null}
+                    {post.category?.name ? <span className="font-semibold uppercase tracking-wider text-sky-300">{post.category.name}</span> : null}
+                    {post.date ? <time dateTime={isoDate(post.date)}>{formatDate(post.date)}</time> : null}
                   </div>
                   <h3 className="mt-4 text-xl font-semibold leading-snug text-white">
                     <Link href={post.link || "/blog"} className="focus-ring rounded-sm transition-colors hover:text-sky-300">{post.title}</Link>
                   </h3>
-                  {post.excerpt ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{post.excerpt}</p> : null}
+                  {post.description ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{post.description}</p> : null}
                   <Link href={post.link || "/blog"} className="focus-ring mt-6 inline-flex rounded-sm text-sm font-semibold text-sky-300 hover:text-sky-200">Weiterlesen <span className="ml-2" aria-hidden="true">→</span></Link>
                 </div>
               </article>

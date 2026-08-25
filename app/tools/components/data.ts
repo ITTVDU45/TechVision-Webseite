@@ -167,6 +167,7 @@ export const integrationFeaturesData: IntegrationFeature[] = [
 
 export const toolsNewsData: BlogPost[] = [
   {
+    id: 'ki-tools',
     title: 'KI-Tools im Unternehmenseinsatz',
     subtitle: 'Effizienzsteigerung durch moderne Technologie',
     description: 'Effizienzsteigerung durch moderne Technologie',
@@ -174,10 +175,11 @@ export const toolsNewsData: BlogPost[] = [
       name: 'Best Practices',
       icon: '💡',
     },
-    date: '20. März 2024',
+    date: '2024-03-20',
     link: '/blog/ki-tools',
   },
   {
+    id: 'open-source-vs-enterprise',
     title: 'Open Source vs. Enterprise',
     subtitle: 'Entscheidungshilfe für Unternehmen',
     description: 'Entscheidungshilfe für Unternehmen',
@@ -185,10 +187,11 @@ export const toolsNewsData: BlogPost[] = [
       name: 'Trends',
       icon: '📊',
     },
-    date: '15. März 2024',
+    date: '2024-03-15',
     link: '/blog/open-source-vs-enterprise',
   },
   {
+    id: 'zukunft-ki-agenten',
     title: 'Zukunft der KI-Agenten',
     subtitle: 'Trends und Innovationen',
     description: 'Trends und Innovationen',
@@ -196,7 +199,7 @@ export const toolsNewsData: BlogPost[] = [
       name: 'Trends',
       icon: '🔮',
     },
-    date: '10. März 2024',
+    date: '2024-03-10',
     link: '/blog/zukunft-ki-agenten',
   },
 ];

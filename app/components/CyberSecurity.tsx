@@ -22,6 +22,7 @@ import {
   faqsData,
 } from "../cybersecurity/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
+import { toBlogPosts } from "@/lib/content";
 
 export default function CyberSecurity() {
   const { faqs, services, blogs, caseStudies } = usePageContent({
@@ -40,27 +41,7 @@ export default function CyberSecurity() {
     color: s.color || 'from-gray-800/50 to-gray-900/50',
     iconColor: s.iconColor || 'text-blue-500',
   })) : servicesData;
-  const displayBlogs = blogs.length > 0 ? blogs.map((b: any) => {
-    // Normalisiere category zu String
-    let categoryString = 'Allgemein';
-    if (Array.isArray(b.category) && b.category.length > 0) {
-      categoryString = b.category[0].name || b.category[0].id || 'Allgemein';
-    } else if (b.category?.name) {
-      categoryString = b.category.name;
-    } else if (typeof b.category === 'string') {
-      categoryString = b.category;
-    }
-    
-    return {
-      title: b.title,
-      subtitle: b.subtitle,
-      excerpt: b.excerpt || b.description || b.content?.substring(0, 150),
-      image: b.image,
-      link: b.slug ? `/blog/${b.slug}` : (b.id ? `/blog/${b.id}` : b.link || '#'),
-      category: categoryString,
-      date: b.date || new Date(b.createdAt || Date.now()).toLocaleDateString('de-DE'),
-    };
-  }) : securityInsightsPosts;
+  const displayBlogs = toBlogPosts(blogs, { name: "Security" }, securityInsightsPosts);
 
   // Transformiere Case Studies für CyberSecurity-Format (mit company, results)
   const displayCaseStudies = caseStudies.length > 0 ? caseStudies

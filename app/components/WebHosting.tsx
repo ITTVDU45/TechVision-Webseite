@@ -22,6 +22,7 @@ import {
   faqsData,
 } from '../webhosting/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
+import { toBlogPosts } from "@/lib/content";
 
 export default function WebHosting() {
   const { faqs, pricing, blogs } = usePageContent({
@@ -40,15 +41,7 @@ export default function WebHosting() {
     isPopular: p.isPopular,
     link: p.link || '#',
   })) : pricingPlansData;
-  const displayBlogs = blogs.length > 0 ? blogs.map((b: any) => ({
-    title: b.title,
-    subtitle: b.subtitle,
-    description: b.excerpt || b.description || b.content?.substring(0, 150) || '',
-    image: b.image,
-    link: b.slug ? `/blog/${b.slug}` : b.link || '#',
-    category: typeof b.category === 'object' && b.category !== null ? b.category : { name: b.category || 'Hosting', icon: '☁️' },
-    date: b.date || new Date(b.createdAt).toLocaleDateString('de-DE'),
-  })) : hostingInsightsData;
+  const displayBlogs = toBlogPosts(blogs, { name: "Hosting", icon: "\u2601\uFE0F" }, hostingInsightsData);
 
   return (
     <div className="min-h-screen w-full bg-black text-white">

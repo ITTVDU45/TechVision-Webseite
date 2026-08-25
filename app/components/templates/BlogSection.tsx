@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ColourfulText from "@/components/ui/colourful-text";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import { formatDate, isoDate } from "@/lib/format";
 
 interface BlogPostItem {
   title: string;
@@ -108,7 +109,7 @@ export default function BlogSection({
                           <span className="text-sm font-medium px-3 py-1 rounded-full bg-white/10">
                             {post.category}
                           </span>
-                          <span className="text-sm text-gray-400">{post.date}</span>
+                          <time dateTime={isoDate(post.date)} className="text-sm text-gray-400">{formatDate(post.date)}</time>
                         </div>
 
                         <div className="aspect-video rounded-lg overflow-hidden mb-4">

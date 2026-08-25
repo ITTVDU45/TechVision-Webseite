@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { BlogPost } from "../data/blogPosts";
 import { DEFAULT_BLOG_COVER_IMAGE, resolveBlogImageUrl } from "@/lib/resolveBlogImageUrl";
+import { formatDate, isoDate } from "@/lib/format";
 
 interface TopicCardProps {
   post: BlogPost;
@@ -59,7 +60,7 @@ export default function TopicCard({ post, index }: TopicCardProps): React.JSX.El
 
           <div className="flex flex-1 flex-col p-6 sm:p-8">
             <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-medium uppercase tracking-wider text-neutral-500">
-              <span>{post.date}</span>
+              <time dateTime={isoDate(post.date)}>{formatDate(post.date)}</time>
               <span className="hidden h-1 w-1 rounded-full bg-blue-500/60 sm:inline" aria-hidden />
               <span>{post.readTime} Lesezeit</span>
             </div>

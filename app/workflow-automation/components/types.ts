@@ -1,3 +1,7 @@
+// BlogPost, BlogCategory und FAQ kommen aus dem gemeinsamen Modell.
+// Vorher war jeder dieser Typen hier neu definiert - mit abweichenden Formen.
+export type { BlogPost, BlogCategory, FAQ } from "@/lib/types/content";
+
 export interface KIAgentFeature {
   icon: string;
   title: string;
@@ -23,24 +27,4 @@ export interface IntegrationCategory {
   title: string;
   systems: string[];
   features: string[];
-}
-
-export interface BlogPost {
-  id?: string;
-  title: string;
-  subtitle?: string;
-  description: string;
-  image?: string;
-  category: {
-    name: string;
-    icon: string;
-  };
-  date: string;
-  readTime?: string;
-  link?: string;
-}
-
-export interface FAQ {
-  question: string;
-  answer: string;
 }

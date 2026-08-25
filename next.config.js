@@ -45,7 +45,8 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   eslint: {
-    ignoreDuringBuilds: true,
+    // Der Build prueft mit. Warnungen brechen ihn nicht ab, Fehler schon.
+    ignoreDuringBuilds: false,
   },
   typescript: {
     ignoreBuildErrors: false,

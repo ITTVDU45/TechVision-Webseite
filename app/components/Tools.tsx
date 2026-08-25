@@ -18,6 +18,7 @@ import {
   faqsData,
 } from '../tools/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
+import { toBlogPosts } from "@/lib/content";
 
 export default function Tools() {
   const { faqs, blogs } = usePageContent({
@@ -27,15 +28,7 @@ export default function Tools() {
   });
 
   const displayFAQs = faqs.length > 0 ? faqs : faqsData;
-  const displayBlogs = blogs.length > 0 ? blogs.map((b: any) => ({
-    title: b.title,
-    subtitle: b.subtitle,
-    description: b.excerpt || b.description || b.content?.substring(0, 150) || '',
-    image: b.image,
-    link: b.slug ? `/blog/${b.slug}` : b.link || '#',
-    category: typeof b.category === 'object' && b.category !== null ? b.category : { name: b.category || 'Tools', icon: '🛠️' },
-    date: b.date || new Date(b.createdAt).toLocaleDateString('de-DE'),
-  })) : toolsNewsData;
+  const displayBlogs = toBlogPosts(blogs, { name: "Tools", icon: "\u{1F6E0}\uFE0F" }, toolsNewsData);
 
   return (
     <div className="min-h-screen w-full bg-black text-white">

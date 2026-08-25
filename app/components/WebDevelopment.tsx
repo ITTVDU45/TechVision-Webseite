@@ -20,6 +20,7 @@ import {
   faqsData,
 } from '../web-development/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
+import { toBlogPosts } from "@/lib/content";
 
 export default function WebDevelopment() {
   const { faqs, testimonials, blogs, caseStudies } = usePageContent({
@@ -32,15 +33,7 @@ export default function WebDevelopment() {
 
   const displayFAQs = faqs.length > 0 ? faqs : faqsData;
   const displayTestimonials = testimonials.length > 0 ? testimonials : testimonialsData;
-  const displayBlogs = blogs.length > 0 ? blogs.map((b: any) => ({
-    title: b.title,
-    subtitle: b.subtitle,
-    description: b.excerpt || b.description || b.content?.substring(0, 150) || '',
-    image: b.image,
-    link: b.slug ? `/blog/${b.slug}` : b.link || '#',
-    category: typeof b.category === 'object' && b.category !== null ? b.category : { name: b.category || 'Web', icon: '🌐' },
-    date: b.date || new Date(b.createdAt).toLocaleDateString('de-DE'),
-  })) : webDevelopmentInsightsData;
+  const displayBlogs = toBlogPosts(blogs, { name: "Web", icon: "\u{1F310}" }, webDevelopmentInsightsData);
 
   // Transformiere Case Studies für WebDevelopment-Format (mit metrics)
   const displayCaseStudies = caseStudies.length > 0 ? caseStudies
