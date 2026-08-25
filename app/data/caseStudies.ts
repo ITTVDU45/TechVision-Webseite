@@ -71,7 +71,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       description: "Employee Management System für Bauunternehmen",
       image: "/images/laptop-software-mockup.webp",
       stats: [
-        { value: "60%", label: "mehr Effizien" },
+        { value: "60%", label: "mehr Effizienz" },
         { value: "40%", label: "weniger Verwaltung" },
         { value: "45%", label: "schnellere Organisation" },
       ],
