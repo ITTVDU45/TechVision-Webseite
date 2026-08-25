@@ -19,7 +19,7 @@ export default function WhyIntegrateAI({
   description = "Entdecken Sie die transformative Kraft der künstlichen Intelligenz für Ihr Unternehmen",
   features,
   ctaText = "KI Potenzial Check starten",
-  ctaLink = "/offer",
+  ctaLink = "/contact",
 }: WhyIntegrateAIProps) {
   const router = useRouter();
 

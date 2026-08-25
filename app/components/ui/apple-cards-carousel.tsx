@@ -193,7 +193,7 @@ export const Card = ({
     >
       <div className="absolute inset-0 z-0">
         <img 
-          src="/ai-robot.jpg" 
+          src="/images/cms-development.jpg"
           alt={card.title} 
           className="h-full w-full object-cover"
           loading="lazy"

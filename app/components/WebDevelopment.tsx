@@ -21,7 +21,7 @@ import {
 } from '../web-development/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 
-export default function WebDevelopment(): React.ReactNode {
+export default function WebDevelopment() {
   const { faqs, testimonials, blogs, caseStudies } = usePageContent({
     page: 'web-development',
     loadFAQs: true,
@@ -72,6 +72,7 @@ export default function WebDevelopment(): React.ReactNode {
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <Header />
+      <main>
       <HeroSection />
       <ExpertiseSection expertise={expertiseData} />
       <CaseStudiesSection caseStudies={displayCaseStudies} />
@@ -81,6 +82,7 @@ export default function WebDevelopment(): React.ReactNode {
       <TopThemes />
       <FAQSection faqs={displayFAQs} />
       <CTA />
+      </main>
       <Footer />
     </div>
   );

@@ -1,17 +1,5 @@
-"use client";
-import React, { Suspense } from "react";
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+import WorkflowAutomation from "../components/WorkflowAutomation";
 
-// Dynamischer Import der WorkflowAutomation-Komponente mit SSR deaktiviert
-const WorkflowAutomation = dynamic(
-  () => import("../components/WorkflowAutomation"),
-  { ssr: false }
-);
-
-export default function WorkflowAutomationPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <WorkflowAutomation />
-    </Suspense>
-  );
-}
+export const metadata: Metadata = { title: "Workflow-Automatisierung", description: "Robuste Automatisierung für wiederkehrende Prozesse, Systemübergaben und KI-gestützte Arbeitsabläufe." };
+export default function Page() { return <WorkflowAutomation />; }

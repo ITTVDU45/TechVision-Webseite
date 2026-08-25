@@ -23,7 +23,7 @@ import {
 } from "../cybersecurity/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
 
-export default function CyberSecurity(): React.ReactNode {
+export default function CyberSecurity() {
   const { faqs, services, blogs, caseStudies } = usePageContent({
     page: 'cybersecurity',
     loadFAQs: true,
@@ -91,6 +91,8 @@ export default function CyberSecurity(): React.ReactNode {
     <div className="min-h-screen w-full bg-black text-white">
       <Header />
 
+      <main>
+
       <HeroSection />
 
       <ServicesSection services={displayServices} />
@@ -108,6 +110,8 @@ export default function CyberSecurity(): React.ReactNode {
       <FAQSection faqs={displayFAQs} />
 
       <CTA />
+
+      </main>
 
       <Footer />
     </div>

@@ -1,17 +1,5 @@
-"use client";
-import React, { Suspense } from "react";
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+import KITransformation from "../components/KITransformation";
 
-// Dynamischer Import der KITransformation-Komponente mit SSR deaktiviert
-const KITransformation = dynamic(
-  () => import("../components/KITransformation"),
-  { ssr: false }
-);
-
-export default function KITransformationPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <KITransformation />
-    </Suspense>
-  );
-}
+export const metadata: Metadata = { title: "KI-Transformation", description: "KI-Strategie, individuelle KI-Entwicklung und sichere Integration in bestehende Geschäftsprozesse." };
+export default function Page() { return <KITransformation />; }

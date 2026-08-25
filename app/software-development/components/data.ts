@@ -105,7 +105,7 @@ export const newsBlogPosts: BlogPost[] = [
     excerpt: "Lesen Sie, wie wir unseren Kunden geholfen haben, ihre Ziele zu erreichen.",
     category: "Case Studies",
     date: "15. März 2024",
-    image: "/images/ai-robot.jpg",
+    image: "",
     link: "/blog/erfolgsgeschichten-softwareentwicklung",
   },
 ];

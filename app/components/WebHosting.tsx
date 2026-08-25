@@ -23,7 +23,7 @@ import {
 } from '../webhosting/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 
-export default function WebHosting(): React.ReactNode {
+export default function WebHosting() {
   const { faqs, pricing, blogs } = usePageContent({
     page: 'webhosting',
     loadFAQs: true,
@@ -53,6 +53,7 @@ export default function WebHosting(): React.ReactNode {
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <Header />
+      <main>
       <HeroSection />
       <PricingSection plans={displayPricing} />
       <ExpertiseSection features={expertiseFeaturesData} />
@@ -66,6 +67,7 @@ export default function WebHosting(): React.ReactNode {
       <TopThemes />
       <FAQSection faqs={displayFAQs} />
       <CTA />
+      </main>
       <Footer />
     </div>
   );

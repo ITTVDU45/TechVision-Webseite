@@ -1,392 +1,113 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
-import { fetchFAQs } from "@/lib/api";
+
+import { useEffect, useMemo, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
+import { fetchFAQs } from "@/lib/api";
 
-interface FAQ {
+interface FAQItem {
   question: string;
   answer: string;
-  page?: string;
   category?: string;
   order?: number;
 }
 
-// Kategorien-Definitionen mit Icons
-const categories = [
-  { id: 'ki-transformation', name: 'KI Transformation', icon: '🤖', color: 'from-pink-500 to-rose-500' },
-  { id: 'ki-beratung', name: 'KI Beratung', icon: '🧠', color: 'from-pink-500 to-rose-500' },
-  { id: 'softwareentwicklung', name: 'Softwareentwicklung', icon: '💻', color: 'from-blue-400 to-cyan-500' },
-  { id: 'webseitenentwicklung', name: 'Webseitenentwicklung', icon: '🌐', color: 'from-blue-400 to-cyan-500' },
-  { id: 'onlineshop-entwicklung', name: 'Onlineshop Entwicklung', icon: '🛍️', color: 'from-blue-400 to-cyan-500' },
-  { id: 'workflow-automatisierung', name: 'Workflow Automatisierung', icon: '⚡', color: 'from-yellow-400 to-orange-500' },
-  { id: 'digitale-transformation', name: 'Digitale Transformation', icon: '📱', color: 'from-purple-500 to-pink-500' },
-  { id: 'cyber-security-beratung', name: 'Cyber Security Beratung', icon: '🔒', color: 'from-yellow-400 to-orange-500' },
-  { id: 'it-infrastruktur', name: 'IT Infrastruktur', icon: '🖥️', color: 'from-blue-400 to-cyan-500' },
-  { id: 'hosting', name: 'Hosting', icon: '☁️', color: 'from-blue-400 to-cyan-500' },
-  { id: 'tools-ki-agenten', name: 'Tools & KI-Agenten', icon: '🛠️', color: 'from-gray-400 to-gray-600' },
-];
+const categoryLabels: Record<string, string> = {
+  "ki-transformation": "KI-Transformation",
+  ki_transformation: "KI-Transformation",
+  "ki-beratung": "KI-Beratung",
+  softwareentwicklung: "Softwareentwicklung",
+  webseitenentwicklung: "Webentwicklung",
+  "onlineshop-entwicklung": "E-Commerce",
+  "workflow-automatisierung": "Automatisierung",
+  "digitale-transformation": "Digitalisierung",
+  "cyber-security-beratung": "Cybersecurity",
+  "it-infrastruktur": "IT-Infrastruktur",
+  hosting: "Hosting",
+  "tools-ki-agenten": "Tools & KI-Agenten",
+  home: "Allgemein",
+  other: "Allgemein",
+};
+
+function categoryLabel(id: string) {
+  return categoryLabels[id] || id.replace(/[-_]/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
 
 export default function FAQ() {
-  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [faqs, setFaqs] = useState<FAQItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [openFaqs, setOpenFaqs] = useState<Set<number>>(new Set());
-  const [searchSuggestions, setSearchSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [autoScrollQuestion, setAutoScrollQuestion] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadFAQs = async () => {
-      try {
-        // Kein page-Filter: auf /faq immer alle FAQs aus dem Backend (unabhängig von „Seite“ im CMS)
-        const apiFAQs = await fetchFAQs();
-        if (apiFAQs && Array.isArray(apiFAQs) && apiFAQs.length > 0) {
-          const sorted = apiFAQs.sort((a: FAQ, b: FAQ) => (a.order || 0) - (b.order || 0));
-          setFaqs(sorted);
-        }
-      } catch (error) {
-        console.error('Error loading FAQs:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadFAQs();
+    let active = true;
+    fetchFAQs()
+      .then((data) => {
+        if (!active || !Array.isArray(data)) return;
+        const unique = new Map<string, FAQItem>();
+        data.forEach((faq: FAQItem) => { if (faq.question && !unique.has(faq.question)) unique.set(faq.question, faq); });
+        setFaqs(Array.from(unique.values()).sort((a, b) => (a.order || 0) - (b.order || 0)));
+      })
+      .catch((error) => console.error("FAQs could not be loaded", error))
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
 
-  // Filter FAQs basierend auf Suche und Kategorie
-  const filteredFAQs = useMemo(() => {
-    let filtered = faqs;
-
-    if (selectedCategory) {
-      filtered = filtered.filter(faq => faq.category === selectedCategory);
-    }
-
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        faq =>
-          faq.question.toLowerCase().includes(query) ||
-          faq.answer.toLowerCase().includes(query)
-      );
-    }
-
-    return filtered;
-  }, [faqs, selectedCategory, searchQuery]);
-
-  // Gruppiere FAQs nach Kategorien und sortiere nach categories-Array-Reihenfolge
-  const categorizedFAQs = useMemo(() => {
-    const grouped: Record<string, FAQ[]> = {};
-    filteredFAQs.forEach(faq => {
-      const category = faq.category || 'other';
-      if (!grouped[category]) {
-        grouped[category] = [];
-      }
-      grouped[category].push(faq);
+  const categories = useMemo(() => Array.from(new Set(faqs.map((faq) => faq.category || "other"))).sort((a, b) => categoryLabel(a).localeCompare(categoryLabel(b), "de")), [faqs]);
+  const filtered = useMemo(() => {
+    const normalized = query.trim().toLocaleLowerCase("de");
+    return faqs.filter((faq) => {
+      const matchesCategory = !selectedCategory || (faq.category || "other") === selectedCategory;
+      const matchesQuery = !normalized || `${faq.question} ${faq.answer}`.toLocaleLowerCase("de").includes(normalized);
+      return matchesCategory && matchesQuery;
     });
-    
-    // Sortiere Kategorien nach der Reihenfolge im categories-Array
-    const sorted: Record<string, FAQ[]> = {};
-    categories.forEach(cat => {
-      if (grouped[cat.id] && grouped[cat.id].length > 0) {
-        sorted[cat.id] = grouped[cat.id];
-      }
-    });
-    
-    // Füge restliche Kategorien hinzu (falls vorhanden)
-    Object.keys(grouped).forEach(catId => {
-      if (!sorted[catId] && grouped[catId].length > 0) {
-        sorted[catId] = grouped[catId];
-      }
-    });
-    
-    return sorted;
-  }, [filteredFAQs]);
-
-  // Erstelle Suchvorschläge
-  useEffect(() => {
-    if (searchQuery.trim().length > 0) {
-      const query = searchQuery.toLowerCase();
-      const suggestions = faqs
-        .filter(faq => faq.question.toLowerCase().includes(query))
-        .slice(0, 5)
-        .map(faq => faq.question);
-      setSearchSuggestions(suggestions);
-      setShowSuggestions(suggestions.length > 0);
-    } else {
-      setSearchSuggestions([]);
-      setShowSuggestions(false);
-    }
-  }, [searchQuery, faqs]);
-
-  const toggleFaq = (index: number) => {
-    const newOpen = new Set(openFaqs);
-    if (newOpen.has(index)) {
-      newOpen.delete(index);
-    } else {
-      newOpen.add(index);
-    }
-    setOpenFaqs(newOpen);
-  };
-
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchQuery(suggestion);
-    setSelectedCategory(null); // Kategorie-Filter zurücksetzen
-    setShowSuggestions(false);
-    setAutoScrollQuestion(suggestion); // Markiere Frage für Auto-Scroll
-  };
-
-  // Auto-Scroll und Öffnen der FAQ, wenn eine Frage aus den Vorschlägen ausgewählt wurde
-  useEffect(() => {
-    if (autoScrollQuestion && filteredFAQs.length > 0 && Object.keys(categorizedFAQs).length > 0) {
-      const matchingFAQ = faqs.find(faq => faq.question === autoScrollQuestion);
-      if (matchingFAQ && matchingFAQ.category) {
-        // Lokale Variable mit garantiertem string-Typ für TypeScript
-        const category = matchingFAQ.category;
-        // Warte kurz, damit React die DOM-Updates abgeschlossen hat
-        setTimeout(() => {
-          // Scrolle zur Kategorie
-          const categoryElement = document.getElementById(`category-${category}`);
-          if (categoryElement) {
-            categoryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-            // Öffne die FAQ automatisch nach dem Scrollen
-            setTimeout(() => {
-              const filteredIndex = filteredFAQs.findIndex(f => f.question === autoScrollQuestion);
-              if (filteredIndex !== -1) {
-                setOpenFaqs(new Set([filteredIndex]));
-                
-                // Scrolle zur spezifischen FAQ
-                setTimeout(() => {
-                  const categoryFAQs = categorizedFAQs[category] || [];
-                  const faqIndexInCategory = categoryFAQs.findIndex(f => f.question === autoScrollQuestion);
-                  if (faqIndexInCategory !== -1) {
-                    const faqElements = document.querySelectorAll(`[id^="faq-${category}"]`);
-                    if (faqElements[faqIndexInCategory]) {
-                      faqElements[faqIndexInCategory].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                  }
-                }, 400);
-              }
-            }, 600);
-          }
-        }, 300);
-        
-        // Reset nach dem Scrollen
-        setTimeout(() => setAutoScrollQuestion(null), 3000);
-      }
-    }
-  }, [autoScrollQuestion, filteredFAQs, categorizedFAQs, faqs]);
-
-  const scrollToCategory = (categoryId: string) => {
-    setSelectedCategory(categoryId);
-    const element = document.getElementById(`category-${categoryId}`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  // Zähle FAQs pro Kategorie
-  const getCategoryCount = (categoryId: string) => {
-    return faqs.filter(faq => faq.category === categoryId).length;
-  };
+  }, [faqs, query, selectedCategory]);
 
   return (
-    <div className="min-h-screen w-full bg-black text-white">
+    <div className="min-h-screen bg-[#050912] text-white">
       <Header />
-      {/* Hero Section */}
-      <section className="pt-32 pb-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-950/20 to-black" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-5xl mx-auto text-center mb-12">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold mb-6"
-            >
-              Technologien und Vorgehensweisen
-            </motion.h1>
-            <p className="text-xl md:text-2xl text-gray-400 mb-8">
-              Finden Sie schnell Antworten zu unseren Services und Technologien.
-            </p>
+      <main>
+        <section className="border-b border-white/[0.07] pb-14 pt-36 sm:pb-16 sm:pt-44">
+          <div className="section-container">
+            <p className="eyebrow">Wissen & Orientierung</p>
+            <h1 className="heading-display mt-6 max-w-4xl text-4xl sm:text-6xl lg:text-7xl">Antworten auf wichtige Projektfragen.</h1>
+            <p className="mt-7 max-w-3xl text-lg leading-8 text-slate-300">Von KI und Softwareentwicklung bis Hosting und IT-Sicherheit: Finden Sie schnell die passende Einordnung.</p>
+          </div>
+        </section>
 
-            {/* Suchleiste */}
-            <div className="relative max-w-2xl mx-auto mb-12">
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setShowSuggestions(searchSuggestions.length > 0)}
-                  placeholder="Wonach suchen Sie?"
-                  className="w-full px-6 py-4 bg-gray-900/50 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent pr-12"
-                />
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                >
-                  {searchQuery && (
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  )}
-                </button>
+        <section className="section-y bg-[#070b13]" aria-labelledby="faq-results-heading">
+          <div className="section-container">
+            <div className="mx-auto max-w-4xl">
+              <label htmlFor="faq-search" className="text-sm font-semibold text-white">Fragen durchsuchen</label>
+              <div className="relative mt-3">
+                <input id="faq-search" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Zum Beispiel: Wie läuft ein Softwareprojekt ab?" className="min-h-14 w-full rounded-xl border border-white/10 bg-white/[0.04] px-5 pr-14 text-base text-white placeholder:text-slate-600 focus:border-sky-400/50 focus:outline-none" />
+                {query ? <button type="button" onClick={() => setQuery("")} className="focus-ring absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-lg text-slate-400 hover:text-white" aria-label="Suche löschen">×</button> : null}
               </div>
 
-              {/* Autocomplete Vorschläge */}
-              {showSuggestions && searchSuggestions.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="absolute top-full left-0 right-0 mt-2 bg-gray-900 border border-gray-700 rounded-xl overflow-hidden z-50"
-                >
-                  {searchSuggestions.map((suggestion, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="w-full px-6 py-3 text-left text-gray-300 hover:bg-gray-800 transition-colors"
-                    >
-                      {suggestion}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </div>
+              {categories.length ? (
+                <div className="mt-6 flex gap-2 overflow-x-auto pb-2" aria-label="FAQ-Kategorie">
+                  <button type="button" onClick={() => setSelectedCategory(null)} aria-pressed={!selectedCategory} className={`focus-ring min-h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${!selectedCategory ? "border-sky-400/40 bg-sky-400/[0.12] text-sky-200" : "border-white/10 text-slate-400 hover:text-white"}`}>Alle</button>
+                  {categories.map((category) => <button key={category} type="button" onClick={() => setSelectedCategory(category)} aria-pressed={selectedCategory === category} className={`focus-ring min-h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${selectedCategory === category ? "border-sky-400/40 bg-sky-400/[0.12] text-sky-200" : "border-white/10 text-slate-400 hover:text-white"}`}>{categoryLabel(category)}</button>)}
+                </div>
+              ) : null}
 
-            {/* Kategorie-Karten */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {/* "Alle Fragen" Karte */}
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setSearchQuery("");
-                  setTimeout(() => {
-                    window.scrollTo({ top: document.getElementById('faqs-section')?.offsetTop || 0, behavior: 'smooth' });
-                  }, 100);
-                }}
-                className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl p-6 text-left hover:scale-105 transition-transform group"
-              >
-                <div className="text-4xl mb-3">📋</div>
-                <h3 className="text-white font-bold text-lg mb-1">Alle Fragen</h3>
-                <p className="text-white/80 text-sm">{faqs.length} Fragen</p>
-              </motion.button>
+              <div className="mt-10 flex items-end justify-between gap-4">
+                <h2 id="faq-results-heading" className="text-xl font-semibold text-white">{selectedCategory ? categoryLabel(selectedCategory) : "Alle Fragen"}</h2>
+                {!loading ? <p className="text-sm text-slate-500">{filtered.length} {filtered.length === 1 ? "Ergebnis" : "Ergebnisse"}</p> : null}
+              </div>
 
-              {categories.map((category, index) => {
-                const count = getCategoryCount(category.id);
-                if (count === 0) return null;
-
-                return (
-                  <motion.button
-                    key={category.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: (index + 1) * 0.05 }}
-                    onClick={() => scrollToCategory(category.id)}
-                    className={`bg-gradient-to-br ${category.color} rounded-xl p-6 text-left hover:scale-105 transition-transform group`}
-                  >
-                    <div className="text-4xl mb-3">{category.icon}</div>
-                    <h3 className="text-white font-bold text-lg mb-1">{category.name}</h3>
-                    <p className="text-white/80 text-sm">{count} Fragen</p>
-                  </motion.button>
-                );
-              })}
+              <div className="mt-5 space-y-3" aria-live="polite">
+                {loading ? [0, 1, 2, 3].map((item) => <div key={item} className="skeleton h-20" />) : filtered.length ? filtered.map((faq, index) => (
+                  <details key={`${faq.question}-${index}`} className="group surface-card overflow-hidden open:border-sky-400/25">
+                    <summary className="focus-ring flex min-h-16 cursor-pointer list-none items-center justify-between gap-5 px-5 py-4 text-base font-semibold text-white marker:content-none sm:px-7 sm:text-lg"><span>{faq.question}</span><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full border border-white/10 text-sky-300 transition-transform group-open:rotate-45" aria-hidden="true">+</span></summary>
+                    <div className="border-t border-white/[0.06] px-5 py-5 text-sm leading-7 text-slate-400 sm:px-7 sm:text-base">{faq.answer.split("\n").filter(Boolean).map((line, lineIndex) => <p key={lineIndex} className="mb-3 last:mb-0">{line}</p>)}</div>
+                  </details>
+                )) : <div className="surface-card px-6 py-12 text-center text-sm text-slate-400">Keine passende Antwort gefunden. Versuchen Sie einen anderen Suchbegriff oder kontaktieren Sie uns direkt.</div>}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* FAQs Section */}
-      <section id="faqs-section" className="py-16 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            {loading ? (
-              <div className="text-center text-gray-400 py-16">Lädt FAQs...</div>
-            ) : filteredFAQs.length === 0 ? (
-              <div className="text-center text-gray-400 py-16">
-                {searchQuery ? "Keine Ergebnisse gefunden." : "Keine FAQs verfügbar"}
-              </div>
-            ) : (
-              <div className="space-y-12">
-                {Object.entries(categorizedFAQs).map(([categoryId, categoryFAQs]) => {
-                  const category = categories.find(c => c.id === categoryId);
-                  if (!category) return null;
-
-                  return (
-                    <div key={categoryId} id={`category-${categoryId}`} className="scroll-mt-24">
-                      <motion.h2
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        className="text-3xl font-bold mb-6 flex items-center gap-3"
-                      >
-                        <span className="text-3xl">{category.icon}</span>
-                        <span>{category.name}</span>
-                        <span className="text-gray-500 text-lg">({categoryFAQs.length})</span>
-                      </motion.h2>
-
-                      <div className="space-y-4">
-                        {categoryFAQs.map((faq, index) => {
-                          const globalIndex = filteredFAQs.indexOf(faq);
-                          const isOpen = openFaqs.has(globalIndex);
-                          const faqId = `faq-${categoryId}-${index}`;
-
-                          return (
-                            <motion.div
-                              key={index}
-                              id={faqId}
-                              initial={{ opacity: 0, y: 20 }}
-                              whileInView={{ opacity: 1, y: 0 }}
-                              viewport={{ once: true }}
-                              transition={{ delay: index * 0.05 }}
-                              className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 shadow-xl group scroll-mt-24"
-                            >
-                              <button
-                                onClick={() => toggleFaq(globalIndex)}
-                                className="w-full px-8 py-5 flex items-center justify-between text-left hover:bg-white/5 transition-colors relative z-10"
-                              >
-                                <span className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors pr-4">
-                                  {faq.question}
-                                </span>
-                                <motion.span
-                                  animate={{ rotate: isOpen ? 180 : 0 }}
-                                  transition={{ duration: 0.2 }}
-                                  className="text-blue-500 flex-shrink-0"
-                                >
-                                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                </motion.span>
-                              </button>
-                              <motion.div
-                                initial={false}
-                                animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-                                transition={{ duration: 0.3 }}
-                                className="overflow-hidden"
-                              >
-                                <div className="p-8 pt-0 text-gray-400 leading-relaxed relative z-10">
-                                  {faq.answer.split('\n').map((line, i) => (
-                                    <p key={i} className="mb-2 last:mb-0">{line}</p>
-                                  ))}
-                                </div>
-                              </motion.div>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
+        </section>
+      </main>
       <Footer />
     </div>
   );

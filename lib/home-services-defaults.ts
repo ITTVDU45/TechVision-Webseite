@@ -5,11 +5,6 @@
 
 export const HOME_SERVICES_PLACEMENT = "home" as const;
 
-/** NFD: gleiche Normalisierung wie bei Dateien unter macOS (vermeidet 404 bei Umlauten). */
-function publicServiceImage(fileName: string): string {
-  return `/images/${encodeURIComponent(fileName.normalize("NFD"))}`;
-}
-
 export interface HomeServiceSeed {
   icon: string;
   name: string;
@@ -31,7 +26,6 @@ export const DEFAULT_HOME_SERVICES: HomeServiceSeed[] = [
     order: 1,
     link: "/ki-transformation",
     gradient: "from-blue-400 via-blue-500 to-indigo-500",
-    image: publicServiceImage("AI-basierte Geschäftsvernetzung in der Zukunft.png"),
   },
   {
     icon: "⚡",
@@ -41,7 +35,6 @@ export const DEFAULT_HOME_SERVICES: HomeServiceSeed[] = [
     order: 2,
     link: "/workflow-automation",
     gradient: "from-blue-500 via-indigo-500 to-purple-500",
-    image: publicServiceImage("Futuristische Automatisierung in Aktion.png"),
   },
   {
     icon: "💻",
@@ -51,7 +44,6 @@ export const DEFAULT_HOME_SERVICES: HomeServiceSeed[] = [
     order: 3,
     link: "/software-development",
     gradient: "from-purple-400 via-pink-500 to-red-500",
-    image: publicServiceImage("Futuristische Software-Entwicklungsumgebung.png"),
   },
   {
     icon: "🎯",
@@ -61,7 +53,6 @@ export const DEFAULT_HOME_SERVICES: HomeServiceSeed[] = [
     order: 4,
     link: "/industry-solutions",
     gradient: "from-blue-500 via-indigo-500 to-purple-500",
-    image: publicServiceImage("Futuristische KI und Industrievernetzung.png"),
   },
   {
     icon: "🔒",

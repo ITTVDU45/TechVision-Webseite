@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -47,11 +47,12 @@ function CaseCardSkeleton() {
   );
 }
 
-const CaseStudies: React.FC<CaseStudiesProps> = ({ apiPage }) => {
+const CaseStudies = ({ apiPage }: CaseStudiesProps) => {
+  const Heading = apiPage === "home" ? motion.h2 : motion.h1;
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [apiCaseStudies, setApiCaseStudies] = useState<CaseStudy[]>([]);
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -161,7 +162,7 @@ const CaseStudies: React.FC<CaseStudiesProps> = ({ apiPage }) => {
           >
             Portfolio
           </motion.span>
-          <motion.h2
+          <Heading
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -169,7 +170,7 @@ const CaseStudies: React.FC<CaseStudiesProps> = ({ apiPage }) => {
             className="heading-display mt-4 text-3xl md:text-5xl"
           >
             Ausgewählte Projekte
-          </motion.h2>
+          </Heading>
           <p className="mt-4 text-base text-slate-400">
             Ein Ausschnitt unserer Arbeit – von Website‑Relaunches über Custom‑Software bis zu KI‑Integrationen.
           </p>

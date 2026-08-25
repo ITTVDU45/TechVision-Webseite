@@ -1,17 +1,5 @@
-"use client";
-import React, { Suspense } from "react";
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+import Tools from "../components/Tools";
 
-// Dynamischer Import der Tools-Komponente mit SSR deaktiviert
-const Tools = dynamic(
-  () => import("../components/Tools"),
-  { ssr: false }
-);
-
-export default function ToolsPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Tools />
-    </Suspense>
-  );
-}
+export const metadata: Metadata = { title: "Tools & KI-Agenten", description: "Open-Source-Werkzeuge und individuelle KI-Agenten sicher in bestehende Abläufe integrieren." };
+export default function Page() { return <Tools />; }

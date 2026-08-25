@@ -19,7 +19,7 @@ export const blogPosts: BlogPost[] = [
     title: "KI-Transformation in der Praxis",
     subtitle: "KI & Automatisierung",
     description: "Wie Unternehmen KI erfolgreich in ihre Geschäftsprozesse integrieren und messbare Erfolge erzielen.",
-    image: "/images/ai-robot.jpg",
+    image: "",
     date: "22. März 2024",
     readTime: "5 min",
     category: { name: "KI & Innovation", icon: "🤖" }
@@ -39,7 +39,7 @@ export const blogPosts: BlogPost[] = [
     title: "Effiziente Workflows mit KI-Agenten",
     subtitle: "Automatisierung",
     description: "Wie Sie tägliche Aufgaben durch intelligente Agenten automatisieren und Zeit für das Wesentliche gewinnen.",
-    image: "/images/Automation-Dashboard.png",
+    image: "",
     date: "10. März 2024",
     readTime: "6 min",
     category: { name: "Produktivität", icon: "⚡" }

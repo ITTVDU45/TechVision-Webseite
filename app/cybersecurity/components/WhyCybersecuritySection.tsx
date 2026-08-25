@@ -18,10 +18,10 @@ export default function WhyCybersecuritySection({
   stats,
   threats,
   ctaText = "Cybersicherheits-Check starten",
-  ctaLink = "/offer",
+  ctaLink = "/contact",
 }: WhyCybersecuritySectionProps) {
   return (
-    <section className="py-32 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
+    <section id="details" className="py-32 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black to-transparent z-10 pointer-events-none" />
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none" />
 

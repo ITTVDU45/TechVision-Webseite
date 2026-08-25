@@ -1,14 +1,5 @@
-"use client";
-import React, { Suspense } from "react";
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+import CyberSecurity from "../components/CyberSecurity";
 
-// Dynamischer Import der CyberSecurity-Komponente mit SSR deaktiviert
-const CyberSecurity = dynamic(() => import("../components/CyberSecurity"), { ssr: false });
-
-export default function CyberSecurityPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CyberSecurity />
-    </Suspense>
-  );
-}
+export const metadata: Metadata = { title: "Cybersecurity", description: "Risikoanalyse, wirksame Schutzmaßnahmen und kontinuierliche Absicherung für Unternehmen." };
+export default function Page() { return <CyberSecurity />; }

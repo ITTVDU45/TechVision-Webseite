@@ -171,7 +171,7 @@ export const Lid = ({
         className="h-96 w-[32rem] absolute inset-0 bg-[#010101] rounded-2xl p-2">
         <div className="absolute inset-0 bg-[#272729] rounded-lg" />
         <img
-          src={src || "/images/ai-robot.jpg"}
+          src={src || "/images/cms-development.jpg"}
           alt="Macbook screen content"
           className="object-contain absolute rounded-lg inset-0 h-full w-full p-1"
         />

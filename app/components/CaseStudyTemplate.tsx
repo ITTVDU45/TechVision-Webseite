@@ -347,7 +347,7 @@ export default function CaseStudyTemplate({
                       Kontakt aufnehmen
                     </Link>
                     <Link
-                      href="/offer"
+                      href="/contact"
                       className="rounded-lg border border-white/30 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/10"
                     >
                       Erstgespräch buchen

@@ -18,7 +18,7 @@ import {
 } from '../it-infrastructure/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 
-export default function ITInfrastructure(): React.ReactNode {
+export default function ITInfrastructure() {
   const { faqs, blogs } = usePageContent({
     page: 'it-infrastructure',
     loadFAQs: true,
@@ -39,6 +39,7 @@ export default function ITInfrastructure(): React.ReactNode {
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <Header />
+      <main>
       <HeroSection />
       <InfrastructureSolutionsSection solutions={infrastructureSolutionsData} />
       <ITInfrastructurePlanningSection features={planningFeaturesData} />
@@ -46,6 +47,7 @@ export default function ITInfrastructure(): React.ReactNode {
       <InfrastructureNewsSection posts={displayBlogs} />
       <FAQSection faqs={displayFAQs} />
       <CTA />
+      </main>
       <Footer />
     </div>
   );

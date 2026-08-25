@@ -19,7 +19,7 @@ export default function CTASection({
   title = "Bereit für Ihr",
   subtitle = "Lassen Sie uns gemeinsam Ihre Vision in die Realität umsetzen. Kontaktieren Sie uns noch heute für eine unverbindliche Beratung.",
   primaryButtonText = "Projekt starten",
-  primaryButtonLink = "/offer",
+  primaryButtonLink = "/contact",
   secondaryButtonText = "24/7 Chat",
   secondaryButtonLink = "/contact",
 }: CTASectionProps) {

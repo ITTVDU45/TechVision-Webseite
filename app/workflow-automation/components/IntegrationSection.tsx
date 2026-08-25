@@ -89,7 +89,7 @@ export default function IntegrationSection({ categories }: IntegrationSectionPro
           <p className="text-gray-400 mb-6 text-lg font-medium">Bereit für eine nahtlose Integration in Ihre Systemlandschaft?</p>
           <GlowingEffect>
             <Link
-              href="/offer"
+              href="/contact"
               className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl text-lg font-medium text-white shadow-xl hover:shadow-2xl hover:shadow-orange-500/20 transition-all inline-block"
             >
               Prozessanalyse starten

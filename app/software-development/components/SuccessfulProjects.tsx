@@ -16,10 +16,10 @@ export default function SuccessfulProjects({
   subtitle = "Entdecken Sie unsere Referenzen – von Mitarbeiter-Apps über CRM-Lösungen bis hin zu speziellen Branchenanwendungen.",
   projects,
   ctaText = "Softwareanfrage starten",
-  ctaLink = "/offer",
+  ctaLink = "/contact",
 }: SuccessfulProjectsProps) {
   return (
-    <section className="py-32 bg-black relative overflow-hidden">
+    <section id="details" className="py-32 bg-black relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         <div className="mb-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           <motion.div

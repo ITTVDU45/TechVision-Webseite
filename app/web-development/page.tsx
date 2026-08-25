@@ -1,17 +1,5 @@
-"use client";
-import React, { Suspense } from "react";
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+import WebDevelopment from "../components/WebDevelopment";
 
-// Dynamischer Import der WebDevelopment-Komponente mit SSR deaktiviert
-const WebDevelopment = dynamic(
-  () => import("../components/WebDevelopment"),
-  { ssr: false }
-);
-
-export default function WebDevelopmentPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <WebDevelopment />
-    </Suspense>
-  );
-}
+export const metadata: Metadata = { title: "Webentwicklung", description: "Schnelle, zugängliche und skalierbare Websites und Webanwendungen für Unternehmen." };
+export default function Page() { return <WebDevelopment />; }

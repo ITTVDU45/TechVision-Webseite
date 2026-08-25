@@ -103,7 +103,7 @@ export default function WhyDifferentSection({ features, oneClickApps, specialize
         >
           <GlowingEffect>
             <Link
-              href="/offer"
+              href="/contact"
               className="px-8 py-4 bg-gradient-to-r from-green-500 to-teal-600 rounded-xl text-lg font-medium text-white shadow-xl hover:shadow-2xl hover:shadow-green-500/20 transition-all inline-block"
             >
               Webhosting jetzt buchen

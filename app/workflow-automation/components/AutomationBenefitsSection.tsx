@@ -11,7 +11,7 @@ interface AutomationBenefitsSectionProps {
 
 export default function AutomationBenefitsSection({ benefits }: AutomationBenefitsSectionProps) {
   return (
-    <section className="py-24 relative overflow-hidden bg-black">
+    <section id="details" className="py-24 relative overflow-hidden bg-black">
       {/* Background Elements */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-red-600/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
@@ -66,7 +66,7 @@ export default function AutomationBenefitsSection({ benefits }: AutomationBenefi
           <p className="text-gray-400 mb-6 text-lg font-medium">Bereit, Ihre Prozesse zu automatisieren?</p>
           <GlowingEffect>
             <Link
-              href="/offer"
+              href="/contact"
               className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl text-lg font-medium text-white shadow-xl hover:shadow-2xl hover:shadow-orange-500/20 transition-all inline-block"
             >
               Prozessanalyse starten

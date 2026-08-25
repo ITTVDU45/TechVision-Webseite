@@ -21,7 +21,7 @@ const steps = [
     title: 'Umsetzung & Integration',
     description:
       'Wir entwickeln die Lösungen und integrieren sie nahtlos in Ihre bestehende IT‑Landschaft – mit klarem Fokus auf Benutzerfreundlichkeit, Sicherheit und Skalierbarkeit.',
-    image: '/images/Automation-Dashboard.png',
+    image: '/images/automation-dashboard.webp',
   },
   {
     title: 'Test & Qualitätssicherung',
@@ -132,7 +132,7 @@ export default function ProcessSection() {
         <div className="mt-16 text-center">
           <button
             type="button"
-            onClick={() => router.push('/offer')}
+            onClick={() => router.push('/contact')}
             className="btn-primary focus-ring"
           >
             Kostenloses Erstgespräch vereinbaren

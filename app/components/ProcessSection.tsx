@@ -18,7 +18,7 @@ const steps = [
   {
     title: "Umsetzung & Integration",
     description: "Wir entwickeln die Lösungen und integrieren sie nahtlos in Ihre bestehende IT-Landschaft – mit klarem Fokus auf Benutzerfreundlichkeit, Sicherheit und Skalierbarkeit.",
-    image: "/images/Automation-Dashboard.png",
+    image: "/images/automation-dashboard.webp",
     accent: "from-blue-500 to-indigo-600"
   },
   {
@@ -140,7 +140,7 @@ export default function ProcessSection() {
           className="mt-40 text-center"
         >
           <motion.button
-            onClick={() => router.push('/offer')}
+            onClick={() => router.push('/contact')}
             whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.2)" }}
             whileTap={{ scale: 0.95 }}
             className="px-10 py-5 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 text-white rounded-full text-xl font-bold transition-all shadow-lg hover:shadow-blue-500/20"

@@ -19,7 +19,7 @@ import {
 } from '../tools/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 
-export default function Tools(): React.ReactNode {
+export default function Tools() {
   const { faqs, blogs } = usePageContent({
     page: 'tools',
     loadFAQs: true,
@@ -40,6 +40,7 @@ export default function Tools(): React.ReactNode {
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <Header />
+      <main>
       <HeroSection />
       <OpenSourceToolsSection tools={openSourceToolsData} />
       <KIAgentsSection agents={kiAgentsData} />
@@ -50,6 +51,7 @@ export default function Tools(): React.ReactNode {
       <ToolsNewsSection posts={displayBlogs} />
       <FAQSection faqs={displayFAQs} />
       <CTA />
+      </main>
       <Footer />
     </div>
   );

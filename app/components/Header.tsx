@@ -1,420 +1,169 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+
 import Image from "next/image";
-import { motion, useScroll, useSpring, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from "@/lib/site-logo";
 
-const solutions = [
-  { name: "KI Transformation", href: "/ki-transformation", icon: "🤖", description: "Digitale Transformation mit KI" },
-  { name: "Softwareentwicklung", href: "/software-development", icon: "💻", description: "Maßgeschneiderte Softwarelösungen" },
-  { name: "Workflow Automation", href: "/workflow-automation", icon: "⚡", description: "Automatisierung von Geschäftsprozessen" },
-  { name: "Cybersecurity", href: "/cybersecurity", icon: "🔒", description: "Sicherheitslösungen für Ihr Unternehmen" },
-  { name: "Tools & KI-Agenten", href: "/tools", icon: "🛠️", description: "Spezialisierte Werkzeuge und KI-Lösungen" },
-  { name: "Webhosting", href: "/webhosting", icon: "☁️", description: "Schnelles und sicheres Hosting" },
-  { name: "IT Infrastruktur", href: "/it-infrastructure", icon: "🔧", description: "Optimierung Ihrer IT-Systeme" },
-  { name: "Webentwicklung", href: "/web-development", icon: "🌐", description: "Moderne Weblösungen und Webanwendungen" },
+const services = [
+  { name: "KI-Transformation", href: "/ki-transformation", description: "Strategie, Entwicklung und Integration" },
+  { name: "Softwareentwicklung", href: "/software-development", description: "Individuelle Anwendungen und Plattformen" },
+  { name: "Workflow-Automatisierung", href: "/workflow-automation", description: "Systeme, Prozesse und KI-Agenten verbinden" },
+  { name: "Cybersecurity", href: "/cybersecurity", description: "Risiken erkennen und wirksam reduzieren" },
+  { name: "Tools & KI-Agenten", href: "/tools", description: "Passende Werkzeuge kontrolliert einsetzen" },
+  { name: "IT-Infrastruktur", href: "/it-infrastructure", description: "Planung, Betrieb und Betreuung" },
+  { name: "Webentwicklung", href: "/web-development", description: "Schnelle Websites und Webanwendungen" },
+  { name: "Hosting", href: "/webhosting", description: "Sicherer, überwachter Betrieb" },
 ];
 
-const moreItems = [
-  { name: "Top Themen und News", href: "/blog", icon: "📰", description: "Aktuelle Themen und Neuigkeiten" },
-  { name: "FAQ", href: "/faq", icon: "❓", description: "Häufig gestellte Fragen" },
-  { name: "Kontakt", href: "/contact", icon: "✉️", description: "Nehmen Sie Kontakt mit uns auf" },
+const primaryLinks = [
+  { name: "Referenzen", href: "/case-studies" },
+  { name: "Branchen", href: "/industry-solutions" },
+  { name: "Magazin", href: "/blog" },
+  { name: "Kontakt", href: "/contact" },
 ];
 
 export default function Header(): React.JSX.Element {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [showSolutions, setShowSolutions] = useState(false);
-  const [showMore, setShowMore] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const servicesRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
 
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-
-  const closeSidebar = useCallback(() => setIsSidebarOpen(false), []);
-  const toggleSidebar = () => setIsSidebarOpen((o) => !o);
+  const closeMobile = useCallback(() => setMobileOpen(false), []);
 
   useEffect(() => {
-    closeSidebar();
-  }, [pathname, closeSidebar]);
+    setServicesOpen(false);
+    closeMobile();
+  }, [pathname, closeMobile]);
 
   useEffect(() => {
-    if (!isSidebarOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeSidebar();
+    const onPointerDown = (event: PointerEvent) => {
+      if (!servicesRef.current?.contains(event.target as Node)) setServicesOpen(false);
     };
-    window.addEventListener("keydown", onKey);
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setServicesOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onEscape);
     return () => {
-      document.body.style.overflow = prev;
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [isSidebarOpen, closeSidebar]);
-
-  useEffect(() => {
-    let rafId: number | null = null;
-
-    const handleScroll = () => {
-      if (rafId !== null) return;
-      rafId = requestAnimationFrame(() => {
-        rafId = null;
-        setIsScrolled(window.scrollY > 32);
-      });
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (rafId !== null) cancelAnimationFrame(rafId);
+      document.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onEscape);
     };
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent, href: string) => {
-    if (href.startsWith("/#")) {
-      e.preventDefault();
-      const element = document.querySelector(href.substring(1));
-      if (element) {
-        (element as HTMLElement).scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-  };
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const panel = mobilePanelRef.current;
+    const focusable = panel?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+    focusable?.[0]?.focus();
 
-  const headerPadY = isScrolled ? "py-3" : "py-4";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeMobile();
+        menuButtonRef.current?.focus();
+        return;
+      }
+      if (event.key !== "Tab" || !focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [mobileOpen, closeMobile]);
+
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
+  const linkClass = (href: string) =>
+    `focus-ring rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+      isActive(href) ? "text-white" : "text-slate-400 hover:text-white"
+    }`;
 
   return (
-    <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${headerPadY}`}
-        style={{
-          paddingTop: `calc(${isScrolled ? "0.75rem" : "1rem"} + env(safe-area-inset-top, 0px))`,
-        }}
-      >
-        <div className="absolute inset-0 bg-black/20 backdrop-blur-xl" />
-        <motion.div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 origin-left" style={{ scaleX }} />
+    <header className="fixed inset-x-0 top-0 z-[100] border-b border-white/[0.08] bg-[#050912]/95 supports-[backdrop-filter]:bg-[#050912]/85 supports-[backdrop-filter]:backdrop-blur-lg">
+      <div className="section-container flex min-h-[76px] items-center justify-between gap-5 py-3" style={{ paddingTop: "max(.75rem, env(safe-area-inset-top))" }}>
+        <Link href="/marketing" className="focus-ring flex shrink-0 items-center rounded-lg" aria-label="IT-Techvision – Startseite">
+          <Image src={SITE_LOGO_PATH} alt="IT-Techvision" width={SITE_LOGO_WIDTH} height={SITE_LOGO_HEIGHT} priority className="h-11 w-auto max-w-[13rem] object-contain object-left sm:h-12" />
+        </Link>
 
-        <div
-          className="container mx-auto px-4 relative"
-          style={{
-            paddingLeft: "max(1rem, env(safe-area-inset-left, 0px))",
-            paddingRight: "max(1rem, env(safe-area-inset-right, 0px))",
-          }}
-        >
-          <div className="relative z-[2] flex min-h-[52px] items-center justify-between gap-3 md:min-h-14">
-            <Link
-              href="/"
-              className="relative z-[3] flex shrink-0 items-center"
-              aria-label="TechVision – Zur Startseite"
-            >
-              <Image
-                src={SITE_LOGO_PATH}
-                alt="TechVision"
-                width={SITE_LOGO_WIDTH}
-                height={SITE_LOGO_HEIGHT}
-                priority
-                className="h-14 w-auto max-w-[min(20rem,88vw)] object-contain object-left sm:h-16 md:h-[4.75rem] md:max-w-[24rem]"
-              />
-            </Link>
-
-            <nav className="hidden md:flex items-center gap-2">
-              <Link href="/" className="text-white font-medium">
-                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex items-center gap-2">
-                  <span className="opacity-60">🏠</span>Home
-                </motion.span>
-              </Link>
-
-              <div className="relative">
-                <motion.button
-                  type="button"
-                  onMouseEnter={() => setShowSolutions(true)}
-                  onMouseLeave={() => setShowSolutions(false)}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all relative group text-gray-300 hover:text-white flex items-center gap-2"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <span className="opacity-60">💡</span>Unsere Lösungen
-                  <svg className="w-4 h-4 ml-1 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ transform: showSolutions ? "rotate(180deg)" : "rotate(0deg)" }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </motion.button>
-
-                <AnimatePresence>
-                  {showSolutions && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="fixed left-0 right-0 mt-2 overflow-y-auto"
-                      style={{ top: isScrolled ? "68px" : "84px", maxHeight: "calc(100vh - 100px)" }}
-                      onMouseEnter={() => setShowSolutions(true)}
-                      onMouseLeave={() => setShowSolutions(false)}
-                    >
-                      <div className="bg-gray-900/90 backdrop-blur-xl border-y border-white/10">
-                        <div className="container mx-auto px-4 md:px-6">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 py-6 md:py-8 max-w-7xl mx-auto">
-                            {solutions.map((solution) => (
-                              <motion.div key={solution.name} className="flex items-start gap-3 md:gap-4 p-3 md:p-4 rounded-xl hover:bg-white/5 transition-colors group" whileHover={{ scale: 1.02 }}>
-                                <Link href={solution.href} className="flex items-start gap-3 w-full">
-                                  <span className="text-xl md:text-2xl p-2 md:p-3 bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors shrink-0">{solution.icon}</span>
-                                  <div className="flex-1">
-                                    <div className="font-medium text-white group-hover:text-blue-400 transition-colors text-base md:text-lg break-words">{solution.name}</div>
-                                    <div className="text-sm text-gray-400 mt-1 leading-relaxed line-clamp-2">{solution.description}</div>
-                                  </div>
-                                </Link>
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Hauptnavigation">
+          <Link href="/marketing" className={linkClass("/marketing")} aria-current={isActive("/marketing") ? "page" : undefined}>Start</Link>
+          <div ref={servicesRef} className="relative">
+            <button type="button" onClick={() => setServicesOpen((open) => !open)} aria-expanded={servicesOpen} aria-controls="desktop-services-menu" className="focus-ring flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white">
+              Leistungen
+              <svg className={`h-4 w-4 transition-transform ${servicesOpen ? "rotate-180" : ""}`} viewBox="0 0 20 20" fill="none" stroke="currentColor" aria-hidden="true"><path d="m5 7.5 5 5 5-5" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </button>
+            {servicesOpen ? (
+              <div id="desktop-services-menu" className="absolute left-1/2 top-full mt-4 w-[min(46rem,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-white/10 bg-[#0a101b] p-3 shadow-2xl shadow-black/50">
+                <div className="grid grid-cols-2 gap-1">
+                  {services.map((service) => (
+                    <Link key={service.href} href={service.href} className="focus-ring group rounded-xl px-4 py-3 transition-colors hover:bg-white/[0.05]">
+                      <span className="block text-sm font-semibold text-white group-hover:text-sky-300">{service.name}</span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-500">{service.description}</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
+            ) : null}
+          </div>
+          {primaryLinks.map((link) => <Link key={link.href} href={link.href} className={linkClass(link.href)} aria-current={isActive(link.href) ? "page" : undefined}>{link.name}</Link>)}
+        </nav>
 
-              <Link href="/case-studies" className="text-gray-300 hover:text-white">
-                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex items-center gap-2">
-                  <span className="opacity-60">📊</span> Case Studies
-                </motion.span>
-              </Link>
+        <div className="flex items-center gap-2">
+          <Link href="/contact" className="btn-primary focus-ring hidden min-h-11 px-5 py-2.5 text-sm sm:inline-flex">Projekt besprechen</Link>
+          <button ref={menuButtonRef} type="button" onClick={() => setMobileOpen(true)} className="focus-ring grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-white lg:hidden" aria-label="Menü öffnen" aria-expanded={mobileOpen} aria-controls="mobile-site-navigation">
+            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" strokeWidth="1.8" strokeLinecap="round" /></svg>
+          </button>
+        </div>
+      </div>
 
-              <div className="relative">
-                <motion.button
-                  type="button"
-                  onMouseEnter={() => setShowMore(true)}
-                  onMouseLeave={() => setShowMore(false)}
-                  className="text-gray-300 hover:text-white flex items-center gap-2"
-                >
-                  <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex items-center gap-2">
-                    <span className="opacity-60">•••</span> Weiteres
-                  </motion.span>
-                  <svg className="w-4 h-4 ml-1 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ transform: showMore ? "rotate(180deg)" : "rotate(0deg)" }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </motion.button>
-
-                <AnimatePresence>
-                  {showMore && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-72 rounded-xl bg-gray-900/90 backdrop-blur-xl border border-white/10 shadow-xl"
-                      onMouseEnter={() => setShowMore(true)}
-                      onMouseLeave={() => setShowMore(false)}
-                    >
-                      <div className="p-2">
-                        {moreItems.map((item) => (
-                          <Link
-                            key={item.name}
-                            href={item.href}
-                            onClick={(e: React.MouseEvent) => handleNavClick(e, item.href)}
-                            className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-colors group"
-                          >
-                            <span className="text-2xl p-2 bg-white/5 rounded-lg group-hover:bg-white/10 transition-colors">{item.icon}</span>
-                            <div>
-                              <div className="font-medium text-white group-hover:text-blue-400 transition-colors">{item.name}</div>
-                              <div className="text-sm text-gray-400 mt-0.5">{item.description}</div>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+      {mobileOpen ? (
+        <div className="fixed inset-0 z-[110] lg:hidden">
+          <button type="button" className="absolute inset-0 bg-black/70" onClick={closeMobile} aria-hidden="true" tabIndex={-1} />
+          <div ref={mobilePanelRef} id="mobile-site-navigation" role="dialog" aria-modal="true" aria-label="Navigation" className="absolute inset-y-0 right-0 flex w-[min(92vw,26rem)] flex-col overflow-hidden border-l border-white/10 bg-[#070b13] shadow-2xl">
+            <div className="flex items-center justify-between border-b border-white/10 px-5 py-4" style={{ paddingTop: "max(1rem, env(safe-area-inset-top))" }}>
+              <span className="text-sm font-semibold text-white">Navigation</span>
+              <button type="button" onClick={() => { closeMobile(); menuButtonRef.current?.focus(); }} className="focus-ring grid h-11 w-11 place-items-center rounded-xl border border-white/10" aria-label="Menü schließen">
+                <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" strokeWidth="1.8" strokeLinecap="round" /></svg>
+              </button>
+            </div>
+            <nav className="min-h-0 flex-1 overflow-y-auto px-5 py-5" aria-label="Mobile Hauptnavigation">
+              <Link href="/marketing" className="focus-ring block rounded-xl px-3 py-3 font-semibold text-white">Startseite</Link>
+              <p className="mb-2 mt-6 px-3 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Leistungen</p>
+              <div className="space-y-1">
+                {services.map((service) => (
+                  <Link key={service.href} href={service.href} className="focus-ring block rounded-xl px-3 py-3 transition-colors hover:bg-white/[0.05]">
+                    <span className="block text-sm font-semibold text-white">{service.name}</span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">{service.description}</span>
+                  </Link>
+                ))}
+              </div>
+              <p className="mb-2 mt-6 px-3 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Unternehmen</p>
+              <div className="grid grid-cols-2 gap-1">
+                {primaryLinks.map((link) => <Link key={link.href} href={link.href} className="focus-ring rounded-xl px-3 py-3 text-sm font-medium text-slate-300 hover:bg-white/[0.05]">{link.name}</Link>)}
+                <Link href="/faq" className="focus-ring rounded-xl px-3 py-3 text-sm font-medium text-slate-300 hover:bg-white/[0.05]">FAQ</Link>
               </div>
             </nav>
-
-            <Link
-              href="/offer"
-              className="hidden md:inline-flex px-6 py-2.5 bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 rounded-full text-sm font-medium relative overflow-hidden group items-center justify-center"
-            >
-              <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative z-10">
-                Termin buchen
-              </motion.span>
-              <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            </Link>
-
-            <button
-              type="button"
-              className="md:hidden flex h-11 min-w-[44px] items-center justify-center rounded-xl text-white touch-manipulation border border-white/15 bg-white/5 active:bg-white/10"
-              onClick={toggleSidebar}
-              aria-expanded={isSidebarOpen}
-              aria-controls="mobile-nav-drawer"
-              aria-label={isSidebarOpen ? "Menü schließen" : "Menü öffnen"}
-            >
-              {isSidebarOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
-            </button>
+            <div className="border-t border-white/10 p-5" style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}>
+              <Link href="/contact" className="btn-primary focus-ring min-h-12 w-full">Projekt besprechen <span aria-hidden="true">→</span></Link>
+            </div>
           </div>
         </div>
-      </header>
-
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <>
-            <motion.button
-              key="mobile-nav-backdrop"
-              type="button"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-sm md:hidden"
-              aria-label="Menü schließen"
-              onClick={closeSidebar}
-            />
-            <motion.div
-              key="mobile-nav-drawer"
-              id="mobile-nav-drawer"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Hauptnavigation"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
-              className="fixed top-0 right-0 z-[160] flex h-[100dvh] max-h-[100dvh] w-full max-w-[min(100%,22rem)] flex-col overflow-hidden border-l border-white/15 bg-neutral-950/95 shadow-2xl shadow-black/40 backdrop-blur-2xl md:hidden"
-              style={{
-                paddingTop: "env(safe-area-inset-top, 0px)",
-                paddingBottom: "max(1rem, env(safe-area-inset-bottom, 0px))",
-                paddingLeft: "max(1rem, env(safe-area-inset-left, 0px))",
-                paddingRight: "max(1rem, env(safe-area-inset-right, 0px))",
-              }}
-            >
-              <div className="flex shrink-0 items-start justify-between gap-3 border-b border-white/10 pb-4 pt-1">
-                <div className="min-w-0 flex-1">
-                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500">Menü</p>
-                  <Link
-                    href="/"
-                    onClick={closeSidebar}
-                    className="inline-flex max-w-full items-center"
-                    aria-label="TechVision – Zur Startseite"
-                  >
-                    <Image
-                      src={SITE_LOGO_PATH}
-                      alt="TechVision"
-                      width={SITE_LOGO_WIDTH}
-                      height={SITE_LOGO_HEIGHT}
-                      priority
-                      className="h-12 w-auto max-w-[11.5rem] object-contain object-left sm:h-14"
-                    />
-                  </Link>
-                </div>
-                <button
-                  type="button"
-                  onClick={closeSidebar}
-                  className="flex h-11 min-w-[44px] shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white touch-manipulation transition-colors active:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-                  aria-label="Menü schließen"
-                >
-                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              <nav
-                className="min-h-0 flex-1 space-y-5 overflow-y-auto overflow-x-hidden overscroll-y-contain py-5 [-webkit-overflow-scrolling:touch] touch-pan-y"
-                aria-label="Seiten"
-              >
-                <section>
-                  <h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Übersicht</h2>
-                  <div className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.04] p-2">
-                    <Link
-                      href="/"
-                      onClick={closeSidebar}
-                      className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-                    >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
-                        🏠
-                      </span>
-                      Startseite
-                    </Link>
-                    <Link
-                      href="/case-studies"
-                      onClick={closeSidebar}
-                      className="flex min-h-[48px] items-center gap-3 rounded-xl px-3 py-2.5 text-[15px] font-medium text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-                    >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
-                        📊
-                      </span>
-                      Case Studies
-                    </Link>
-                  </div>
-                </section>
-
-                <section>
-                  <h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Unsere Lösungen</h2>
-                  <ul className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.04] p-2">
-                    {solutions.map((s) => (
-                      <li key={s.href}>
-                        <Link
-                          href={s.href}
-                          onClick={closeSidebar}
-                          className="flex min-h-[52px] gap-3 rounded-xl px-3 py-2.5 text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-                        >
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
-                            {s.icon}
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block text-[15px] font-medium leading-snug">{s.name}</span>
-                            <span className="mt-0.5 block text-xs font-normal leading-snug text-gray-500 line-clamp-2">{s.description}</span>
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-
-                <section>
-                  <h2 className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Weiteres</h2>
-                  <ul className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.04] p-2">
-                    {moreItems.map((item) => (
-                      <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          onClick={(e) => {
-                            handleNavClick(e, item.href);
-                            closeSidebar();
-                          }}
-                          className="flex min-h-[52px] gap-3 rounded-xl px-3 py-2.5 text-white transition-colors active:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-                        >
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg" aria-hidden>
-                            {item.icon}
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block text-[15px] font-medium leading-snug">{item.name}</span>
-                            <span className="mt-0.5 block text-xs font-normal leading-snug text-gray-500 line-clamp-2">{item.description}</span>
-                          </span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              </nav>
-
-              <div className="shrink-0 border-t border-white/10 pt-4">
-                <Link
-                  href="/offer"
-                  onClick={closeSidebar}
-                  className="flex min-h-[52px] w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 px-4 py-3.5 text-base font-bold text-white shadow-lg shadow-blue-500/25 transition-opacity active:opacity-90 touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
-                >
-                  Termin buchen
-                </Link>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-    </>
+      ) : null}
+    </header>
   );
 }

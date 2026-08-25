@@ -36,7 +36,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "KI Transformation",
       subtitle: "Strategieberatung",
       description: "Entwicklung einer KI-Strategie und Roadmap für die digitale Transformation.",
-      image: "/images/ai-robot.jpg",
+      image: "",
       stats: [
         { value: "40%", label: "Effizienzsteigerung" },
         { value: "60%", label: "Prozessoptimierung" },
@@ -76,7 +76,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "Entwicklung der CRAFTGO Mitarbeiter-App",
       subtitle: "Mobile App",
       description: "Employee Management System für Bauunternehmen",
-      image: "/images/Mockup Laptop2.png",
+      image: "/images/laptop-software-mockup.webp",
       stats: [
         { value: "60%", label: "mehr Effizien" },
         { value: "40%", label: "weniger Verwaltung" },
@@ -114,7 +114,7 @@ export const categorizedCases: Record<string, CaseStudy[]> = {
       title: "Produktkonfigurator - Woocommerce",
       subtitle: "Flexibel, Benutzerfreundlich & Effizient",
       description: "Entwicklung eines benutzerfreundlichen und flexiblen Konfigurators für individuelle Produktanpassungen.",
-      image: "/images/planen3.png",
+      image: "/images/planen-project-platform.webp",
       stats: [
         { value: "80%", label: "Effizienzsteigerung" },
         { value: "70%", label: "Kundenzufriedenheit" },

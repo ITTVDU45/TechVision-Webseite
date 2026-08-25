@@ -16,7 +16,7 @@ import {
 } from "../software-development/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
 
-export default function SoftwareDevelopment(): React.ReactNode {
+export default function SoftwareDevelopment() {
   const { faqs, blogs } = usePageContent({
     page: 'software-development',
     loadFAQs: true,
@@ -50,6 +50,8 @@ export default function SoftwareDevelopment(): React.ReactNode {
     <div className="min-h-screen w-full bg-black text-white">
       <Header />
 
+      <main>
+
       <HeroSection />
 
       <SuccessfulProjects projects={projectsData} />
@@ -61,6 +63,8 @@ export default function SoftwareDevelopment(): React.ReactNode {
       <FAQSection faqs={displayFAQs} />
 
       <CTA />
+
+      </main>
 
       <Footer />
     </div>

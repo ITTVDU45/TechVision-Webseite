@@ -1,231 +1,113 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+
 import Link from "next/link";
-import Image from "next/image";
-import { fetchBlogPosts } from "@/lib/api";
+import { useEffect, useMemo, useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { blogPosts as fallbackPosts } from "../data/blogPosts";
+import { fetchBlogPosts } from "@/lib/api";
 
+interface Category { id?: string; name: string; icon?: string }
 interface BlogPost {
   _id?: string;
-  id: string;
+  id?: string;
   slug?: string;
   title: string;
-  subtitle: string;
-  description: string;
-  image: string;
-  date: string;
-  readTime: string;
-  category: Array<{
-    id: string;
-    name: string;
-    icon: string;
-  }> | {
-    name: string;
-    icon: string;
-  };
+  subtitle?: string;
+  description?: string;
+  image?: string;
+  date?: string;
+  readTime?: string;
+  category?: Category[] | Category;
   tags?: string[];
-  page?: string | string[];
-  published: boolean;
+  published?: boolean;
+  createdAt?: string;
+}
+
+function postCategories(post: BlogPost): Category[] {
+  if (Array.isArray(post.category)) return post.category;
+  return post.category ? [post.category] : [];
 }
 
 export default function BlogPage() {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<BlogPost[]>(fallbackPosts);
+  const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadBlogs = async () => {
-      try {
-        const apiBlogs = await fetchBlogPosts();
-        if (apiBlogs && Array.isArray(apiBlogs) && apiBlogs.length > 0) {
-          const published = apiBlogs
-            .filter((b: any) => b.published !== false)
-            .sort((a: any, b: any) => {
-              const dateA = new Date(a.date || a.createdAt || 0).getTime();
-              const dateB = new Date(b.date || b.createdAt || 0).getTime();
-              return dateB - dateA;
-            });
-          setBlogPosts(published);
-        }
-      } catch (error) {
-        console.error('Error loading blog posts:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadBlogs();
+    let active = true;
+    fetchBlogPosts()
+      .then((data) => {
+        if (!active) return;
+        const source = Array.isArray(data) && data.length ? data : fallbackPosts;
+        const unique = new Map<string, BlogPost>();
+        source.filter((post: BlogPost) => post.published !== false).forEach((post: BlogPost) => {
+          const key = post.slug || post.id || post._id || post.title;
+          if (!unique.has(key)) unique.set(key, post);
+        });
+        setPosts(Array.from(unique.values()).sort((a, b) => new Date(b.date || b.createdAt || 0).getTime() - new Date(a.date || a.createdAt || 0).getTime()));
+      })
+      .catch(() => setPosts(fallbackPosts))
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
 
-  // Extrahiere alle eindeutigen Kategorien aus allen Blog-Posts
-  const categories = Array.from(new Set(
-    blogPosts.flatMap(b => {
-      if (Array.isArray(b.category)) {
-        return b.category.map(c => c.name);
-      } else if (b.category?.name) {
-        return [b.category.name];
-      }
-      return [];
-    })
-  ));
-
-  const filteredPosts = selectedCategory
-    ? blogPosts.filter(b => {
-        if (Array.isArray(b.category)) {
-          return b.category.some(c => c.name === selectedCategory);
-        } else if (b.category?.name) {
-          return b.category.name === selectedCategory;
-        }
-        return false;
-      })
-    : blogPosts;
+  const categories = useMemo(() => Array.from(new Set(posts.flatMap((post) => postCategories(post).map((category) => category.name)))).sort(), [posts]);
+  const filteredPosts = selectedCategory ? posts.filter((post) => postCategories(post).some((category) => category.name === selectedCategory)) : posts;
 
   return (
-    <div className="min-h-screen w-full bg-black text-white">
+    <div className="min-h-screen bg-[#050912] text-white">
       <Header />
-      
-      {/* Hero Section */}
-      <section className="pt-32 pb-16 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-green-950/20 to-black" />
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-5xl mx-auto text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-bold mb-6"
-            >
-              Blog
-            </motion.h1>
-            <p className="text-xl md:text-2xl text-gray-400 mb-8">
-              Erfahren Sie mehr über aktuelle Entwicklungen und entdecken Sie Best Practices für Ihr Unternehmen.
-            </p>
+      <main>
+        <section className="border-b border-white/[0.07] pb-14 pt-36 sm:pb-16 sm:pt-44">
+          <div className="section-container">
+            <p className="eyebrow">Magazin</p>
+            <h1 className="heading-display mt-6 max-w-5xl text-4xl sm:text-6xl lg:text-7xl">Technologie verständlich eingeordnet.</h1>
+            <p className="mt-7 max-w-3xl text-lg leading-8 text-slate-300">Praxisnahe Einblicke zu KI, Softwareentwicklung, Automatisierung, IT-Betrieb und Sicherheit.</p>
+          </div>
+        </section>
 
-            {/* Kategorie-Filter */}
-            {categories.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-3 mb-8">
-                <button
-                  onClick={() => setSelectedCategory(null)}
-                  className={`px-4 py-2 rounded-lg transition-colors ${
-                    selectedCategory === null
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                  }`}
-                >
-                  Alle
-                </button>
-                {categories.map((category) => (
-                  <button
-                    key={category}
-                    onClick={() => setSelectedCategory(category)}
-                    className={`px-4 py-2 rounded-lg transition-colors ${
-                      selectedCategory === category
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
+        <section className="section-y bg-[#070b13]" aria-label="Magazinbeiträge">
+          <div className="section-container">
+            {categories.length ? (
+              <div className="mb-10 flex gap-2 overflow-x-auto pb-2" aria-label="Beiträge filtern">
+                <button type="button" onClick={() => setSelectedCategory(null)} aria-pressed={!selectedCategory} className={`focus-ring min-h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${!selectedCategory ? "border-sky-400/40 bg-sky-400/[0.12] text-sky-200" : "border-white/10 text-slate-400 hover:text-white"}`}>Alle Themen</button>
+                {categories.map((category) => <button key={category} type="button" onClick={() => setSelectedCategory(category)} aria-pressed={selectedCategory === category} className={`focus-ring min-h-11 shrink-0 rounded-full border px-4 text-sm font-semibold ${selectedCategory === category ? "border-sky-400/40 bg-sky-400/[0.12] text-sky-200" : "border-white/10 text-slate-400 hover:text-white"}`}>{category}</button>)}
               </div>
+            ) : null}
+
+            {loading ? (
+              <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3" aria-label="Beiträge werden geladen">{[0, 1, 2, 3, 4, 5].map((item) => <div key={item} className="skeleton aspect-[4/3]" />)}</div>
+            ) : filteredPosts.length ? (
+              <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                {filteredPosts.map((post, index) => {
+                  const slug = post.slug || post.id || post._id;
+                  const category = postCategories(post)[0]?.name;
+                  return (
+                    <article key={slug || `${post.title}-${index}`} className="surface-card surface-card--hover overflow-hidden">
+                      {post.image ? (
+                        <div className="aspect-[16/9] overflow-hidden border-b border-white/[0.06] bg-slate-900">
+                          {/* CMS images may originate from the configured object-storage host. */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={post.image} alt="" loading={index < 3 ? "eager" : "lazy"} decoding="async" className="h-full w-full object-cover" />
+                        </div>
+                      ) : null}
+                      <div className="p-6">
+                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">{category ? <span className="font-semibold uppercase tracking-wider text-sky-300">{category}</span> : null}{post.date ? <time>{post.date}</time> : null}</div>
+                        <h2 className="mt-4 text-xl font-semibold leading-snug"><Link href={slug ? `/blog/${slug}` : "/blog"} className="focus-ring rounded-sm hover:text-sky-300">{post.title}</Link></h2>
+                        <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{post.description || post.subtitle}</p>
+                        <div className="mt-6 flex items-center justify-between border-t border-white/[0.06] pt-4 text-xs text-slate-500"><span>{post.readTime || "Artikel"}</span><span aria-hidden="true">→</span></div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="surface-card px-6 py-14 text-center text-slate-400">{selectedCategory ? "Zu diesem Thema sind derzeit keine Beiträge verfügbar." : "Derzeit sind keine Magazinbeiträge verfügbar."}</div>
             )}
           </div>
-        </div>
-      </section>
-
-      {/* Blog Posts Grid */}
-      <section className="py-16 bg-black">
-        <div className="container mx-auto px-4">
-          {loading ? (
-            <div className="text-center text-gray-400 py-16">Lädt Blog-Artikel...</div>
-          ) : filteredPosts.length === 0 ? (
-            <div className="text-center text-gray-400 py-16">
-              {selectedCategory ? "Keine Artikel in dieser Kategorie gefunden." : "Keine Blog-Artikel verfügbar."}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {filteredPosts.map((post, index) => {
-                const slug = post.slug || post.id;
-                return (
-                  <motion.div
-                    key={post._id || post.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Link href={`/blog/${slug}`}>
-                      <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 shadow-xl group h-full flex flex-col">
-                        <div className="relative h-48 overflow-hidden">
-                          <Image
-                            src={post.image}
-                            alt={post.title}
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
-                          <div className="absolute top-4 left-4 flex flex-wrap gap-2">
-                            {Array.isArray(post.category) ? (
-                              post.category.slice(0, 2).map((cat, idx) => {
-                                const categorySlug = cat.id || cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                                return (
-                                  <Link
-                                    key={idx}
-                                    href={`/blog/category/${categorySlug}`}
-                                    onClick={(e) => e.stopPropagation()}
-                                    className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-sm hover:bg-black/70 transition-colors"
-                                  >
-                                    {cat.icon} {cat.name}
-                                  </Link>
-                                );
-                              })
-                            ) : (
-                              <Link
-                                href={`/blog/category/${('id' in post.category ? post.category.id : post.category.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''))}`}
-                                onClick={(e) => e.stopPropagation()}
-                                className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-sm hover:bg-black/70 transition-colors"
-                              >
-                                {post.category.icon} {post.category.name}
-                              </Link>
-                            )}
-                          </div>
-                        </div>
-                        <div className="p-6 flex-1 flex flex-col">
-                          <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                            {post.title}
-                          </h3>
-                          <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                            {post.subtitle}
-                          </p>
-                          <p className="text-gray-500 text-sm mb-4 line-clamp-3 flex-1">
-                            {post.description}
-                          </p>
-                          <div className="flex items-center justify-between text-sm text-gray-500 mt-auto pt-4 border-t border-white/10">
-                            <span>{post.date}</span>
-                            <span>{post.readTime}</span>
-                          </div>
-                          {post.tags && post.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-3">
-                              {post.tags.slice(0, 3).map((tag, idx) => (
-                                <span
-                                  key={idx}
-                                  className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs"
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </section>
-      
+        </section>
+      </main>
       <Footer />
     </div>
   );

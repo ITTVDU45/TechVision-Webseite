@@ -13,7 +13,7 @@ export default function EfficiencySection() {
           <div className="order-1 lg:order-1 flex justify-center">
             {/* Using next/image for optimization; fallbacks to img if not available */}
             <img
-              src="/images/Automation-Dashboard.png"
+              src="/images/automation-dashboard.webp"
               alt="Automatisiertes Dashboard"
               className="w-full max-w-md rounded-2xl shadow-2xl"
             />

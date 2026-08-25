@@ -1,17 +1,5 @@
-"use client";
-import React, { Suspense } from "react";
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+import SoftwareDevelopment from "../components/SoftwareDevelopment";
 
-// Dynamischer Import der SoftwareDevelopment-Komponente mit SSR deaktiviert
-const SoftwareDevelopment = dynamic(
-  () => import("../components/SoftwareDevelopment"),
-  { ssr: false }
-);
-
-export default function SoftwareDevelopmentPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SoftwareDevelopment />
-    </Suspense>
-  );
-}
+export const metadata: Metadata = { title: "Softwareentwicklung", description: "Individuelle Anwendungen, Plattformen und Schnittstellen – von der Architektur bis zum stabilen Betrieb." };
+export default function Page() { return <SoftwareDevelopment />; }

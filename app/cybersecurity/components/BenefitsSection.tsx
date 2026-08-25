@@ -14,7 +14,7 @@ export default function BenefitsSection({
   title = "Ihre Vorteile mit unserer Cyber Sicherheitsberatung",
   benefits,
   ctaText = "Sicherheitsanalyse starten",
-  ctaLink = "/offer",
+  ctaLink = "/contact",
 }: BenefitsSectionProps) {
   return (
     <section className="py-32 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">

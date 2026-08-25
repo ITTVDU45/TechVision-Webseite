@@ -5,7 +5,6 @@ import {
   IconBolt,
   IconDatabase,
   IconTrendingUp,
-  IconPlug,
 } from "@tabler/icons-react";
 import {
   UseCase,
@@ -274,7 +273,7 @@ export const insightsBlogPosts: BlogPost[] = [
     excerpt: "Wie Unternehmen durch KI-Integration ihre Effizienz um 40% steigern konnten.",
     category: "Case Study",
     date: "15. März 2024",
-    image: "/images/ai-robot.jpg",
+    image: "",
     link: "/blog/ki-transformation-praxis",
   },
   {
@@ -290,7 +289,7 @@ export const insightsBlogPosts: BlogPost[] = [
     excerpt: "Trends und Entwicklungen in der KI-gestützten Prozessautomatisierung.",
     category: "Trends",
     date: "5. März 2024",
-    image: "/images/Automation-Dashboard.png",
+    image: "/images/automation-dashboard.webp",
     link: "/blog/zukunft-automatisierung",
   },
 ];

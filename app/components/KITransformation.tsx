@@ -19,8 +19,8 @@ import {
 } from "../ki-transformation/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
 
-export default function KITransformation(): React.ReactNode {
-  const { faqs, blogs, loading } = usePageContent({
+export default function KITransformation() {
+  const { faqs, blogs } = usePageContent({
     page: 'ki-transformation',
     loadFAQs: true,
     loadBlogs: true,
@@ -60,6 +60,8 @@ export default function KITransformation(): React.ReactNode {
     <div className="min-h-screen w-full bg-black text-white">
       <Header />
 
+      <main>
+
       <HeroSection />
 
       <WhatIsKITransformation features={whatIsFeatures} />
@@ -79,6 +81,8 @@ export default function KITransformation(): React.ReactNode {
       <FAQSection faqs={displayFAQs} />
 
       <CTA />
+
+      </main>
 
       <Footer />
     </div>

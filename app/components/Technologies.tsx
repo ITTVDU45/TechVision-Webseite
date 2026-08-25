@@ -71,7 +71,8 @@ const layers: Layer[] = [
   },
 ];
 
-export default function Technologies(): React.JSX.Element {
+export default function Technologies({ asPage = false }: { asPage?: boolean }): React.JSX.Element {
+  const Heading = asPage ? motion.h1 : motion.h2;
   return (
     <section className="section-y relative overflow-hidden bg-[#050a12]">
       <div className="section-container relative z-10">
@@ -85,7 +86,7 @@ export default function Technologies(): React.JSX.Element {
             >
               Technologie‑Stack
             </motion.span>
-            <motion.h2
+            <Heading
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -93,7 +94,7 @@ export default function Technologies(): React.JSX.Element {
               className="heading-display mt-4 text-3xl md:text-5xl"
             >
               Ein durchdachter Stack – vom Frontend bis zum Betrieb.
-            </motion.h2>
+            </Heading>
             <p className="mt-5 text-base leading-relaxed text-slate-400 md:text-lg">
               Wir setzen bewusst auf ausgereifte, offene Technologien. Nicht die neueste Trend‑Bibliothek –
               sondern die Werkzeuge, mit denen wir Ihr Projekt in fünf Jahren noch sinnvoll weiterentwickeln können.

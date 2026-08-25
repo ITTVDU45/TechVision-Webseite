@@ -1,7 +1,3 @@
-"use client";
-import React from "react";
-import HeroSection from "../components/HeroSection";
+import { redirect } from "next/navigation";
 
-export default function HeroPage() {
-  return <HeroSection />;
-}
+export default function HeroPage() { redirect("/marketing"); }

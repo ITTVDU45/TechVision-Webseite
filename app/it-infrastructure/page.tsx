@@ -1,17 +1,5 @@
-"use client";
-import React, { Suspense } from "react";
-import dynamic from "next/dynamic";
+import type { Metadata } from "next";
+import ITInfrastructure from "../components/ITInfrastructure";
 
-// Dynamischer Import der ITInfrastructure-Komponente mit SSR deaktiviert
-const ITInfrastructure = dynamic(
-  () => import("../components/ITInfrastructure"),
-  { ssr: false }
-);
-
-export default function ITInfrastructurePage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ITInfrastructure />
-    </Suspense>
-  );
-}
+export const metadata: Metadata = { title: "IT-Infrastruktur", description: "Planung, Beschaffung, Einrichtung und Betreuung sicherer IT-Infrastrukturen." };
+export default function Page() { return <ITInfrastructure />; }

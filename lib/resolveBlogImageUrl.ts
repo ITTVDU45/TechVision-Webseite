@@ -1,5 +1,5 @@
 /** Lokales Fallback, wenn CMS-URL fehlt, blockiert oder ungültig ist */
-export const DEFAULT_BLOG_COVER_IMAGE = "/images/ai-robot.jpg";
+export const DEFAULT_BLOG_COVER_IMAGE = "/images/cms-development.jpg";
 
 /**
  * Normalisiert Blog-Cover-URLs für <img>/next/image.

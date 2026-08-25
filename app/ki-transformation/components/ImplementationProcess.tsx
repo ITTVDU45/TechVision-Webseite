@@ -18,7 +18,7 @@ export default function ImplementationProcess({
   description = "Von der Strategie bis zur Implementierung – unser strukturierter Prozess sorgt für eine reibungslose Transformation.",
   steps,
   ctaText = "Jetzt Angebot einholen",
-  ctaLink = "/offer",
+  ctaLink = "/contact",
 }: ImplementationProcessProps) {
   const router = useRouter();
 

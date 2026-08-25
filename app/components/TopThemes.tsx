@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
@@ -71,7 +71,7 @@ function BlogCard({ post, priority = false }: { post: BlogPost; priority?: boole
   );
 }
 
-const TopThemes: React.FC = () => {
+const TopThemes = () => {
   const [posts, setPosts] = useState<BlogPost[] | null>(null);
 
   useEffect(() => {

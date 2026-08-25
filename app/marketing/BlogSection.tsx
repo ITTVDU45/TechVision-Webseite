@@ -1,14 +1,6 @@
-"use client";
-import React, { useState, useMemo, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-import { fetchBlogPosts } from '@/lib/api';
+import Link from "next/link";
 
-// Fallback-Daten, falls Import fehlschlägt
-const defaultBlogPosts: BlogPost[] = [];
-
-type BlogPost = {
+export interface ServiceBlogPost {
   title: string;
   subtitle?: string;
   excerpt?: string;
@@ -16,215 +8,64 @@ type BlogPost = {
   link?: string;
   category?: string;
   date?: string;
-};
+}
 
-type BlogSectionProps = {
+interface BlogSectionProps {
   title?: string;
   subtitle?: string;
-  blogPosts?: BlogPost[];
-};
+  blogPosts?: ServiceBlogPost[];
+}
 
 export default function BlogSection({
-  title = 'KI-Insights & Trends',
-  subtitle = 'Erfahren Sie mehr über aktuelle Entwicklungen und entdecken Sie Best Practices für Ihr Unternehmen.',
-  blogPosts: initialBlogPosts = defaultBlogPosts
+  title = "Einblicke aus der Praxis",
+  subtitle = "Aktuelle Entwicklungen, technische Einordnungen und konkrete Erfahrungen aus digitalen Projekten.",
+  blogPosts = [],
 }: BlogSectionProps) {
-  const [blogPosts, setBlogPosts] = useState(initialBlogPosts);
-  const postsPerPage = 3; // always 3
-  const pageCount = Math.max(1, Math.ceil(blogPosts.length / postsPerPage));
-  const [page, setPage] = useState(0);
-
-  // Aktualisiere BlogPosts, wenn initialBlogPosts sich ändern
-  useEffect(() => {
-    if (initialBlogPosts && initialBlogPosts.length > 0) {
-      setBlogPosts(initialBlogPosts);
-    }
-  }, [initialBlogPosts]);
-
-  useEffect(() => {
-    // Wenn bereits Blogs übergeben wurden, überspringe API-Laden komplett
-    if (initialBlogPosts && initialBlogPosts.length > 0) {
-      return;
-    }
-
-    // Andernfalls lade aus der API
-    const loadBlogs = async () => {
-      try {
-        const apiBlogs = await fetchBlogPosts();
-        if (apiBlogs && Array.isArray(apiBlogs) && apiBlogs.length > 0) {
-          const published = apiBlogs
-            .filter((b: any) => b.published !== false)
-            .sort((a: any, b: any) => {
-              const dateA = new Date(a.date || a.createdAt || 0).getTime();
-              const dateB = new Date(b.date || b.createdAt || 0).getTime();
-              return dateB - dateA;
-            })
-            .map((b: any) => {
-              // Formatiere API-Daten in das erwartete Format
-              const category = Array.isArray(b.category) && b.category.length > 0
-                ? b.category[0].name || b.category[0].id
-                : (b.category?.name || b.category || 'Allgemein');
-              
-              return {
-                title: b.title || '',
-                subtitle: b.subtitle || '',
-                excerpt: b.description || b.content?.substring(0, 200) || '',
-                image: b.image || 'https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Blog+Image',
-                link: b.slug ? `/blog/${b.slug}` : (b.id ? `/blog/${b.id}` : '#'),
-                category: category,
-                date: b.date || new Date(b.createdAt || Date.now()).toLocaleDateString('de-DE', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                }),
-              };
-            });
-          
-          if (published.length > 0) {
-            setBlogPosts(published);
-          }
-        }
-      } catch (error) {
-        console.error('Error loading blog posts:', error);
-      }
-    };
-
-    loadBlogs();
-  }, [initialBlogPosts]);
-
-  const visiblePosts = useMemo(() => {
-    const start = page * postsPerPage;
-    return blogPosts.slice(start, start + postsPerPage);
-  }, [page, blogPosts]);
-
-  const next = () => setPage(p => Math.min(p + 1, pageCount - 1));
-  const prev = () => setPage(p => Math.max(p - 1, 0));
-
-  if (!blogPosts || blogPosts.length === 0) {
-    return (
-      <section className="py-24 bg-black text-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center py-12">
-            <h3 className="text-2xl font-semibold">Keine Blog-Artikel verfügbar</h3>
-            <p className="text-gray-400 mt-2">Momentan gibt es keine Einträge. Wir arbeiten am Inhalt.</p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const uniquePosts = Array.from(new Map(blogPosts.map((post) => [post.link || post.title, post])).values()).slice(0, 3);
 
   return (
-    <section className="py-32 bg-black relative overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/10 to-black" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-4xl mx-auto mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="relative inline-block bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400 text-transparent bg-clip-text animate-gradient-x">
-              {title}
-            </span>
-          </h2>
-          <p className="text-xl text-gray-300">{subtitle}</p>
+    <section className="section-y hairline-top bg-[#050912]" aria-labelledby="service-insights-heading">
+      <div className="section-container">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-3xl">
+            <p className="eyebrow">Magazin</p>
+            <h2 id="service-insights-heading" className="heading-display mt-5 text-3xl sm:text-5xl">{title}</h2>
+            <p className="mt-5 text-base leading-7 text-slate-400 sm:text-lg">{subtitle}</p>
+          </div>
+          <Link href="/blog" className="btn-secondary focus-ring min-h-11 shrink-0 text-sm">Alle Beiträge</Link>
         </div>
 
-        <div className="relative max-w-7xl mx-auto">
-          <div className="overflow-hidden mx-12">
-            <div className="flex gap-6">
-              {visiblePosts.map((post, index) => (
-                <motion.div
-                  key={`${post.title}-${index}`}
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.4 }}
-                  className="w-full min-w-[calc(33.333%_-_1rem)] md:min-w-[calc(33.333%_-_1rem)]"
-                >
-                  <Link href={post.link || '#'} className="group block">
-                      <div className={`bg-gradient-to-br p-[1px] rounded-2xl h-full`}>
-                        <div className="bg-gray-900 p-4 rounded-2xl h-full flex flex-col">
-                          <div className="flex items-center gap-2 mb-4">
-                            <span className="text-sm font-medium px-3 py-1 rounded-full bg-white/10">
-                              {post.category}
-                            </span>
-                            <span className="text-sm text-gray-400">{post.date}</span>
-                          </div>
-
-                          <div className="aspect-video rounded-lg overflow-hidden mb-4">
-                            <img
-                              src={post.image}
-                              alt={post.title}
-                              className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                            />
-                          </div>
-
-                          <div className="mb-6 flex-grow">
-                            <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                              {post.title}
-                            </h3>
-                            <p className="text-gray-400 line-clamp-3">{post.excerpt}</p>
-                          </div>
-
-                          <button
-                            className="w-full py-2 px-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-600 rounded-lg text-white text-sm font-medium hover:shadow-lg transition-all duration-300 relative overflow-hidden"
-                          >
-                            Weiterlesen
-                          </button>
-                        </div>
-                      </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          <button
-            onClick={prev}
-            disabled={page === 0}
-            className={`absolute left-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full ${
-              page === 0 ? 'bg-blue-500/5 cursor-not-allowed' : 'bg-blue-500/10 hover:bg-blue-500/20 cursor-pointer'
-            } transition-colors duration-200`}
-            aria-label="Vorherige"
-          >
-            <ChevronLeftIcon className={`w-6 h-6 ${page === 0 ? 'text-blue-400/50' : 'text-blue-400'}`} />
-          </button>
-
-          <button
-            onClick={next}
-            disabled={page >= pageCount - 1}
-            className={`absolute right-4 top-1/2 -translate-y-1/2 z-10 p-2 rounded-full ${
-              page >= pageCount - 1 ? 'bg-blue-500/5 cursor-not-allowed' : 'bg-blue-500/10 hover:bg-blue-500/20 cursor-pointer'
-            } transition-colors duration-200`}
-            aria-label="Nächste"
-          >
-            <ChevronRightIcon className={`w-6 h-6 ${page >= pageCount - 1 ? 'text-blue-400/50' : 'text-blue-400'}`} />
-          </button>
-
-          <div className="flex justify-center gap-2 mt-8">
-            {Array.from({ length: pageCount }).map((_, idx) => (
-              <button
-                key={idx}
-                onClick={() => setPage(idx)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${page === idx ? 'bg-blue-500 w-8' : 'bg-blue-500/20 hover:bg-blue-500/40'}`}
-                aria-label={`Gehe zu Seite ${idx + 1}`}
-              />
+        {uniquePosts.length ? (
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {uniquePosts.map((post, index) => (
+              <article key={post.link || `${post.title}-${index}`} className="surface-card surface-card--hover overflow-hidden">
+                {post.image ? (
+                  <div className="aspect-[16/9] overflow-hidden border-b border-white/[0.06] bg-slate-900">
+                    {/* CMS URLs can originate from the configured object storage host. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={post.image} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 motion-safe:hover:scale-[1.03]" />
+                  </div>
+                ) : null}
+                <div className="p-6">
+                  <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">
+                    {post.category ? <span className="font-semibold uppercase tracking-wider text-sky-300">{post.category}</span> : null}
+                    {post.date ? <time>{post.date}</time> : null}
+                  </div>
+                  <h3 className="mt-4 text-xl font-semibold leading-snug text-white">
+                    <Link href={post.link || "/blog"} className="focus-ring rounded-sm transition-colors hover:text-sky-300">{post.title}</Link>
+                  </h3>
+                  {post.excerpt ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{post.excerpt}</p> : null}
+                  <Link href={post.link || "/blog"} className="focus-ring mt-6 inline-flex rounded-sm text-sm font-semibold text-sky-300 hover:text-sky-200">Weiterlesen <span className="ml-2" aria-hidden="true">→</span></Link>
+                </div>
+              </article>
             ))}
           </div>
-
-          <div className="text-center mt-16">
-            <Link href="/blog">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-600 rounded-xl text-lg font-medium relative overflow-hidden group shadow-xl shadow-blue-500/20"
-                >
-                  <span className="relative z-10">Zu unseren News</span>
-                </motion.button>
-            </Link>
+        ) : (
+          <div className="surface-card mt-12 px-6 py-10 text-center">
+            <p className="text-sm text-slate-400">Weitere Fachbeiträge finden Sie in unserem Magazin.</p>
+            <Link href="/blog" className="focus-ring mt-4 inline-flex rounded-sm text-sm font-semibold text-sky-300">Zum Magazin <span className="ml-2" aria-hidden="true">→</span></Link>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

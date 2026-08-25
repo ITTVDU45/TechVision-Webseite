@@ -1,387 +1,130 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+/* eslint-disable @next/next/no-img-element -- Article images can come from the CMS or the local fallback catalogue. */
+
 import Link from "next/link";
-import Image from "next/image";
-import { fetchBlogPosts } from "@/lib/api";
-import TopicSlider from "../../components/TopicSlider";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import { blogPosts as fallbackPosts } from "../../data/blogPosts";
+import { fetchBlogPosts } from "@/lib/api";
 
+interface Category { id?: string; name: string }
 interface BlogPost {
   _id?: string;
-  id: string;
+  id?: string;
   slug?: string;
   title: string;
-  subtitle: string;
-  description: string;
+  subtitle?: string;
+  description?: string;
   content?: string;
-  image: string;
-  date: string;
-  readTime: string;
-  category: Array<{
-    id: string;
-    name: string;
-    icon: string;
-  }> | {
-    name: string;
-    icon: string;
-  };
+  image?: string;
+  date?: string;
+  readTime?: string;
+  category?: Category[] | Category;
   tags?: string[];
-  page?: string | string[];
-  published: boolean;
+  published?: boolean;
+}
+
+function categoriesOf(post: BlogPost): Category[] {
+  if (Array.isArray(post.category)) return post.category;
+  return post.category ? [post.category] : [];
+}
+
+function toSlug(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+function uniquePosts(posts: BlogPost[]) {
+  const unique = new Map<string, BlogPost>();
+  posts.filter((post) => post.published !== false).forEach((post) => {
+    const key = post.slug || post.id || post._id || post.title;
+    if (!unique.has(key)) unique.set(key, post);
+  });
+  return Array.from(unique.values());
+}
+
+function ArticleBody({ content }: { content: string }) {
+  return <>{content.split("\n").map((line, index) => {
+    const text = line.trim();
+    if (!text) return null;
+    if (text.startsWith("### ")) return <h3 key={index}>{text.slice(4)}</h3>;
+    if (text.startsWith("## ")) return <h2 key={index}>{text.slice(3)}</h2>;
+    if (text.startsWith("# ")) return <h2 key={index}>{text.slice(2)}</h2>;
+    if (text.startsWith("- ") || text.startsWith("* ")) return <p key={index} className="pl-5 before:mr-3 before:text-sky-300 before:content-['•']">{text.slice(2)}</p>;
+    return <p key={index}>{text}</p>;
+  })}</>;
 }
 
 export default function BlogDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const slug = params.slug as string;
-  const [blog, setBlog] = useState<BlogPost | null>(null);
-  const [relatedBlogs, setRelatedBlogs] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const slug = useParams<{ slug: string }>().slug;
+  const localArticle = fallbackPosts.find((post) => (post.slug || post.id) === slug) || null;
+  const [blog, setBlog] = useState<BlogPost | null>(localArticle);
+  const [allPosts, setAllPosts] = useState<BlogPost[]>(fallbackPosts);
+  const [loading, setLoading] = useState(!localArticle);
 
   useEffect(() => {
-    const loadBlog = async () => {
-      try {
-        // Versuche zuerst über die API-Route
-        const res = await fetch(`/api/blogs/${slug}`);
-        if (res.ok) {
-          const data = await res.json();
-          setBlog(data);
-          
-          // Lade verwandte Blogs
-          const allBlogs = await fetchBlogPosts();
-          if (allBlogs && Array.isArray(allBlogs)) {
-            const published = allBlogs.filter((b: any) => b.published !== false);
-            // Normalisiere category zu Array für Vergleich
-            const blogCategories = Array.isArray(data.category) 
-              ? data.category.map((c: any) => c.name || c.id)
-              : (data.category?.name ? [data.category.name] : []);
-            
-            // Sortiere nach Relevanz: zuerst nach gemeinsamen Kategorien, dann nach Tags, dann nach Datum
-            const related = published
-              .filter((b: any) => {
-                const blogSlug = b.slug || b.id;
-                return blogSlug !== slug;
-              })
-              .map((b: any) => {
-                // Prüfe Kategorien-Überschneidung
-                const bCategories = Array.isArray(b.category)
-                  ? b.category.map((c: any) => c.name || c.id)
-                  : (b.category?.name ? [b.category.name] : []);
-                const hasCommonCategory = blogCategories.some((cat: string) => bCategories.includes(cat));
-                
-                // Prüfe Tags-Überschneidung
-                const hasCommonTag = data.tags && b.tags && 
-                  Array.isArray(data.tags) && Array.isArray(b.tags) &&
-                  data.tags.some((tag: string) => b.tags.includes(tag));
-                
-                // Berechne Relevanz-Score
-                let relevance = 0;
-                if (hasCommonCategory) relevance += 2;
-                if (hasCommonTag) relevance += 1;
-                
-                return { ...b, relevance };
-              })
-              .sort((a: any, b: any) => {
-                // Sortiere nach Relevanz (höher = besser), dann nach Datum
-                if (b.relevance !== a.relevance) {
-                  return b.relevance - a.relevance;
-                }
-                const dateA = new Date(a.date || a.createdAt || 0).getTime();
-                const dateB = new Date(b.date || b.createdAt || 0).getTime();
-                return dateB - dateA;
-              })
-              .slice(0, 6); // Top 6 für Carousel
-            setRelatedBlogs(related);
-          }
-        } else {
-          router.push('/blog');
-        }
-      } catch (error) {
-        console.error('Error loading blog:', error);
-        router.push('/blog');
-      } finally {
-        setLoading(false);
-      }
-    };
+    let active = true;
+    const controller = new AbortController();
+    const requestTimeout = window.setTimeout(() => controller.abort(), 1800);
+    const fallback = fallbackPosts.find((post) => (post.slug || post.id) === slug) || null;
+    setBlog(fallback);
+    setLoading(!fallback);
+    Promise.all([
+      fallback ? Promise.resolve(null) : fetch(`/api/blogs/${encodeURIComponent(slug)}`, { signal: controller.signal }).then((response) => response.ok ? response.json() : null).catch(() => null),
+      Promise.race<BlogPost[]>([fetchBlogPosts().catch(() => []), new Promise((resolve) => window.setTimeout(() => resolve([]), 1800))]),
+    ]).then(([article, posts]) => {
+      if (!active) return;
+      const source = Array.isArray(posts) && posts.length ? uniquePosts(posts) : uniquePosts(fallbackPosts);
+      setAllPosts(source);
+      setBlog(article || source.find((post) => (post.slug || post.id || post._id) === slug) || fallback);
+    }).finally(() => { window.clearTimeout(requestTimeout); if (active) setLoading(false); });
+    return () => { active = false; window.clearTimeout(requestTimeout); controller.abort(); };
+  }, [slug]);
 
-    if (slug) {
-      loadBlog();
-    }
-  }, [slug, router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen w-full bg-black text-white flex items-center justify-center">
-        <div className="text-gray-400">Lädt Artikel...</div>
-      </div>
-    );
-  }
-
-  if (!blog) {
-    return (
-      <div className="min-h-screen w-full bg-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Artikel nicht gefunden</h1>
-          <Link href="/blog" className="text-blue-400 hover:text-blue-300">
-            Zurück zur Blog-Übersicht
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  // Format content (einfaches Markdown-Parsing)
-  const formatContent = (content: string) => {
-    if (!content) return null;
-    
-    const lines = content.split('\n');
-    return lines.map((line, idx) => {
-      if (line.startsWith('# ')) {
-        return <h1 key={idx} className="text-3xl font-bold mt-8 mb-4">{line.substring(2)}</h1>;
-      }
-      if (line.startsWith('## ')) {
-        return <h2 key={idx} className="text-2xl font-bold mt-6 mb-3">{line.substring(3)}</h2>;
-      }
-      if (line.startsWith('### ')) {
-        return <h3 key={idx} className="text-xl font-bold mt-4 mb-2">{line.substring(4)}</h3>;
-      }
-      if (line.startsWith('- ') || line.startsWith('* ')) {
-        return <li key={idx} className="ml-6 mb-2">{line.substring(2)}</li>;
-      }
-      if (line.trim() === '') {
-        return <br key={idx} />;
-      }
-      return <p key={idx} className="mb-4 leading-relaxed">{line}</p>;
-    });
-  };
+  const related = useMemo(() => {
+    if (!blog) return [];
+    const currentCategories = new Set(categoriesOf(blog).map((category) => category.name));
+    return allPosts.filter((post) => (post.slug || post.id || post._id) !== slug).sort((a, b) => {
+      const aRelevant = categoriesOf(a).some((category) => currentCategories.has(category.name)) ? 1 : 0;
+      const bRelevant = categoriesOf(b).some((category) => currentCategories.has(category.name)) ? 1 : 0;
+      return bRelevant - aRelevant;
+    }).slice(0, 3);
+  }, [allPosts, blog, slug]);
 
   return (
-    <div className="min-h-screen w-full bg-black text-white">
+    <div className="min-h-screen bg-[#050912] text-white">
       <Header />
-      
-      {/* Hero Image */}
-      <section className="relative h-[60vh] overflow-hidden bg-gradient-to-br from-blue-900/20 to-indigo-900/20">
-        {blog.image && (
-          blog.image.includes('via.placeholder.com') ? (
-            <img
-              src={blog.image}
-              alt={blog.title}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          ) : (
-            <Image
-              src={blog.image}
-              alt={blog.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          )
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 container mx-auto px-4 pb-16">
-          <div className="max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <div className="flex flex-wrap gap-2 mb-4">
-                {Array.isArray(blog.category) ? (
-                  blog.category.map((cat, idx) => (
-                    <span key={idx} className="inline-block px-4 py-2 bg-black/50 backdrop-blur-sm rounded-full text-sm">
-                      {cat.icon} {cat.name}
-                    </span>
-                  ))
-                ) : (
-                  <span className="inline-block px-4 py-2 bg-black/50 backdrop-blur-sm rounded-full text-sm">
-                    {blog.category.icon} {blog.category.name}
-                  </span>
-                )}
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">{blog.title}</h1>
-              <p className="text-xl text-gray-300 mb-4">{blog.subtitle}</p>
-              <div className="flex items-center gap-4 text-sm text-gray-400">
-                <span>{blog.date}</span>
-                <span>•</span>
-                <span>{blog.readTime}</span>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Main Content */}
-      <section className="py-16 bg-black">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main Article */}
-              <div className="lg:col-span-2">
-                <motion.article
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="prose prose-invert max-w-none"
-                >
-                  <div className="text-gray-300 leading-relaxed">
-                    {blog.content ? formatContent(blog.content) : (
-                      <p className="mb-4">{blog.description}</p>
-                    )}
-                  </div>
-                </motion.article>
-              </div>
-
-              {/* Sidebar */}
-              <aside className="lg:col-span-1">
-                <div className="sticky top-24 space-y-6">
-                  {/* Kategorien */}
-                  <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                    <h3 className="text-lg font-bold mb-4">Kategorien</h3>
-                    {Array.isArray(blog.category) ? (
-                      blog.category.length > 0 ? (
-                        <div className="space-y-2">
-                          {blog.category.map((cat, idx) => {
-                            const categorySlug = cat.id || cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-                            return (
-                              <Link
-                                key={idx}
-                                href={`/blog/category/${categorySlug}`}
-                                className="flex items-center gap-2 hover:text-blue-400 transition-colors group"
-                              >
-                                <span className="text-2xl">{cat.icon}</span>
-                                <span className="flex-1">{cat.name}</span>
-                                <svg
-                                  className="w-4 h-4 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <p className="text-gray-400 text-sm">Keine Kategorien</p>
-                      )
-                    ) : (() => {
-                      // Normalisiere altes Format zu Array
-                      const cat = blog.category as any;
-                      const categoryId = cat.id || cat.name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'allgemein';
-                      return (
-                        <Link
-                          href={`/blog/category/${categoryId}`}
-                          className="flex items-center gap-2 hover:text-blue-400 transition-colors group"
-                        >
-                          <span className="text-2xl">{cat.icon || '📝'}</span>
-                          <span className="flex-1">{cat.name || 'Allgemein'}</span>
-                          <svg
-                            className="w-4 h-4 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </Link>
-                      );
-                    })()}
-                  </div>
-
-                  {/* Tags */}
-                  {blog.tags && blog.tags.length > 0 && (
-                    <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6">
-                      <h3 className="text-lg font-bold mb-4">Tags</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {blog.tags.map((tag, idx) => (
-                          <span
-                            key={idx}
-                            className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Zurück-Link */}
-                  <Link
-                    href="/blog"
-                    className="block px-4 py-3 bg-blue-500 hover:bg-blue-600 rounded-lg text-center transition-colors"
-                  >
-                    ← Zurück zur Übersicht
-                  </Link>
+      <main>
+        {loading ? (
+          <section className="section-container flex min-h-[70vh] items-center justify-center pb-20 pt-36" aria-live="polite"><div className="w-full max-w-4xl"><h1 className="sr-only">Artikel wird geladen</h1><div className="skeleton h-6 w-32" /><div className="skeleton mt-6 h-20 w-full" /><div className="skeleton mt-8 aspect-[16/7] w-full" /></div></section>
+        ) : blog ? (
+          <>
+            <article>
+              <header className="border-b border-white/[0.07] pb-12 pt-36 sm:pb-16 sm:pt-44">
+                <div className="section-container">
+                  <Link href="/blog" className="focus-ring text-sm font-semibold text-sky-300 hover:text-sky-200">← Magazin</Link>
+                  <div className="mt-8 flex flex-wrap gap-2">{categoriesOf(blog).map((category) => <Link key={category.id || category.name} href={`/blog/category/${category.id || toSlug(category.name)}`} className="eyebrow focus-ring">{category.name}</Link>)}</div>
+                  <h1 className="heading-display mt-6 max-w-5xl text-4xl sm:text-6xl lg:text-7xl">{blog.title}</h1>
+                  {blog.subtitle ? <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">{blog.subtitle}</p> : null}
+                  <div className="mt-7 flex flex-wrap gap-4 text-sm text-slate-500">{blog.date ? <time>{blog.date}</time> : null}<span>{blog.readTime || "Artikel"}</span></div>
                 </div>
-              </aside>
-            </div>
-          </div>
-        </div>
-      </section>
+              </header>
 
-      {/* Related Blogs Carousel */}
-      {relatedBlogs.length > 0 && (
-        <section className="py-24 bg-black border-t border-white/10 relative overflow-hidden">
-          {/* Dynamic Background Elements */}
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-indigo-600/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
+              {blog.image ? <div className="section-container pt-10 sm:pt-14"><div className="aspect-[16/7] overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-900"><img src={blog.image} alt="" className="h-full w-full object-cover" decoding="async" /></div></div> : null}
 
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-4xl mx-auto text-center mb-16">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="inline-block px-4 py-1.5 mb-6 rounded-full bg-neutral-900 border border-neutral-800"
-              >
-                <span className="text-sm font-medium text-blue-400">Weitere Artikel</span>
-              </motion.div>
+              <div className="section-container grid gap-12 py-14 lg:grid-cols-[minmax(0,1fr)_18rem] lg:py-20">
+                <div className="article-copy max-w-3xl text-base leading-8 text-slate-300 sm:text-lg"><ArticleBody content={blog.content || blog.description || "Weitere Informationen folgen."} /></div>
+                <aside className="lg:border-l lg:border-white/[0.08] lg:pl-8"><p className="eyebrow">Projektidee?</p><h2 className="mt-5 text-xl font-semibold">Von der Einordnung zur Umsetzung.</h2><p className="mt-4 text-sm leading-6 text-slate-400">Wir prüfen gemeinsam, welcher Ansatz zu Ihren Abläufen, Daten und Zielen passt.</p><Link href="/contact" className="btn-primary focus-ring mt-7 min-h-11">Gespräch vereinbaren</Link></aside>
+              </div>
+            </article>
 
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6"
-              >
-                Das könnte Sie auch <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-600">interessieren</span>
-              </motion.h2>
-            </div>
-
-            <div className="max-w-7xl mx-auto">
-              <TopicSlider 
-                posts={relatedBlogs.map((relatedPost: any) => {
-                  const relatedSlug = relatedPost.slug || relatedPost.id;
-                  // Normalisiere category zu dem Format, das TopicCard erwartet
-                  const category = Array.isArray(relatedPost.category) && relatedPost.category.length > 0
-                    ? relatedPost.category[0]
-                    : (relatedPost.category || { name: 'Allgemein', icon: '📝' });
-                  
-                  return {
-                    id: relatedPost.id || relatedPost._id?.toString() || relatedSlug,
-                    title: relatedPost.title || '',
-                    subtitle: relatedPost.subtitle || '',
-                    description: relatedPost.description || relatedPost.content?.substring(0, 150) || '',
-                    image: relatedPost.image || 'https://via.placeholder.com/800x400/1a1a1a/ffffff?text=Blog+Image',
-                    date: relatedPost.date || new Date(relatedPost.createdAt || Date.now()).toLocaleDateString('de-DE', { 
-                      day: 'numeric', 
-                      month: 'long', 
-                      year: 'numeric' 
-                    }),
-                    readTime: relatedPost.readTime || '5 min',
-                    category: category,
-                    slug: relatedSlug,
-                  };
-                })} 
-              />
-            </div>
-          </div>
-        </section>
-      )}
-      
+            {related.length ? <section className="section-y-tight border-t border-white/[0.07] bg-[#070b13]" aria-labelledby="related-posts"><div className="section-container"><p className="eyebrow">Weiterlesen</p><h2 id="related-posts" className="heading-display mt-5 text-3xl sm:text-4xl">Weitere Einordnungen</h2><div className="mt-8 grid gap-4 md:grid-cols-3">{related.map((post) => { const relatedSlug = post.slug || post.id || post._id; return <article key={relatedSlug || post.title} className="surface-card surface-card--hover p-6"><p className="text-xs font-semibold uppercase tracking-wider text-sky-300">{categoriesOf(post)[0]?.name || "Magazin"}</p><h3 className="mt-4 text-lg font-semibold"><Link href={relatedSlug ? `/blog/${relatedSlug}` : "/blog"} className="focus-ring rounded-sm hover:text-sky-300">{post.title}</Link></h3><p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{post.description || post.subtitle}</p></article>; })}</div></div></section> : null}
+          </>
+        ) : (
+          <section className="section-container flex min-h-[70vh] flex-col items-start justify-center pb-20 pt-36"><p className="eyebrow">Magazin</p><h1 className="heading-display mt-6 text-4xl sm:text-6xl">Artikel nicht gefunden.</h1><p className="mt-5 text-slate-400">Dieser Beitrag ist nicht verfügbar oder wurde verschoben.</p><Link href="/blog" className="btn-secondary focus-ring mt-8 min-h-11">Zur Magazinübersicht</Link></section>
+        )}
+      </main>
       <Footer />
     </div>
   );

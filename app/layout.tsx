@@ -1,25 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from "@/lib/site-logo";
 import "./styles/globals.css";
 import "./styles/slick-overrides.css";
 import AppChrome from "./components/AppChrome";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: "Techvision - KI-Telefonie & Softwareentwicklung",
-  description: "Professionelle KI-Telefonie, Softwareentwicklung und IT-Beratung. Moderne Lösungen für Unternehmen.",
-  keywords: ["KI-Telefonie", "Softwareentwicklung", "IT-Beratung", "KI-Transformation"],
-  authors: [{ name: "Techvision" }],
-  creator: "Techvision",
-  publisher: "Techvision",
+  title: {
+    default: "IT-Techvision | KI, Software und sichere IT-Lösungen",
+    template: "%s | IT-Techvision",
+  },
+  description: "Strategische IT-Beratung, KI-Entwicklung, Prozessautomatisierung, individuelle Software und sichere Infrastruktur für Unternehmen.",
+  keywords: ["KI-Entwicklung", "Softwareentwicklung", "IT-Beratung", "Prozessautomatisierung", "Cybersecurity"],
+  authors: [{ name: "IT-Techvision" }],
+  creator: "IT-Techvision",
+  publisher: "IT-Techvision",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://techvision.de"),
+  metadataBase: new URL("https://it-techvision.de"),
   icons: {
     icon: [{ url: SITE_LOGO_PATH, type: "image/png" }],
     apple: SITE_LOGO_PATH,
@@ -30,10 +30,10 @@ export const metadata: Metadata = {
     title: 'Techvision',
   },
   openGraph: {
-    title: "Techvision - KI-Telefonie & Softwareentwicklung",
-    description: "Professionelle KI-Telefonie, Softwareentwicklung und IT-Beratung. Moderne Lösungen für Unternehmen.",
-    url: "https://techvision.de",
-    siteName: "Techvision",
+    title: "IT-Techvision | KI, Software und sichere IT-Lösungen",
+    description: "Strategische IT-Beratung, KI-Entwicklung, Prozessautomatisierung, individuelle Software und sichere Infrastruktur für Unternehmen.",
+    url: "https://it-techvision.de",
+    siteName: "IT-Techvision",
     images: [
       {
         url: SITE_LOGO_PATH,
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Techvision - KI-Telefonie & Softwareentwicklung",
-    description: "Professionelle KI-Telefonie, Softwareentwicklung und IT-Beratung. Moderne Lösungen für Unternehmen.",
+    title: "IT-Techvision | KI, Software und sichere IT-Lösungen",
+    description: "Strategische IT-Beratung, KI-Entwicklung, Prozessautomatisierung, individuelle Software und sichere Infrastruktur für Unternehmen.",
     images: [SITE_LOGO_PATH],
   },
   robots: {
@@ -61,9 +61,6 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  },
-  verification: {
-    google: "your-google-verification-code",
   },
 };
 
@@ -81,20 +78,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className={inter.className} suppressHydrationWarning>
+    <html lang="de" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <link rel="icon" href={SITE_LOGO_PATH} type="image/png" />
         <link rel="apple-touch-icon" href={SITE_LOGO_PATH} />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#3B82F6" />
+        <meta name="theme-color" content="#050912" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="antialiased" suppressHydrationWarning>
+      <body className="bg-[#050912] text-slate-100 antialiased" suppressHydrationWarning>
         <AppChrome />
-        {children}
+        <div id="main-content" tabIndex={-1}>{children}</div>
       </body>
     </html>
   );

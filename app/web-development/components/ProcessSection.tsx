@@ -70,7 +70,7 @@ export default function ProcessSection({ steps }: ProcessSectionProps) {
         >
           <GlowingEffect>
             <Link
-              href="/offer"
+              href="/contact"
               className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl text-lg font-medium text-white shadow-xl hover:shadow-2xl hover:shadow-blue-500/20 transition-all inline-block"
             >
               Webseite Anfragen

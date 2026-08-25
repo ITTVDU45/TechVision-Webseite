@@ -65,23 +65,20 @@ export default function Contact() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-black text-white">
+    <div className="min-h-screen w-full bg-[#050912] text-white">
       <Header />
 
-      <main className="pt-28 pb-20 md:pt-32">
-        <div className="container mx-auto px-4">
+      <main className="pb-20 pt-36 md:pt-44">
+        <div className="section-container">
           <div className="mx-auto max-w-6xl">
-            <header className="mb-12 text-center md:mb-16">
-              <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-                Kontakt
-              </h1>
-              <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-400">
-                Wir freuen uns auf Ihre Nachricht — persönlich, schnell und unkompliziert.
-              </p>
+            <header className="mb-12 max-w-4xl md:mb-16">
+              <p className="eyebrow">Direkter Austausch</p>
+              <h1 className="heading-display mt-6 text-4xl md:text-6xl lg:text-7xl">Lassen Sie uns Ihr Vorhaben einordnen.</h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">Schildern Sie uns kurz Ausgangslage und Ziel. Wir melden uns persönlich und besprechen den sinnvollsten nächsten Schritt.</p>
             </header>
 
             <div className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+              <div className="surface-card p-6">
                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/20 text-blue-400">
                   <IconMapPin className="h-6 w-6" aria-hidden />
                 </div>
@@ -106,7 +103,7 @@ export default function Contact() {
                 </a>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+              <div className="surface-card p-6">
                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">
                   <IconPhone className="h-6 w-6" aria-hidden />
                 </div>
@@ -128,7 +125,7 @@ export default function Contact() {
                 )}
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl sm:col-span-2 lg:col-span-1">
+              <div className="surface-card p-6 sm:col-span-2 lg:col-span-1">
                 <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/20 text-violet-400">
                   <IconMail className="h-6 w-6" aria-hidden />
                 </div>
@@ -155,7 +152,7 @@ export default function Contact() {
                 />
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl md:p-8">
+              <div className="surface-card p-6 md:p-8">
                 <h2 className="text-xl font-semibold text-white md:text-2xl">Nachricht senden</h2>
                 <p className="mt-2 text-sm text-gray-400">
                   Pflichtfelder sind gekennzeichnet. Mit Absenden willigen Sie ein, dass wir
@@ -275,7 +272,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={status === "loading"}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3.5 font-semibold text-white shadow-lg transition hover:from-blue-500 hover:to-indigo-500 disabled:opacity-50 md:w-auto"
+                    className="btn-primary focus-ring min-h-12 w-full disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
                   >
                     {status === "loading" ? (
                       "Wird gesendet…"

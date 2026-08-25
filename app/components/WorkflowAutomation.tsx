@@ -20,7 +20,7 @@ import {
 } from '../workflow-automation/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
 
-export default function WorkflowAutomation(): React.ReactNode {
+export default function WorkflowAutomation() {
   const { faqs, blogs } = usePageContent({
     page: 'workflow-automation',
     loadFAQs: true,
@@ -41,6 +41,7 @@ export default function WorkflowAutomation(): React.ReactNode {
   return (
     <div className="min-h-screen w-full bg-black text-white">
       <Header />
+      <main>
       <HeroSection />
       <KIAgentsSection features={kiAgentFeaturesData} />
       <AutomationBenefitsSection benefits={automationBenefitsData} />
@@ -49,6 +50,7 @@ export default function WorkflowAutomation(): React.ReactNode {
       <WorkflowInsights posts={displayBlogs} />
       <FAQSection faqs={displayFAQs} />
       <CTA />
+      </main>
       <Footer />
     </div>
   );
