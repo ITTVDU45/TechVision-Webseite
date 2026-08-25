@@ -11,6 +11,7 @@
  * und liegt zusätzlich im Repository. Screenshots brauchen keine 4000 px.
  */
 
+import { existsSync } from "node:fs";
 import { readdir, readFile, stat, unlink } from "node:fs/promises";
 import { join, relative, extname, dirname, basename } from "node:path";
 import sharp from "sharp";
@@ -85,6 +86,15 @@ async function main() {
     const stem = basename(file, extname(file)).replace(/\.webp$/i, "");
     const target = join(dirname(file), stem + ".webp");
     const shortPath = relative(PUBLIC_DIR, file).split("\\").join("/");
+
+    // Es liegt schon ein WebP unter diesem Namen. Nicht überschreiben: Auf
+    // Windows kollidieren "Bild.png" und "bild.webp", weil das Dateisystem
+    // Gross- und Kleinschreibung nicht unterscheidet - so ginge eine bereits
+    // kuratierte Datei verloren.
+    if (existsSync(target)) {
+      console.log(`  übersprungen (Ziel existiert)  ${shortPath} -> ${basename(target)}`);
+      continue;
+    }
 
     let pipeline;
     try {
