@@ -29,26 +29,26 @@ export default function StatBand({ stats, variant = "ruled" }: StatBandProps) {
       }
     >
       {stats.map((stat) => (
+        // Wert oben, Beschriftung darunter - über die Reihenfolge im Layout,
+        // damit <dt>/<dd> korrekt bleiben und die Beschriftung nicht doppelt
+        // vorgelesen wird. Genau ein <div> je Gruppe, so erlaubt es <dl>.
         <div
           key={stat.label}
-          className={variant === "ruled" ? "bg-[color:var(--ink-950)] px-6 py-8" : ""}
+          className={`flex flex-col-reverse ${
+            variant === "ruled" ? "bg-[color:var(--ink-950)] px-6 py-8" : ""
+          }`}
         >
-          <dt className="sr-only">{stat.label}</dt>
-          <dd>
-            <span
-              className="heading-display block tabular-nums text-[color:var(--brand-300)]"
-              style={{ fontSize: "var(--step-4)" }}
-            >
-              {stat.value}
-            </span>
-            <span className="t-small mt-3 block leading-snug text-[color:var(--ink-300)]">
-              {stat.label}
-            </span>
+          <dt className="t-small mt-3 leading-snug text-[color:var(--ink-300)]">
+            {stat.label}
             {stat.source ? (
-              <span className="t-small mt-2 block text-[color:var(--ink-500)]">
-                {stat.source}
-              </span>
+              <span className="mt-2 block text-[color:var(--ink-500)]">{stat.source}</span>
             ) : null}
+          </dt>
+          <dd
+            className="heading-display tabular-nums text-[color:var(--brand-300)]"
+            style={{ fontSize: "var(--step-4)" }}
+          >
+            {stat.value}
           </dd>
         </div>
       ))}

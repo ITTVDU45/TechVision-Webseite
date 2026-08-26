@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "Datenschutz", description: "Informat
 
 export default function DatenschutzPage() {
   return (
-    <div className="min-h-screen bg-[#050912] text-white">
+    <div className="min-h-screen bg-[color:var(--ink-950)] text-white">
       <Header />
       <main className="pb-20 pt-36 sm:pt-44">
         <article className="section-container max-w-4xl">

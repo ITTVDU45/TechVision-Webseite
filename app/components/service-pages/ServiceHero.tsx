@@ -35,7 +35,7 @@ export default function ServiceHero({
   accent = "sky",
 }: ServiceHeroProps) {
   return (
-    <section className="relative isolate flex min-h-[min(780px,88svh)] items-center overflow-hidden border-b border-white/[0.07] bg-[#050912] pb-20 pt-36 sm:pt-40">
+    <section className="relative isolate flex min-h-[min(780px,88svh)] items-center overflow-hidden border-b border-white/[0.07] bg-[color:var(--ink-950)] pb-20 pt-36 sm:pt-40">
       <div className="absolute inset-0 -z-20 bg-[linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] bg-[size:56px_56px] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]" aria-hidden="true" />
       <div className="absolute left-[8%] top-24 -z-10 h-64 w-64 rounded-full bg-sky-500/[0.08] blur-3xl" aria-hidden="true" />
 

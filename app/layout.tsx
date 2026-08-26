@@ -122,12 +122,14 @@ export default function RootLayout({
         <link rel="icon" href={SITE_LOGO_PATH} type="image/png" />
         <link rel="apple-touch-icon" href={SITE_LOGO_PATH} />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#050912" />
+        {/* Literalwert: meta-Angaben lösen keine CSS-Variablen auf.
+            Muss mit --ink-950 in globals.css übereinstimmen. */}
+        <meta name="theme-color" content="#050a12" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="bg-[#050912] text-slate-100 antialiased" suppressHydrationWarning>
+      <body className="bg-[color:var(--ink-950)] text-slate-100 antialiased" suppressHydrationWarning>
         <StructuredData />
         <AppChrome />
         <div id="main-content" tabIndex={-1}>{children}</div>

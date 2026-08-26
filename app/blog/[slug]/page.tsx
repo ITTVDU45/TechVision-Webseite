@@ -93,7 +93,7 @@ export default function BlogDetailPage() {
   }, [allPosts, blog, slug]);
 
   return (
-    <div className="min-h-screen bg-[#050912] text-white">
+    <div className="min-h-screen bg-[color:var(--ink-950)] text-white">
       <Header />
       <main>
         {loading ? (

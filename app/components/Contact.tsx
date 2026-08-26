@@ -65,7 +65,7 @@ export default function Contact() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#050912] text-white">
+    <div className="min-h-screen w-full bg-[color:var(--ink-950)] text-white">
       <Header />
 
       <main className="pb-20 pt-36 md:pt-44">

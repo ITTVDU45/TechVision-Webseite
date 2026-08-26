@@ -18,7 +18,7 @@ export default function BlogSection({
   const uniquePosts = Array.from(new Map(blogPosts.map((post) => [post.link || post.title, post])).values()).slice(0, 3);
 
   return (
-    <section className="section-y hairline-top bg-[#050912]" aria-labelledby="service-insights-heading">
+    <section className="section-y hairline-top bg-[color:var(--ink-950)]" aria-labelledby="service-insights-heading">
       <div className="section-container">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div className="max-w-3xl">

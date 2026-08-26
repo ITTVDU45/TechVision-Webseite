@@ -254,15 +254,10 @@ const CaseStudies = ({ apiPage }: CaseStudiesProps) => {
                       {caseItem.stats.length > 0 && (
                         <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3 border-t border-[color:var(--line)] pt-4">
                           {caseItem.stats.slice(0, 2).map((stat, statIndex) => (
-                            <div key={`${caseItem.id}-stat-${statIndex}`}>
-                              <dt className="sr-only">{stat.label}</dt>
-                              <dd>
-                                <span className="heading-display block text-2xl tabular-nums text-[color:var(--brand-300)]">
-                                  {stat.value}
-                                </span>
-                                <span className="t-small mt-1 block text-[color:var(--ink-500)]">
-                                  {stat.label}
-                                </span>
+                            <div key={`${caseItem.id}-stat-${statIndex}`} className="flex flex-col-reverse">
+                              <dt className="t-small mt-1 text-[color:var(--ink-500)]">{stat.label}</dt>
+                              <dd className="heading-display text-2xl tabular-nums text-[color:var(--brand-300)]">
+                                {stat.value}
                               </dd>
                             </div>
                           ))}

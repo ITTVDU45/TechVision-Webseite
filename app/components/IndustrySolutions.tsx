@@ -5,7 +5,7 @@ import { industryProfiles } from "@/app/data/industries";
 export default function IndustrySolutions() {
   return (
     <>
-      <section className="relative overflow-hidden border-b border-white/[0.07] bg-[#050912] pb-16 pt-36 sm:pb-20 sm:pt-44">
+      <section className="relative overflow-hidden border-b border-white/[0.07] bg-[color:var(--ink-950)] pb-16 pt-36 sm:pb-20 sm:pt-44">
         <div className="section-container">
           <div className="max-w-4xl">
             <p className="eyebrow">Branchenkompetenz</p>

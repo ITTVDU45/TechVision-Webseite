@@ -25,7 +25,7 @@ export default async function IndustrySolutionDetailPage({ params }: PageProps) 
   if (!industry) notFound();
 
   return (
-    <div className="min-h-screen bg-[#050912] text-white">
+    <div className="min-h-screen bg-[color:var(--ink-950)] text-white">
       <Header />
       <main>
         <section className="border-b border-[color:var(--line)] pb-16 pt-36 sm:pb-20 sm:pt-44">
@@ -55,7 +55,7 @@ export default async function IndustrySolutionDetailPage({ params }: PageProps) 
           </div>
         </section>
 
-        <section className="section-y-tight bg-[#050912]">
+        <section className="section-y-tight bg-[color:var(--ink-950)]">
           <div className="section-container grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
             <div><p className="eyebrow">Mögliche Bausteine</p><h2 className="heading-display mt-5 text-3xl sm:text-4xl">Passend kombiniert statt pauschal verkauft.</h2></div>
             <ul className="grid gap-3 sm:grid-cols-2">{industry.capabilities.map((capability) => <li key={capability} className="surface-card flex min-h-20 items-center px-5 text-sm font-semibold text-slate-200">{capability}</li>)}</ul>

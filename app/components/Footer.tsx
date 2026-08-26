@@ -22,7 +22,7 @@ const companyLinks = [
 
 export default function Footer(): React.JSX.Element {
   return (
-    <footer className="border-t border-white/[0.08] bg-[#050912] text-slate-300">
+    <footer className="border-t border-white/[0.08] bg-[color:var(--ink-950)] text-slate-300">
       <div className="section-container py-14 sm:py-20">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>

@@ -93,7 +93,10 @@ export default function Header(): React.JSX.Element {
     }`;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[100] border-b border-white/[0.08] bg-[#050912]/95 supports-[backdrop-filter]:bg-[#050912]/85 supports-[backdrop-filter]:backdrop-blur-lg">
+    // Literale Farbwerte mit Alpha: Tailwinds Opazitaets-Zusatz (/95) greift
+    // nicht bei bg-[color:var(--…)], die Flaeche waere sonst durchsichtig.
+    // Werte entsprechen --ink-950 aus globals.css.
+    <header className="fixed inset-x-0 top-0 z-[100] border-b border-white/[0.08] bg-[#050a12]/95 supports-[backdrop-filter]:bg-[#050a12]/85 supports-[backdrop-filter]:backdrop-blur-lg">
       <div className="section-container flex min-h-[76px] items-center justify-between gap-5 py-3" style={{ paddingTop: "max(.75rem, env(safe-area-inset-top))" }}>
         <Link href="/" className="focus-ring flex shrink-0 items-center rounded-lg" aria-label="IT-Techvision – Startseite">
           <Image src={SITE_LOGO_PATH} alt="IT-Techvision" width={SITE_LOGO_WIDTH} height={SITE_LOGO_HEIGHT} priority className="h-11 w-auto max-w-[13rem] object-contain object-left sm:h-12" />

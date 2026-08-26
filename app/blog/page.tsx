@@ -56,7 +56,7 @@ export default function BlogPage() {
   const filteredPosts = selectedCategory ? posts.filter((post) => postCategories(post).some((category) => category.name === selectedCategory)) : posts;
 
   return (
-    <div className="min-h-screen bg-[#050912] text-white">
+    <div className="min-h-screen bg-[color:var(--ink-950)] text-white">
       <Header />
       <main>
         <section className="border-b border-white/[0.07] pb-14 pt-36 sm:pb-16 sm:pt-44">

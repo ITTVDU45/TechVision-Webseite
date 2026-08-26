@@ -10,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function IndustrySolutionsPage() {
-  return <div className="min-h-screen bg-[#050912] text-white"><Header /><main><IndustrySolutions /><CTA /></main><Footer /></div>;
+  return <div className="min-h-screen bg-[color:var(--ink-950)] text-white"><Header /><main><IndustrySolutions /><CTA /></main><Footer /></div>;
 }
