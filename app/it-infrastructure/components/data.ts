@@ -2,7 +2,6 @@ import {
   InfrastructureSolution,
   PlanningFeature,
   Benefit,
-  BlogPost,
   FAQ,
 } from './types';
 
@@ -102,51 +101,6 @@ export const benefitsData: Benefit[] = [
     icon: '🤝',
     title: 'Individuelle Beratung',
     description: 'Maßgeschneiderte Lösungen für Ihre spezifischen Anforderungen',
-  },
-];
-
-export const infrastructureNewsData: BlogPost[] = [
-  {
-    id: 'cloud-infrastructure-trends',
-    title: 'Cloud-Infrastruktur Trends 2024',
-    subtitle: 'Cloud Computing',
-    description: 'Die wichtigsten Entwicklungen im Überblick und wie sie Ihr Unternehmen beeinflussen.',
-    image: '/images/system-integration-network.webp',
-    category: {
-      name: 'Cloud Computing',
-      icon: '☁️',
-    },
-    date: '2024-03-15',
-    readTime: '5 min',
-    link: '/blog/cloud-infrastructure-trends',
-  },
-  {
-    id: 'hybrid-cloud',
-    title: 'Hybrid Cloud Lösungen',
-    subtitle: 'Infrastructure',
-    description: 'On-Premise meets Cloud – die perfekte Balance für moderne Unternehmen.',
-    image: '/images/multiple-devices-background.webp',
-    category: {
-      name: 'Infrastructure',
-      icon: '🏗️',
-    },
-    date: '2024-03-12',
-    readTime: '6 min',
-    link: '/blog/hybrid-cloud',
-  },
-  {
-    id: 'sustainable-it',
-    title: 'Nachhaltige IT-Infrastruktur',
-    subtitle: 'Nachhaltigkeit',
-    description: 'Green IT im Fokus – wie Sie Ihre IT-Infrastruktur umweltfreundlich gestalten.',
-    image: '/images/Server.webp',
-    category: {
-      name: 'Nachhaltigkeit',
-      icon: '🌱',
-    },
-    date: '2024-03-10',
-    readTime: '7 min',
-    link: '/blog/sustainable-it',
   },
 ];
 

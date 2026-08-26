@@ -9,29 +9,24 @@ import {
   AutomationBenefitsSection,
   UseCasesSection,
   IntegrationSection,
-  WorkflowInsights,
   FAQSection,
   kiAgentFeaturesData,
   automationBenefitsData,
   useCasesData,
   integrationCategoriesData,
-  workflowInsightsData,
   faqsData,
 } from '../workflow-automation/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
-import { toBlogPosts } from "@/lib/content";
 import ServiceProof from "@/app/components/service-pages/ServiceProof";
 import { serviceById } from "@/app/data/services";
 
 export default function WorkflowAutomation() {
-  const { faqs, blogs } = usePageContent({
+  const { faqs } = usePageContent({
     page: 'workflow-automation',
     loadFAQs: true,
-    loadBlogs: true,
   });
 
   const displayFAQs = faqs.length > 0 ? faqs : faqsData;
-  const displayBlogs = toBlogPosts(blogs, { name: "Automatisierung", icon: "\u26A1" }, workflowInsightsData);
 
   return (
     <div className="min-h-screen w-full bg-black text-white">
@@ -43,7 +38,6 @@ export default function WorkflowAutomation() {
       <AutomationBenefitsSection benefits={automationBenefitsData} />
       <UseCasesSection useCases={useCasesData} />
       <IntegrationSection categories={integrationCategoriesData} />
-      <WorkflowInsights posts={displayBlogs} />
       <FAQSection faqs={displayFAQs} />
       <CTA />
       </main>

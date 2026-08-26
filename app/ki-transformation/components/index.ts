@@ -18,6 +18,5 @@ export {
   whyIntegrateFeatures,
   processSteps,
   toolsData,
-  insightsBlogPosts,
   faqsData,
 } from "./data";

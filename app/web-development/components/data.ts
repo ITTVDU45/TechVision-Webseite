@@ -3,7 +3,6 @@ import {
   CaseStudy,
   Testimonial,
   ProcessStep,
-  BlogPost,
   FAQ,
 } from './types';
 
@@ -117,51 +116,6 @@ export const processStepsData: ProcessStep[] = [
     icon: '🚀',
     title: 'Launch & Support',
     description: 'Nach dem Go-Live bleiben wir an Ihrer Seite und sorgen für kontinuierliche Optimierung.',
-  },
-];
-
-export const webDevelopmentInsightsData: BlogPost[] = [
-  {
-    id: 'modern-web-development',
-    title: 'Modern Web Development',
-    subtitle: 'Development',
-    description: 'Die neuesten Trends in der Webentwicklung mit React und Next.js',
-    image: '/images/cms-development.webp',
-    category: {
-      name: 'Development',
-      icon: '💻',
-    },
-    date: '2024-03-20',
-    readTime: '6 min',
-    link: '/blog/modern-web-development',
-  },
-  {
-    id: 'performance-optimization',
-    title: 'Performance Optimierung',
-    subtitle: 'Optimierung',
-    description: 'Strategien zur Verbesserung der Website-Performance und Core Web Vitals',
-    image: '/images/laptop-software-mockup.webp',
-    category: {
-      name: 'Optimierung',
-      icon: '⚡',
-    },
-    date: '2024-03-18',
-    readTime: '5 min',
-    link: '/blog/performance-optimization',
-  },
-  {
-    id: 'responsive-design-2024',
-    title: 'Responsive Design 2024',
-    subtitle: 'Design',
-    description: 'Mobile-First Ansätze und moderne CSS-Techniken für responsive Websites',
-    image: '/images/multiple-devices-background.webp',
-    category: {
-      name: 'Design',
-      icon: '🎨',
-    },
-    date: '2024-03-15',
-    readTime: '7 min',
-    link: '/blog/responsive-design-2024',
   },
 ];
 

@@ -8,29 +8,24 @@ import {
   OpenSourceToolsSection,
   KIAgentsSection,
   IntegrationSection,
-  ToolsNewsSection,
   FAQSection,
   openSourceToolsData,
   kiAgentsData,
   integrationCategoriesData,
   integrationFeaturesData,
-  toolsNewsData,
   faqsData,
 } from '../tools/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
-import { toBlogPosts } from "@/lib/content";
 import ServiceProof from "@/app/components/service-pages/ServiceProof";
 import { serviceById } from "@/app/data/services";
 
 export default function Tools() {
-  const { faqs, blogs } = usePageContent({
+  const { faqs } = usePageContent({
     page: 'tools',
     loadFAQs: true,
-    loadBlogs: true,
   });
 
   const displayFAQs = faqs.length > 0 ? faqs : faqsData;
-  const displayBlogs = toBlogPosts(blogs, { name: "Tools", icon: "\u{1F6E0}\uFE0F" }, toolsNewsData);
 
   return (
     <div className="min-h-screen w-full bg-black text-white">
@@ -44,7 +39,6 @@ export default function Tools() {
         categories={integrationCategoriesData}
         features={integrationFeaturesData}
       />
-      <ToolsNewsSection posts={displayBlogs} />
       <FAQSection faqs={displayFAQs} />
       <CTA />
       </main>

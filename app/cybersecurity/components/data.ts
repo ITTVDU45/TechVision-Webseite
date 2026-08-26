@@ -5,7 +5,6 @@ import {
   CaseStudy,
   Benefit,
   ProcessStep,
-  BlogPost,
   FAQ,
 } from "./types";
 
@@ -196,36 +195,6 @@ export const processStepsData: ProcessStep[] = [
     description: "Kontinuierliche Überwachung und regelmäßige Updates für nachhaltige Sicherheit.",
     color: "from-green-500/20 to-green-600/20",
     iconColor: "text-green-400",
-  },
-];
-
-export const securityInsightsPosts: BlogPost[] = [
-  {
-    id: "cybersecurity-best-practices",
-    title: "Cybersecurity Best Practices",
-    description: "Wie Sie Ihr Unternehmen vor modernen Bedrohungen schützen",
-    category: { name: "Security" },
-    date: "2024-03-18",
-    image: "/images/cybersecurity.webp",
-    link: "/blog/cybersecurity-best-practices",
-  },
-  {
-    id: "zero-trust-security",
-    title: "Zero Trust Security",
-    description: "Implementierung des Zero-Trust-Modells in modernen Unternehmen",
-    category: { name: "Security Architecture" },
-    date: "2024-03-16",
-    image: "/images/system-integration-network.webp",
-    link: "/blog/zero-trust-security",
-  },
-  {
-    id: "cloud-security-2024",
-    title: "Cloud Security 2024",
-    description: "Neue Herausforderungen in der Cloud-Sicherheit und wie Sie ihnen begegnen",
-    category: { name: "Cloud" },
-    date: "2024-03-14",
-    image: "/images/cms-development.webp",
-    link: "/blog/cloud-security-2024",
   },
 ];
 

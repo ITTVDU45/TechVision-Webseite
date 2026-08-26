@@ -5,7 +5,6 @@ import {
   SpecializedHosting,
   OneClickApp,
   AdditionalService,
-  BlogPost,
   FAQ,
 } from './types';
 
@@ -176,51 +175,6 @@ export const additionalServicesData: AdditionalService[] = [
     icon: '🔐',
     title: 'DSGVO konform',
     description: 'Hosting nach deutschen Standards',
-  },
-];
-
-export const hostingInsightsData: BlogPost[] = [
-  {
-    id: 'wordpress-performance',
-    title: 'WordPress Performance Optimierung',
-    subtitle: 'WordPress',
-    description: 'Lernen Sie die besten Techniken zur Beschleunigung Ihrer WordPress-Website',
-    image: '/images/cms-development.webp',
-    category: {
-      name: 'WordPress',
-      icon: '📝',
-    },
-    date: '2024-03-15',
-    readTime: '6 min',
-    link: '/blog/wordpress-performance',
-  },
-  {
-    id: 'cloud-vs-traditional',
-    title: 'Cloud Hosting vs. Traditional Hosting',
-    subtitle: 'Cloud',
-    description: 'Ein detaillierter Vergleich der verschiedenen Hosting-Arten',
-    image: '/images/Server.webp',
-    category: {
-      name: 'Cloud',
-      icon: '☁️',
-    },
-    date: '2024-03-12',
-    readTime: '5 min',
-    link: '/blog/cloud-vs-traditional',
-  },
-  {
-    id: 'hosting-security',
-    title: 'Sicherheit im Webhosting',
-    subtitle: 'Security',
-    description: 'So schützen Sie Ihre Website vor Cyber-Bedrohungen',
-    image: '/images/cybersecurity.webp',
-    category: {
-      name: 'Security',
-      icon: '🔒',
-    },
-    date: '2024-03-10',
-    readTime: '7 min',
-    link: '/blog/hosting-security',
   },
 ];
 

@@ -3,7 +3,6 @@ import {
   KIAgent,
   IntegrationCategory,
   IntegrationFeature,
-  BlogPost,
   FAQ,
 } from './types';
 
@@ -162,45 +161,6 @@ export const integrationFeaturesData: IntegrationFeature[] = [
     icon: '🔧',
     title: 'Flexible Anpassung',
     description: 'Individuelle Konfigurationsmöglichkeiten für Ihre spezifischen Anforderungen',
-  },
-];
-
-export const toolsNewsData: BlogPost[] = [
-  {
-    id: 'ki-tools',
-    title: 'KI-Tools im Unternehmenseinsatz',
-    subtitle: 'Effizienzsteigerung durch moderne Technologie',
-    description: 'Effizienzsteigerung durch moderne Technologie',
-    category: {
-      name: 'Best Practices',
-      icon: '💡',
-    },
-    date: '2024-03-20',
-    link: '/blog/ki-tools',
-  },
-  {
-    id: 'open-source-vs-enterprise',
-    title: 'Open Source vs. Enterprise',
-    subtitle: 'Entscheidungshilfe für Unternehmen',
-    description: 'Entscheidungshilfe für Unternehmen',
-    category: {
-      name: 'Trends',
-      icon: '📊',
-    },
-    date: '2024-03-15',
-    link: '/blog/open-source-vs-enterprise',
-  },
-  {
-    id: 'zukunft-ki-agenten',
-    title: 'Zukunft der KI-Agenten',
-    subtitle: 'Trends und Innovationen',
-    description: 'Trends und Innovationen',
-    category: {
-      name: 'Trends',
-      icon: '🔮',
-    },
-    date: '2024-03-10',
-    link: '/blog/zukunft-ki-agenten',
   },
 ];
 

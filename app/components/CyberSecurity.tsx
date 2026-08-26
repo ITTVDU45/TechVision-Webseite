@@ -10,7 +10,6 @@ import {
   CaseStudiesSection,
   BenefitsSection,
   ProcessSection,
-  SecurityInsights,
   FAQSection,
   servicesData,
   statsData,
@@ -18,20 +17,17 @@ import {
   caseStudiesData,
   benefitsData,
   processStepsData,
-  securityInsightsPosts,
   faqsData,
 } from "../cybersecurity/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
-import { toBlogPosts } from "@/lib/content";
 import ServiceProof from "@/app/components/service-pages/ServiceProof";
 import { serviceById } from "@/app/data/services";
 
 export default function CyberSecurity() {
-  const { faqs, services, blogs, caseStudies } = usePageContent({
+  const { faqs, services, caseStudies } = usePageContent({
     page: 'cybersecurity',
     loadFAQs: true,
     loadServices: true,
-    loadBlogs: true,
     loadCaseStudies: true,
   });
 
@@ -43,7 +39,6 @@ export default function CyberSecurity() {
     color: s.color || 'from-gray-800/50 to-gray-900/50',
     iconColor: s.iconColor || 'text-blue-500',
   })) : servicesData;
-  const displayBlogs = toBlogPosts(blogs, { name: "Security" }, securityInsightsPosts);
 
   // Transformiere Case Studies für CyberSecurity-Format (mit company, results)
   const displayCaseStudies = caseStudies.length > 0 ? caseStudies
@@ -89,7 +84,6 @@ export default function CyberSecurity() {
 
       <ProcessSection steps={processStepsData} />
 
-      <SecurityInsights blogPosts={displayBlogs} />
 
       <FAQSection faqs={displayFAQs} />
 

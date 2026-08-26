@@ -3,7 +3,6 @@ import React from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import CTA from "./CTA";
-import BlogSection from "../marketing/BlogSection";
 import {
   HeroSection,
   WhatIsKITransformation,
@@ -18,22 +17,19 @@ import {
   faqsData,
 } from "../ki-transformation/components";
 import { usePageContent } from "@/lib/hooks/usePageContent";
-import { toBlogPosts } from "@/lib/content";
 import ServiceProof from "@/app/components/service-pages/ServiceProof";
 import { serviceById } from "@/app/data/services";
 
 export default function KITransformation() {
-  const { faqs, blogs } = usePageContent({
+  const { faqs } = usePageContent({
     page: 'ki-transformation',
     loadFAQs: true,
-    loadBlogs: true,
   });
 
   // Verwende API-Daten, falls vorhanden, sonst Fallback auf statische Daten
   const displayFAQs = faqs.length > 0 ? faqs : faqsData;
   
   // Formatiere Blogs für BlogSection
-  const displayBlogs = toBlogPosts(blogs, { name: "KI & Innovation" }, []);
 
   return (
     <div className="min-h-screen w-full bg-black text-white">
@@ -52,11 +48,6 @@ export default function KITransformation() {
 
       <ImplementationProcess steps={processSteps} />
 
-      <BlogSection 
-        title="KI-Insights & Trends"
-        subtitle="Erfahren Sie mehr über aktuelle Entwicklungen in der KI-Transformation und entdecken Sie Best Practices für Ihr Unternehmen."
-        blogPosts={displayBlogs}
-      />
 
       <FAQSection faqs={displayFAQs} />
 

@@ -6,8 +6,9 @@
  * Formen (BlogPost existierte in drei unvereinbaren Varianten).
  *
  * Regel für Datumsangaben: im Datensatz immer ISO 8601 (YYYY-MM-DD), niemals
- * bereits formatierter Anzeigetext. Formatiert wird erst bei der Ausgabe über
- * `formatDate()` aus `lib/format`.
+ * bereits formatierter Anzeigetext. Angezeigt werden Daten derzeit nirgends -
+ * die Fachbeiträge tragen bewusst kein Datum. Das Feld bleibt, weil es
+ * Sortierung ermöglicht; eine Formatierung gehört an die Ausgabestelle.
  */
 
 /** Frage-Antwort-Paar. `icon` nutzt nur die Cybersecurity-Seite. */
@@ -32,7 +33,7 @@ export interface BlogPost {
   subtitle?: string;
   description: string;
   image?: string;
-  /** ISO 8601: YYYY-MM-DD. Anzeige über `formatDate()`. */
+  /** ISO 8601: YYYY-MM-DD. Dient der Sortierung, wird nicht angezeigt. */
   date: string;
   readTime?: string;
   category: BlogCategory;

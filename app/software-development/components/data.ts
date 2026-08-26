@@ -1,4 +1,4 @@
-import { Project, ProcessStep, BlogPost, FAQ } from "./types";
+import { Project, ProcessStep, FAQ } from "./types";
 
 export const projectsData: Project[] = [
   {
@@ -80,36 +80,6 @@ export const processStepsData: ProcessStep[] = [
     description: "Bereitstellung der fertigen Software und kontinuierlicher Support zur Optimierung.",
     color: "from-green-500/20 to-green-600/20",
     iconColor: "text-green-400",
-  },
-];
-
-export const newsBlogPosts: BlogPost[] = [
-  {
-    id: "trends-softwareentwicklung",
-    title: "Aktuelle Trends in der Softwareentwicklung",
-    description: "Entdecken Sie die neuesten Trends und Technologien, die die Softwareentwicklung revolutionieren.",
-    category: { name: "Trends" },
-    date: "2024-03-20",
-    image: "/images/cms-development.webp",
-    link: "/blog/trends-softwareentwicklung",
-  },
-  {
-    id: "best-practices-softwareentwicklung",
-    title: "Best Practices für erfolgreiche Projekte",
-    description: "Erfahren Sie, wie Sie Ihre Softwareprojekte effizient und erfolgreich umsetzen können.",
-    category: { name: "Best Practices" },
-    date: "2024-03-18",
-    image: "/images/system-integration-network.webp",
-    link: "/blog/best-practices-softwareentwicklung",
-  },
-  {
-    id: "erfolgsgeschichten-softwareentwicklung",
-    title: "Erfolgsgeschichten aus unseren Projekten",
-    description: "Lesen Sie, wie wir unseren Kunden geholfen haben, ihre Ziele zu erreichen.",
-    category: { name: "Case Studies" },
-    date: "2024-03-15",
-    image: "",
-    link: "/blog/erfolgsgeschichten-softwareentwicklung",
   },
 ];
 

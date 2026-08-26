@@ -12,7 +12,6 @@ import {
   ProcessStep,
   FAQ,
   Tool,
-  BlogPost,
 } from "./types";
 
 export const useCasesData: UseCase[] = [
@@ -264,36 +263,6 @@ export const toolsData: Tool[] = [
     icon: "🔎",
     color: "from-yellow-500/20 to-yellow-600/20",
     iconColor: "text-yellow-400",
-  },
-];
-
-export const insightsBlogPosts: BlogPost[] = [
-  {
-    id: "ki-transformation-praxis",
-    title: "KI-Transformation in der Praxis",
-    description: "Wie Unternehmen durch KI-Integration ihre Effizienz um 40% steigern konnten.",
-    category: { name: "Case Study" },
-    date: "2024-03-15",
-    image: "",
-    link: "/blog/ki-transformation-praxis",
-  },
-  {
-    id: "machine-learning-mittelstand",
-    title: "Machine Learning im Mittelstand",
-    description: "Praktische Anwendungsbeispiele für KI in mittelständischen Unternehmen.",
-    category: { name: "Best Practices" },
-    date: "2024-03-10",
-    image: "/images/KITransofmation.webp",
-    link: "/blog/machine-learning-mittelstand",
-  },
-  {
-    id: "zukunft-automatisierung",
-    title: "Zukunft der Automatisierung",
-    description: "Trends und Entwicklungen in der KI-gestützten Prozessautomatisierung.",
-    category: { name: "Trends" },
-    date: "2024-03-05",
-    image: "/images/automation-dashboard.webp",
-    link: "/blog/zukunft-automatisierung",
   },
 ];
 

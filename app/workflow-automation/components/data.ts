@@ -3,7 +3,6 @@ import {
   AutomationBenefit,
   UseCase,
   IntegrationCategory,
-  BlogPost,
   FAQ,
 } from './types';
 
@@ -145,51 +144,6 @@ export const integrationCategoriesData: IntegrationCategory[] = [
     title: 'Security Tools',
     systems: ['Identity Management', 'SSO', 'Encryption'],
     features: ['Zugriffssteuerung', 'Datenverschlüsselung', 'Compliance'],
-  },
-];
-
-export const workflowInsightsData: BlogPost[] = [
-  {
-    id: 'workflow-automation-trends-2024',
-    title: 'Die Top 5 Workflow-Automatisierungs-Trends 2024',
-    subtitle: 'Trends',
-    description: 'Erfahren Sie, welche Technologien und Strategien die Workflow-Automatisierung im kommenden Jahr prägen werden.',
-    image: '/images/automation-dashboard.webp',
-    category: {
-      name: 'Trends',
-      icon: '📈',
-    },
-    date: '2024-03-15',
-    readTime: '6 min',
-    link: '/blog/workflow-automation-trends',
-  },
-  {
-    id: 'ki-agenten-revolution',
-    title: 'KI-Agenten revolutionieren Geschäftsprozesse',
-    subtitle: 'KI & Automation',
-    description: 'Wie intelligente Automatisierung die Effizienz von Unternehmen auf ein neues Level hebt.',
-    image: '/images/KIAGENTBILD.webp',
-    category: {
-      name: 'KI & Automation',
-      icon: '🤖',
-    },
-    date: '2024-03-10',
-    readTime: '5 min',
-    link: '/blog/ki-agents-revolution',
-  },
-  {
-    id: 'mittelstand-digitalisierung',
-    title: 'Wie ein Mittelständler seine Prozesse digitalisierte',
-    subtitle: 'Success Story',
-    description: 'Eine Fallstudie über die erfolgreiche Implementation von Workflow-Automatisierung.',
-    image: '/images/laptop-software-mockup.webp',
-    category: {
-      name: 'Success Story',
-      icon: '🎯',
-    },
-    date: '2024-03-05',
-    readTime: '7 min',
-    link: '/blog/mittelstand-digitalisierung',
   },
 ];
 

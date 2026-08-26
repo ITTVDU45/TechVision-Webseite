@@ -3,39 +3,33 @@ import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import CTA from './CTA';
-import TopThemes from './TopThemes';
 import {
   HeroSection,
   ExpertiseSection,
   CaseStudiesSection,
   TestimonialsSection,
   ProcessSection,
-  WebDevelopmentInsights,
   FAQSection,
   expertiseData,
   caseStudiesData,
   testimonialsData,
   processStepsData,
-  webDevelopmentInsightsData,
   faqsData,
 } from '../web-development/components';
 import { usePageContent } from '@/lib/hooks/usePageContent';
-import { toBlogPosts } from "@/lib/content";
 import ServiceProof from "@/app/components/service-pages/ServiceProof";
 import { serviceById } from "@/app/data/services";
 
 export default function WebDevelopment() {
-  const { faqs, testimonials, blogs, caseStudies } = usePageContent({
+  const { faqs, testimonials, caseStudies } = usePageContent({
     page: 'web-development',
     loadFAQs: true,
     loadTestimonials: true,
-    loadBlogs: true,
     loadCaseStudies: true,
   });
 
   const displayFAQs = faqs.length > 0 ? faqs : faqsData;
   const displayTestimonials = testimonials.length > 0 ? testimonials : testimonialsData;
-  const displayBlogs = toBlogPosts(blogs, { name: "Web", icon: "\u{1F310}" }, webDevelopmentInsightsData);
 
   // Transformiere Case Studies für WebDevelopment-Format (mit metrics)
   const displayCaseStudies = caseStudies.length > 0 ? caseStudies
@@ -74,8 +68,6 @@ export default function WebDevelopment() {
       <CaseStudiesSection caseStudies={displayCaseStudies} />
       <TestimonialsSection testimonials={displayTestimonials} />
       <ProcessSection steps={processStepsData} />
-      <WebDevelopmentInsights posts={displayBlogs} />
-      <TopThemes />
       <FAQSection faqs={displayFAQs} />
       <CTA />
       </main>
