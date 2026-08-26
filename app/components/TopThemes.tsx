@@ -6,7 +6,6 @@ import Image from "next/image";
 import { blogPosts as staticBlogPosts, BlogPost } from "../data/blogPosts";
 import { fetchBlogPosts } from "@/lib/api";
 import { DEFAULT_BLOG_COVER_IMAGE, resolveBlogImageUrl } from "@/lib/resolveBlogImageUrl";
-import { formatDate, isoDate } from "@/lib/format";
 
 function BlogCardSkeleton() {
   return (
@@ -50,7 +49,7 @@ function BlogCard({ post, priority = false }: { post: BlogPost; priority?: boole
         </div>
         <div className="flex flex-1 flex-col p-5">
           <div className="mb-2 flex items-center gap-2 text-[11px] uppercase tracking-widest text-slate-500">
-            <time dateTime={isoDate(post.date)}>{formatDate(post.date)}</time>
+            
             <span className="h-1 w-1 rounded-full bg-slate-500/60" aria-hidden />
             <span>{post.readTime}</span>
           </div>

@@ -41,6 +41,16 @@ const nextConfig = {
     remotePatterns,
     unoptimized: false,
   },
+  /**
+   * Die Startseite lag frueher unter /marketing. Dauerhafte Weiterleitung,
+   * damit alte Links, Lesezeichen und Suchergebnisse nicht ins Leere laufen
+   * und die Bewertung auf / uebergeht.
+   */
+  async redirects() {
+    return [
+      { source: "/marketing", destination: "/", permanent: true },
+    ];
+  },
   trailingSlash: false,
   poweredByHeader: false,
   reactStrictMode: true,

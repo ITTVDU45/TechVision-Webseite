@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { BlogPost } from "./types";
-import { formatDate, isoDate } from "@/lib/format";
 
 interface KIInsightsTrendsProps {
   title?: string;
@@ -78,7 +77,7 @@ export default function KIInsightsTrends({
                             <span className="text-sm font-medium px-3 py-1 rounded-full bg-white/10">
                               {post.category?.name}
                             </span>
-                            <time dateTime={isoDate(post.date)} className="text-sm text-gray-400">{formatDate(post.date)}</time>
+                            
                           </div>
 
                           <div className="aspect-video rounded-lg overflow-hidden mb-4">

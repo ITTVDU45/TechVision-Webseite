@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Magazin",
-  description: "Praxisnahe Einblicke zu KI, Softwareentwicklung, Automatisierung, IT-Betrieb und Sicherheit.",
+  title: "Fachbeiträge",
+  description: "Fachliche Einordnungen zu KI, Softwareentwicklung, Automatisierung, IT-Betrieb und Sicherheit.",
   alternates: { canonical: "/blog" },
 };
 

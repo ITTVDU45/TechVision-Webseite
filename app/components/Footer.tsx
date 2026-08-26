@@ -15,7 +15,7 @@ const serviceLinks = [
 const companyLinks = [
   { name: "Referenzen", href: "/case-studies" },
   { name: "Branchenlösungen", href: "/industry-solutions" },
-  { name: "Magazin", href: "/blog" },
+  { name: "Fachbeiträge", href: "/blog" },
   { name: "FAQ", href: "/faq" },
   { name: "Kontakt", href: "/contact" },
 ];
@@ -26,7 +26,7 @@ export default function Footer(): React.JSX.Element {
       <div className="section-container py-14 sm:py-20">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link href="/marketing" className="focus-ring inline-flex rounded-lg" aria-label="IT-Techvision – Startseite">
+            <Link href="/" className="focus-ring inline-flex rounded-lg" aria-label="IT-Techvision – Startseite">
               <Image src={SITE_LOGO_PATH} alt="IT-Techvision" width={SITE_LOGO_WIDTH} height={SITE_LOGO_HEIGHT} className="h-14 w-auto max-w-[15rem] object-contain object-left" />
             </Link>
             <p className="mt-5 max-w-md text-sm leading-7 text-slate-400">Strategische IT-Beratung, individuelle Software, KI und sichere Infrastruktur für Unternehmen, die digitale Vorhaben verlässlich umsetzen wollen.</p>

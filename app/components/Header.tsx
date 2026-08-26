@@ -20,7 +20,6 @@ const services = [
 const primaryLinks = [
   { name: "Referenzen", href: "/case-studies" },
   { name: "Branchen", href: "/industry-solutions" },
-  { name: "Magazin", href: "/blog" },
   { name: "Kontakt", href: "/contact" },
 ];
 
@@ -96,12 +95,12 @@ export default function Header(): React.JSX.Element {
   return (
     <header className="fixed inset-x-0 top-0 z-[100] border-b border-white/[0.08] bg-[#050912]/95 supports-[backdrop-filter]:bg-[#050912]/85 supports-[backdrop-filter]:backdrop-blur-lg">
       <div className="section-container flex min-h-[76px] items-center justify-between gap-5 py-3" style={{ paddingTop: "max(.75rem, env(safe-area-inset-top))" }}>
-        <Link href="/marketing" className="focus-ring flex shrink-0 items-center rounded-lg" aria-label="IT-Techvision – Startseite">
+        <Link href="/" className="focus-ring flex shrink-0 items-center rounded-lg" aria-label="IT-Techvision – Startseite">
           <Image src={SITE_LOGO_PATH} alt="IT-Techvision" width={SITE_LOGO_WIDTH} height={SITE_LOGO_HEIGHT} priority className="h-11 w-auto max-w-[13rem] object-contain object-left sm:h-12" />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Hauptnavigation">
-          <Link href="/marketing" className={linkClass("/marketing")} aria-current={isActive("/marketing") ? "page" : undefined}>Start</Link>
+          <Link href="/" className={linkClass("/")} aria-current={isActive("/") ? "page" : undefined}>Start</Link>
           <div ref={servicesRef} className="relative">
             <button type="button" onClick={() => setServicesOpen((open) => !open)} aria-expanded={servicesOpen} aria-controls="desktop-services-menu" className="focus-ring flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 transition-colors hover:text-white">
               Leistungen
@@ -146,7 +145,7 @@ export default function Header(): React.JSX.Element {
               </button>
             </div>
             <nav className="min-h-0 flex-1 overflow-y-auto px-5 py-5" aria-label="Mobile Hauptnavigation">
-              <Link href="/marketing" className="focus-ring block rounded-xl px-3 py-3 font-semibold text-white">Startseite</Link>
+              <Link href="/" className="focus-ring block rounded-xl px-3 py-3 font-semibold text-white">Startseite</Link>
               <p className="mb-2 mt-6 px-3 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Leistungen</p>
               <div className="space-y-1">
                 {services.map((service) => (

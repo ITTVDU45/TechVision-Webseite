@@ -8,7 +8,6 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { blogPosts as fallbackPosts } from "../../data/blogPosts";
 import { fetchBlogPosts } from "@/lib/api";
-import { formatDate, isoDate } from "@/lib/format";
 
 interface Category { id?: string; name: string }
 interface BlogPost {
@@ -104,11 +103,11 @@ export default function BlogDetailPage() {
             <article>
               <header className="border-b border-white/[0.07] pb-12 pt-36 sm:pb-16 sm:pt-44">
                 <div className="section-container">
-                  <Link href="/blog" className="focus-ring text-sm font-semibold text-sky-300 hover:text-sky-200">← Magazin</Link>
+                  <Link href="/blog" className="focus-ring text-sm font-semibold text-sky-300 hover:text-sky-200">← Fachbeiträge</Link>
                   <div className="mt-8 flex flex-wrap gap-2">{categoriesOf(blog).map((category) => <Link key={category.id || category.name} href={`/blog/category/${category.id || toSlug(category.name)}`} className="eyebrow focus-ring">{category.name}</Link>)}</div>
                   <h1 className="heading-display mt-6 max-w-5xl text-4xl sm:text-6xl lg:text-7xl">{blog.title}</h1>
                   {blog.subtitle ? <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">{blog.subtitle}</p> : null}
-                  <div className="mt-7 flex flex-wrap gap-4 text-sm text-slate-500">{blog.date ? <time dateTime={isoDate(blog.date)}>{formatDate(blog.date)}</time> : null}<span>{blog.readTime || "Artikel"}</span></div>
+                  <div className="mt-7 flex flex-wrap gap-4 text-sm text-slate-500"><span>{blog.readTime || "Artikel"}</span></div>
                 </div>
               </header>
 
@@ -120,10 +119,10 @@ export default function BlogDetailPage() {
               </div>
             </article>
 
-            {related.length ? <section className="section-y-tight border-t border-white/[0.07] bg-[#070b13]" aria-labelledby="related-posts"><div className="section-container"><p className="eyebrow">Weiterlesen</p><h2 id="related-posts" className="heading-display mt-5 text-3xl sm:text-4xl">Weitere Einordnungen</h2><div className="mt-8 grid gap-4 md:grid-cols-3">{related.map((post) => { const relatedSlug = post.slug || post.id || post._id; return <article key={relatedSlug || post.title} className="surface-card surface-card--hover p-6"><p className="text-xs font-semibold uppercase tracking-wider text-sky-300">{categoriesOf(post)[0]?.name || "Magazin"}</p><h3 className="mt-4 text-lg font-semibold"><Link href={relatedSlug ? `/blog/${relatedSlug}` : "/blog"} className="focus-ring rounded-sm hover:text-sky-300">{post.title}</Link></h3><p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{post.description || post.subtitle}</p></article>; })}</div></div></section> : null}
+            {related.length ? <section className="section-y-tight border-t border-white/[0.07] bg-[#070b13]" aria-labelledby="related-posts"><div className="section-container"><p className="eyebrow">Weiterlesen</p><h2 id="related-posts" className="heading-display mt-5 text-3xl sm:text-4xl">Weitere Einordnungen</h2><div className="mt-8 grid gap-4 md:grid-cols-3">{related.map((post) => { const relatedSlug = post.slug || post.id || post._id; return <article key={relatedSlug || post.title} className="surface-card surface-card--hover p-6"><p className="text-xs font-semibold uppercase tracking-wider text-sky-300">{categoriesOf(post)[0]?.name || "Fachbeitrag"}</p><h3 className="mt-4 text-lg font-semibold"><Link href={relatedSlug ? `/blog/${relatedSlug}` : "/blog"} className="focus-ring rounded-sm hover:text-sky-300">{post.title}</Link></h3><p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{post.description || post.subtitle}</p></article>; })}</div></div></section> : null}
           </>
         ) : (
-          <section className="section-container flex min-h-[70vh] flex-col items-start justify-center pb-20 pt-36"><p className="eyebrow">Magazin</p><h1 className="heading-display mt-6 text-4xl sm:text-6xl">Artikel nicht gefunden.</h1><p className="mt-5 text-slate-400">Dieser Beitrag ist nicht verfügbar oder wurde verschoben.</p><Link href="/blog" className="btn-secondary focus-ring mt-8 min-h-11">Zur Magazinübersicht</Link></section>
+          <section className="section-container flex min-h-[70vh] flex-col items-start justify-center pb-20 pt-36"><p className="eyebrow">Fachbeiträge</p><h1 className="heading-display mt-6 text-4xl sm:text-6xl">Artikel nicht gefunden.</h1><p className="mt-5 text-slate-400">Dieser Beitrag ist nicht verfügbar oder wurde verschoben.</p><Link href="/blog" className="btn-secondary focus-ring mt-8 min-h-11">Zu den Fachbeiträgen</Link></section>
         )}
       </main>
       <Footer />

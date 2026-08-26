@@ -4,6 +4,7 @@ import { SITE_LOGO_HEIGHT, SITE_LOGO_PATH, SITE_LOGO_WIDTH } from "@/lib/site-lo
 import "./styles/globals.css";
 import "./styles/slick-overrides.css";
 import AppChrome from "./components/AppChrome";
+import StructuredData from "./components/StructuredData";
 
 /**
  * Archivo traegt die Ueberschriften, Inter den Fliesstext.
@@ -127,6 +128,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body className="bg-[#050912] text-slate-100 antialiased" suppressHydrationWarning>
+        <StructuredData />
         <AppChrome />
         <div id="main-content" tabIndex={-1}>{children}</div>
       </body>

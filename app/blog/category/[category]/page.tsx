@@ -69,10 +69,10 @@ export default function BlogCategoryPage() {
       <main>
         <section className="border-b border-white/[0.07] pb-14 pt-36 sm:pb-16 sm:pt-44">
           <div className="section-container">
-            <p className="eyebrow">Magazin · Kategorie</p>
+            <p className="eyebrow">Fachbeiträge · Thema</p>
             <h1 className="heading-display mt-6 max-w-4xl break-words text-4xl capitalize sm:text-6xl">{categoryName}</h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">Alle verfügbaren Beiträge aus diesem Themenbereich.</p>
-            <Link href="/blog" className="btn-secondary focus-ring mt-8 min-h-11">← Zur Magazinübersicht</Link>
+            <Link href="/blog" className="btn-secondary focus-ring mt-8 min-h-11">← Zu den Fachbeiträgen</Link>
           </div>
         </section>
 
