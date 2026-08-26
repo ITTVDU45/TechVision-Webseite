@@ -78,14 +78,10 @@ export default function Technologies({ asPage = false }: { asPage?: boolean }): 
       <div className="section-container relative z-10">
         <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] md:items-start md:gap-16">
           <div>
-            <motion.span
-              initial={{ opacity: 0, y: 8 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="eyebrow"
-            >
+            <span
+              className="reveal eyebrow">
               Technologie‑Stack
-            </motion.span>
+            </span>
             <Heading
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -110,15 +106,10 @@ export default function Technologies({ asPage = false }: { asPage?: boolean }): 
           </div>
 
           <ul className="grid gap-3 sm:grid-cols-2">
-            {layers.map((layer, index) => (
-              <motion.li
+            {layers.map((layer) => (
+              <li
                 key={layer.title}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.25 }}
-                transition={{ duration: 0.4, delay: 0.03 * index }}
-                className="surface-card surface-card--hover p-5"
-              >
+                className="reveal surface-card surface-card--hover p-5">
                 <div className="flex items-start gap-4">
                   <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-sky-300">
                     <layer.icon className="h-5 w-5" />
@@ -135,7 +126,7 @@ export default function Technologies({ asPage = false }: { asPage?: boolean }): 
                     </p>
                   </div>
                 </div>
-              </motion.li>
+              </li>
             ))}
           </ul>
         </div>

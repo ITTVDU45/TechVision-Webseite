@@ -1,6 +1,4 @@
-"use client";
 import React from "react";
-import { motion } from "framer-motion";
 import { FeatureCard } from "./types";
 
 interface WhatIsKITransformationProps {
@@ -21,13 +19,8 @@ export default function WhatIsKITransformation({
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-16"
-          >
+          <div
+            className="reveal text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
               {title.includes("KI-Transformation") ? (
                 <>
@@ -42,20 +35,15 @@ export default function WhatIsKITransformation({
               )}
             </h2>
             <p className="text-lg text-gray-300 leading-relaxed">{description}</p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {features.map((feature, index) => {
+            {features.map((feature) => {
               const IconComponent = feature.icon;
               return (
-                <motion.div
+                <div
                   key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 * index }}
-                  className={`bg-gradient-to-br ${feature.color} backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-opacity-60 transition-all duration-300`}
-                >
+                  className={`reveal ${`bg-gradient-to-br ${feature.color} backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-opacity-60 transition-all duration-300`}`}>
                   <div
                     className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} border border-white/20 flex items-center justify-center mb-4`}
                   >
@@ -63,7 +51,7 @@ export default function WhatIsKITransformation({
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
                   <p className="text-gray-300 text-sm leading-relaxed">{feature.description}</p>
-                </motion.div>
+                </div>
               );
             })}
           </div>

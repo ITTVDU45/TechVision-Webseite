@@ -1,6 +1,4 @@
-"use client";
 import React from 'react';
-import { motion } from 'framer-motion';
 import { KIAgent } from './types';
 
 interface KIAgentsSectionProps {
@@ -15,12 +13,8 @@ export default function KIAgentsSection({ agents }: KIAgentsSectionProps) {
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-600/5 rounded-full blur-[120px] translate-y-1/2 translate-x-1/2" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+        <div
+          className="reveal text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="text-white">Unsere KI-Agenten – </span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500">
@@ -30,18 +24,13 @@ export default function KIAgentsSection({ agents }: KIAgentsSectionProps) {
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Erleben Sie leistungsstarke KI-Agenten, die Ihren Arbeitsalltag erleichtern, Geschäftsprozesse optimieren und datengetriebene Entscheidungen unterstützen.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {agents.map((agent, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="group relative"
-            >
+              className="reveal group relative">
               <div className="h-full bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-indigo-500/10">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="text-4xl">{agent.icon}</div>
@@ -65,33 +54,23 @@ export default function KIAgentsSection({ agents }: KIAgentsSectionProps) {
                   </ul>
                 )}
                 {agent.detailsLink && (
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full mt-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-medium text-white border border-white/10 hover:border-white/20 transition-all"
-                  >
+                  <button
+                    className="reveal w-full mt-4 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-sm font-medium text-white border border-white/10 hover:border-white/20 transition-all">
                     Details anzeigen
-                  </motion.button>
+                  </button>
                 )}
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl text-lg font-medium text-white shadow-xl hover:shadow-2xl hover:shadow-indigo-500/20 transition-all"
-          >
+        <div
+          className="reveal text-center">
+          <button
+            className="reveal px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl text-lg font-medium text-white shadow-xl hover:shadow-2xl hover:shadow-indigo-500/20 transition-all">
             KI-Agenten Anfragen
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
       </div>
     </section>
   );

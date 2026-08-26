@@ -1,6 +1,4 @@
-"use client";
 import React from 'react';
-import { motion } from 'framer-motion';
 import { UseCase } from './types';
 import { GlowingEffect } from '../../components/ui/glowing-effect';
 import Link from 'next/link';
@@ -17,12 +15,8 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-red-600/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+        <div
+          className="reveal text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             <span className="text-white">Praxisbeispiele unserer </span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-400 to-orange-500">
@@ -32,18 +26,13 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
           <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Entdecken Sie, wie unsere Lösungen in verschiedenen Bereichen erfolgreich eingesetzt werden
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {useCases.map((useCase, index) => (
-            <motion.div
+            <div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="group relative"
-            >
+              className="reveal group relative">
               <div className="h-full bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 shadow-xl">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="text-4xl">{useCase.icon}</div>
@@ -66,16 +55,12 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
                   ))}
                 </ul>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
+        <div
+          className="reveal text-center">
           <p className="text-gray-400 mb-6 text-lg font-medium">Interessiert an einer maßgeschneiderten Automatisierungslösung?</p>
           <GlowingEffect>
             <Link
@@ -85,7 +70,7 @@ export default function UseCasesSection({ useCases }: UseCasesSectionProps) {
               Prozessanalyse starten
             </Link>
           </GlowingEffect>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

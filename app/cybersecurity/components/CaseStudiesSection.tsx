@@ -1,6 +1,4 @@
-"use client";
 import React from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { CaseStudy } from "./types";
 
@@ -16,13 +14,8 @@ export default function CaseStudiesSection({
   return (
     <section className="py-32 bg-black relative overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
+        <div
+          className="reveal text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-white mb-6">
             {title.split("Fallstudien")[0]}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">
@@ -32,19 +25,13 @@ export default function CaseStudiesSection({
           <p className="text-lg text-gray-300 leading-relaxed">
             Entdecken Sie, wie wir Unternehmen dabei helfen, ihre digitale Sicherheit zu optimieren
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {caseStudies.map((study, index) => (
-            <motion.div
+          {caseStudies.map((study) => (
+            <div
               key={study.company}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 * index }}
-              whileHover={{ scale: 1.02, y: -4 }}
-              className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:border-opacity-60 transition-all duration-300 group"
-            >
+              className="reveal bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:border-opacity-60 transition-all duration-300 group">
               <Link href={study.link || "#"} className="block">
                 {study.image && (
                   <div className="aspect-video overflow-hidden">
@@ -81,27 +68,19 @@ export default function CaseStudiesSection({
                   </button>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="text-center"
-        >
+        <div
+          className="reveal text-center">
           <Link href="/case-studies">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-600 rounded-xl text-lg font-medium relative overflow-hidden group shadow-xl shadow-blue-500/20"
-            >
+            <button
+              className="reveal px-8 py-4 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-600 rounded-xl text-lg font-medium relative overflow-hidden group shadow-xl shadow-blue-500/20">
               <span className="relative z-10">Zu unseren Fallstudien</span>
-            </motion.button>
+            </button>
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

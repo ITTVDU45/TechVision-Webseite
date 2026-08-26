@@ -1,8 +1,6 @@
-"use client";
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 
 export default function CTA() {
   return (
@@ -20,50 +18,31 @@ export default function CTA() {
           />
           <div className="relative grid gap-10 p-8 md:p-12 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-center lg:gap-14 lg:p-16">
             <div>
-              <motion.span
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="eyebrow"
-              >
+              <span
+                className="reveal eyebrow">
                 Nächster Schritt
-              </motion.span>
+              </span>
 
-              <motion.h2
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.05 }}
-                className="heading-display mt-4 text-3xl md:text-5xl"
-              >
+              <h2
+                className="reveal heading-display mt-4 text-3xl md:text-5xl">
                 Sprechen wir über Ihr <span className="text-sky-400">nächstes Projekt</span>.
-              </motion.h2>
+              </h2>
 
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="mt-5 max-w-xl text-base leading-relaxed text-slate-300 md:text-lg"
-              >
+              <p
+                className="reveal mt-5 max-w-xl text-base leading-relaxed text-slate-300 md:text-lg">
                 Ein 30‑minütiges Erstgespräch, in dem wir Ihr Vorhaben strukturieren –
                 unverbindlich, kostenlos, ergebnisorientiert.
-              </motion.p>
+              </p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.15 }}
-                className="mt-8 flex flex-col gap-3 sm:flex-row"
-              >
+              <div
+                className="reveal mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link href="/contact" className="btn-primary focus-ring">
                   Termin vereinbaren
                 </Link>
                 <Link href="mailto:info@it-techvision.de" className="btn-secondary focus-ring">
                   info@it‑techvision.de
                 </Link>
-              </motion.div>
+              </div>
 
               <ul className="mt-8 grid gap-2 text-sm text-slate-400 sm:grid-cols-2">
                 <li className="flex items-center gap-2">
@@ -85,13 +64,8 @@ export default function CTA() {
               </ul>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="relative hidden overflow-hidden rounded-2xl border border-white/10 lg:block"
-            >
+            <div
+              className="reveal relative hidden overflow-hidden rounded-2xl border border-white/10 lg:block">
               <div className="relative aspect-square w-full">
                 <Image
                   src="/images/Tolgahan Vardar.webp"
@@ -109,7 +83,7 @@ export default function CTA() {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
