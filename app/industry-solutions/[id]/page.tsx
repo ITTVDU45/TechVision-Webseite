@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
@@ -26,11 +28,22 @@ export default async function IndustrySolutionDetailPage({ params }: PageProps) 
     <div className="min-h-screen bg-[#050912] text-white">
       <Header />
       <main>
-        <section className="border-b border-white/[0.07] pb-16 pt-36 sm:pb-20 sm:pt-44">
-          <div className="section-container">
-            <p className="eyebrow">{industry.shortLabel}</p>
-            <h1 className="heading-display mt-6 max-w-5xl break-words text-4xl [hyphens:auto] sm:text-6xl lg:text-7xl">Digitale Lösungen für {industry.name}.</h1>
-            <p className="mt-7 max-w-3xl text-lg leading-8 text-slate-300">{industry.description}</p>
+        <section className="border-b border-[color:var(--line)] pb-16 pt-36 sm:pb-20 sm:pt-44">
+          <div className="section-container grid items-center gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
+            <div>
+              <p className="eyebrow">{industry.shortLabel}</p>
+              <h1 className="heading-display t-h1 mt-6 break-words [hyphens:auto]">Digitale Lösungen für {industry.name}.</h1>
+              <p className="t-body measure mt-7 text-[color:var(--ink-300)]">{industry.description}</p>
+              {industry.reference ? (
+                <Link href={industry.reference.href} className="focus-ring t-small mt-8 inline-flex items-center gap-2 rounded font-semibold text-[color:var(--brand-300)] hover:text-[color:var(--brand-200)]">
+                  Referenz aus dieser Branche: {industry.reference.title}
+                  <span aria-hidden="true">→</span>
+                </Link>
+              ) : null}
+            </div>
+            <figure className="relative overflow-hidden rounded-2xl border border-[color:var(--line-strong)] bg-[color:var(--ink-900)]">
+              <Image src={industry.image} alt={industry.imageAlt} width={1200} height={800} priority sizes="(min-width: 1024px) 32rem, 100vw" className="h-auto w-full object-cover" />
+            </figure>
           </div>
         </section>
 

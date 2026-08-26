@@ -154,7 +154,7 @@ export const workflowInsightsData: BlogPost[] = [
     title: 'Die Top 5 Workflow-Automatisierungs-Trends 2024',
     subtitle: 'Trends',
     description: 'Erfahren Sie, welche Technologien und Strategien die Workflow-Automatisierung im kommenden Jahr prägen werden.',
-    image: '/images/blog/workflow-trends.jpg',
+    image: '/images/automation-dashboard.webp',
     category: {
       name: 'Trends',
       icon: '📈',
@@ -168,7 +168,7 @@ export const workflowInsightsData: BlogPost[] = [
     title: 'KI-Agenten revolutionieren Geschäftsprozesse',
     subtitle: 'KI & Automation',
     description: 'Wie intelligente Automatisierung die Effizienz von Unternehmen auf ein neues Level hebt.',
-    image: '/images/blog/ki-agents.jpg',
+    image: '/images/KIAGENTBILD.webp',
     category: {
       name: 'KI & Automation',
       icon: '🤖',
@@ -182,7 +182,7 @@ export const workflowInsightsData: BlogPost[] = [
     title: 'Wie ein Mittelständler seine Prozesse digitalisierte',
     subtitle: 'Success Story',
     description: 'Eine Fallstudie über die erfolgreiche Implementation von Workflow-Automatisierung.',
-    image: '/images/blog/mittelstand-case.jpg',
+    image: '/images/laptop-software-mockup.webp',
     category: {
       name: 'Success Story',
       icon: '🎯',

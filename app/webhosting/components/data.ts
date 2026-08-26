@@ -185,7 +185,7 @@ export const hostingInsightsData: BlogPost[] = [
     title: 'WordPress Performance Optimierung',
     subtitle: 'WordPress',
     description: 'Lernen Sie die besten Techniken zur Beschleunigung Ihrer WordPress-Website',
-    image: '/images/blog/wordpress-performance.jpg',
+    image: '/images/cms-development.webp',
     category: {
       name: 'WordPress',
       icon: '📝',
@@ -199,7 +199,7 @@ export const hostingInsightsData: BlogPost[] = [
     title: 'Cloud Hosting vs. Traditional Hosting',
     subtitle: 'Cloud',
     description: 'Ein detaillierter Vergleich der verschiedenen Hosting-Arten',
-    image: '/images/blog/cloud-hosting.jpg',
+    image: '/images/Server.webp',
     category: {
       name: 'Cloud',
       icon: '☁️',
@@ -213,7 +213,7 @@ export const hostingInsightsData: BlogPost[] = [
     title: 'Sicherheit im Webhosting',
     subtitle: 'Security',
     description: 'So schützen Sie Ihre Website vor Cyber-Bedrohungen',
-    image: '/images/blog/hosting-security.jpg',
+    image: '/images/cybersecurity.webp',
     category: {
       name: 'Security',
       icon: '🔒',

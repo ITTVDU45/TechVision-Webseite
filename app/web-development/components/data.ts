@@ -126,7 +126,7 @@ export const webDevelopmentInsightsData: BlogPost[] = [
     title: 'Modern Web Development',
     subtitle: 'Development',
     description: 'Die neuesten Trends in der Webentwicklung mit React und Next.js',
-    image: '/images/blog/web-development.jpg',
+    image: '/images/cms-development.webp',
     category: {
       name: 'Development',
       icon: '💻',
@@ -140,7 +140,7 @@ export const webDevelopmentInsightsData: BlogPost[] = [
     title: 'Performance Optimierung',
     subtitle: 'Optimierung',
     description: 'Strategien zur Verbesserung der Website-Performance und Core Web Vitals',
-    image: '/images/blog/performance.jpg',
+    image: '/images/laptop-software-mockup.webp',
     category: {
       name: 'Optimierung',
       icon: '⚡',
@@ -154,7 +154,7 @@ export const webDevelopmentInsightsData: BlogPost[] = [
     title: 'Responsive Design 2024',
     subtitle: 'Design',
     description: 'Mobile-First Ansätze und moderne CSS-Techniken für responsive Websites',
-    image: '/images/blog/responsive-design.jpg',
+    image: '/images/multiple-devices-background.webp',
     category: {
       name: 'Design',
       icon: '🎨',

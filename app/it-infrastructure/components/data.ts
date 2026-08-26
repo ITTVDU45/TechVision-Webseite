@@ -111,7 +111,7 @@ export const infrastructureNewsData: BlogPost[] = [
     title: 'Cloud-Infrastruktur Trends 2024',
     subtitle: 'Cloud Computing',
     description: 'Die wichtigsten Entwicklungen im Überblick und wie sie Ihr Unternehmen beeinflussen.',
-    image: '/images/blog/cloud-trends.jpg',
+    image: '/images/system-integration-network.webp',
     category: {
       name: 'Cloud Computing',
       icon: '☁️',
@@ -125,7 +125,7 @@ export const infrastructureNewsData: BlogPost[] = [
     title: 'Hybrid Cloud Lösungen',
     subtitle: 'Infrastructure',
     description: 'On-Premise meets Cloud – die perfekte Balance für moderne Unternehmen.',
-    image: '/images/blog/hybrid-cloud.jpg',
+    image: '/images/multiple-devices-background.webp',
     category: {
       name: 'Infrastructure',
       icon: '🏗️',
@@ -139,7 +139,7 @@ export const infrastructureNewsData: BlogPost[] = [
     title: 'Nachhaltige IT-Infrastruktur',
     subtitle: 'Nachhaltigkeit',
     description: 'Green IT im Fokus – wie Sie Ihre IT-Infrastruktur umweltfreundlich gestalten.',
-    image: '/images/blog/sustainable-it.jpg',
+    image: '/images/Server.webp',
     category: {
       name: 'Nachhaltigkeit',
       icon: '🌱',

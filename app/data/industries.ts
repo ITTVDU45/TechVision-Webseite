@@ -7,11 +7,22 @@ export interface IndustryProfile {
   approach: string;
   benefits: string[];
   capabilities: string[];
+  /** Aufnahme fuer die Uebersicht und den Seitenkopf. */
+  image: string;
+  imageAlt: string;
+  /**
+   * Referenz aus derselben Branche. Eine Branchenseite mit echtem Projekt
+   * verkauft; eine mit drei Aufzaehlungspunkten nicht.
+   */
+  reference?: { title: string; href: string };
 }
 
 export const industryProfiles: IndustryProfile[] = [
   {
     id: "legal",
+    image: "/images/legaltech.webp",
+    imageAlt: "Digitale Aktenarbeit in einer Kanzlei",
+    reference: { title: "Kanzlei Digitalisierung", href: "/case-studies/kanzlei-digitalisierung" },
     name: "Rechtswesen",
     shortLabel: "Legal Tech",
     description: "Digitale Werkzeuge für Kanzleien und juristische Teams – mit besonderem Blick auf Vertraulichkeit, nachvollziehbare Prozesse und sichere Datenverarbeitung.",
@@ -22,6 +33,9 @@ export const industryProfiles: IndustryProfile[] = [
   },
   {
     id: "retail",
+    image: "/images/onlineshop.webp",
+    imageAlt: "Onlineshop auf mehreren Geraeten",
+    reference: { title: "E-Commerce Lösungen mit Shopify", href: "/case-studies/e-commerce-solutions" },
     name: "Einzelhandel & E-Commerce",
     shortLabel: "Digital Commerce",
     description: "Verbundene Commerce-Lösungen für bessere Kundenerlebnisse, saubere Datenflüsse und effizientere operative Prozesse.",
@@ -32,6 +46,8 @@ export const industryProfiles: IndustryProfile[] = [
   },
   {
     id: "railway",
+    image: "/images/system-integration-network.webp",
+    imageAlt: "Vernetzte Betriebssysteme im Bahnbetrieb",
     name: "Bahndienstleistungen",
     shortLabel: "Rail Operations",
     description: "Digitale Plattformen und robuste Prozesse für operative Dienstleister in einem anspruchsvollen, sicherheitsorientierten Umfeld.",

@@ -73,9 +73,33 @@ export default function Contact() {
           <div className="mx-auto max-w-6xl">
             <header className="mb-12 max-w-4xl md:mb-16">
               <p className="eyebrow">Direkter Austausch</p>
-              <h1 className="heading-display mt-6 text-4xl md:text-6xl lg:text-7xl">Lassen Sie uns Ihr Vorhaben einordnen.</h1>
-              <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">Schildern Sie uns kurz Ausgangslage und Ziel. Wir melden uns persönlich und besprechen den sinnvollsten nächsten Schritt.</p>
+              <h1 className="heading-display t-h1 mt-6">Lassen Sie uns Ihr Vorhaben einordnen.</h1>
+              <p className="t-body measure mt-6 text-[color:var(--ink-300)]">Schildern Sie uns kurz Ausgangslage und Ziel. Wir melden uns persönlich und besprechen den sinnvollsten nächsten Schritt.</p>
             </header>
+
+            {/* Was im Erstgespräch passiert. Stand vorher nirgends - wer
+                anfragt, sollte wissen, worauf er sich einlässt. */}
+            <section aria-labelledby="ablauf-erstgespraech" className="mb-14 border-y border-[color:var(--line-strong)] py-10">
+              <h2 id="ablauf-erstgespraech" className="eyebrow">So läuft das Erstgespräch</h2>
+              <ol className="mt-7 grid gap-x-10 gap-y-7 sm:grid-cols-3">
+                {[
+                  { title: "Sie schildern die Ausgangslage", body: "Dreißig Minuten, per Videokonferenz oder Telefon. Keine Präsentation, kein Verkaufsgespräch." },
+                  { title: "Wir ordnen ein", body: "Wir sagen, was technisch trägt, was wir davon abraten würden und welche Größenordnung realistisch ist." },
+                  { title: "Sie entscheiden", body: "Sie erhalten eine schriftliche Einordnung. Ob daraus ein Projekt wird, entscheiden Sie danach – nicht im Gespräch." },
+                ].map((schritt, index) => (
+                  <li key={schritt.title}>
+                    <span className="t-small font-mono tabular-nums text-[color:var(--brand-400)]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h3 className="heading-display t-h4 mt-3">{schritt.title}</h3>
+                    <p className="t-small mt-3 leading-relaxed text-[color:var(--ink-400)]">{schritt.body}</p>
+                  </li>
+                ))}
+              </ol>
+              <p className="t-small mt-8 text-[color:var(--ink-500)]">
+                Kostenlos und unverbindlich. Wir melden uns innerhalb eines Werktags.
+              </p>
+            </section>
 
             <div className="mb-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <div className="surface-card p-6">

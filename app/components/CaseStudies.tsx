@@ -47,9 +47,12 @@ function CaseCardSkeleton() {
   );
 }
 
+/** Kennung fuer "keine Einschraenkung". */
+const ALL = "__alle__";
+
 const CaseStudies = ({ apiPage }: CaseStudiesProps) => {
   const Heading = apiPage === "home" ? motion.h2 : motion.h1;
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>(ALL);
   const [apiCaseStudies, setApiCaseStudies] = useState<CaseStudy[]>([]);
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
   const [loading, setLoading] = useState(false);
@@ -139,49 +142,51 @@ const CaseStudies = ({ apiPage }: CaseStudiesProps) => {
     return Object.keys(categorizedCasesMap).map((id) => ({ id, name: id }));
   }, [categories, categorizedCasesMap]);
 
-  // Erste verfügbare Kategorie wählen, sobald Daten da sind
+  // Gewaehlte Kategorie zuruecksetzen, falls sie nach dem Laden nicht mehr
+  // existiert. Vorbelegt ist bewusst "alle": Wer auf die Referenzenseite
+  // kommt, soll die Arbeit sehen und nicht erst eine Kategorie waehlen.
   useEffect(() => {
-    if (availableCategories.length === 0) return;
-    const stillValid = availableCategories.some((c) => c.id === selectedCategory);
-    if (!selectedCategory || !stillValid) {
-      setSelectedCategory(availableCategories[0].id);
+    if (availableCategories.length === 0 || selectedCategory === ALL) return;
+    if (!availableCategories.some((c) => c.id === selectedCategory)) {
+      setSelectedCategory(ALL);
     }
   }, [availableCategories, selectedCategory]);
 
-  const currentCases = categorizedCasesMap[selectedCategory] || [];
+  const currentCases =
+    selectedCategory === ALL
+      ? availableCategories.flatMap((category) => categorizedCasesMap[category.id] || [])
+      : categorizedCasesMap[selectedCategory] || [];
 
   return (
     <section id="success-stories" className="section-y relative overflow-hidden bg-[#040810]">
       <div className="section-container relative z-10">
-        <div className="mx-auto max-w-3xl text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="eyebrow"
-          >
-            Portfolio
-          </motion.span>
-          <Heading
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.05 }}
-            className="heading-display mt-4 text-3xl md:text-5xl"
-          >
-            Ausgewählte Projekte
-          </Heading>
-          <p className="mt-4 text-base text-slate-400">
-            Ein Ausschnitt unserer Arbeit – von Website‑Relaunches über Custom‑Software bis zu KI‑Integrationen.
+        <div className="measure">
+          <p className="eyebrow">Referenzen</p>
+          <Heading className="heading-display t-h2 mt-5">Ausgewählte Projekte</Heading>
+          <p className="t-body mt-5 text-[color:var(--ink-400)]">
+            Ein Ausschnitt unserer Arbeit – von Website-Relaunches über Individualsoftware bis zu KI-Integrationen.
           </p>
         </div>
 
         {availableCategories.length > 0 && (
           <div
-            className="mt-10 flex flex-wrap justify-center gap-2"
+            className="mt-10 flex flex-wrap gap-2"
             role="tablist"
             aria-label="Case‑Study Kategorien"
           >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={selectedCategory === ALL}
+              onClick={() => setSelectedCategory(ALL)}
+              className={`focus-ring rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+                selectedCategory === ALL
+                  ? "border-sky-500/40 bg-sky-500/10 text-sky-200"
+                  : "border-white/10 bg-white/[0.02] text-slate-400 hover:border-white/20 hover:text-white"
+              }`}
+            >
+              Alle
+            </button>
             {availableCategories.map((category) => {
               const active = selectedCategory === category.id;
               return (
@@ -216,14 +221,8 @@ const CaseStudies = ({ apiPage }: CaseStudiesProps) => {
             </div>
           ) : (
             <ul className="mx-auto grid max-w-6xl grid-cols-1 gap-5 md:grid-cols-2">
-              {currentCases.map((caseItem, index) => (
-                <motion.li
-                  key={caseItem.id}
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.4, delay: 0.05 * (index % 4) }}
-                >
+              {currentCases.map((caseItem) => (
+                <li key={caseItem.id}>
                   <Link
                     href={`/case-studies/${caseItem.id}`}
                     className="focus-ring group block h-full overflow-hidden rounded-2xl border border-white/10 bg-[#0a1220] transition-all hover:-translate-y-0.5 hover:border-white/20"
@@ -253,21 +252,25 @@ const CaseStudies = ({ apiPage }: CaseStudiesProps) => {
                         {caseItem.description}
                       </p>
                       {caseItem.stats.length > 0 && (
-                        <div className="mt-4 flex flex-wrap gap-2">
+                        <dl className="mt-5 flex flex-wrap gap-x-8 gap-y-3 border-t border-[color:var(--line)] pt-4">
                           {caseItem.stats.slice(0, 2).map((stat, statIndex) => (
-                            <span
-                              key={`${caseItem.id}-stat-${statIndex}`}
-                              className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs text-slate-300"
-                            >
-                              <span className="font-semibold text-white">{stat.value}</span>{" "}
-                              <span className="text-slate-400">{stat.label}</span>
-                            </span>
+                            <div key={`${caseItem.id}-stat-${statIndex}`}>
+                              <dt className="sr-only">{stat.label}</dt>
+                              <dd>
+                                <span className="heading-display block text-2xl tabular-nums text-[color:var(--brand-300)]">
+                                  {stat.value}
+                                </span>
+                                <span className="t-small mt-1 block text-[color:var(--ink-500)]">
+                                  {stat.label}
+                                </span>
+                              </dd>
+                            </div>
                           ))}
-                        </div>
+                        </dl>
                       )}
                     </div>
                   </Link>
-                </motion.li>
+                </li>
               ))}
             </ul>
           )}
