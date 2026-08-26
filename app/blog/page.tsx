@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { blogPosts as fallbackPosts } from "../data/blogPosts";
 import { fetchBlogPosts } from "@/lib/api";
+import { resolveBlogImageUrl } from "@/lib/resolveBlogImageUrl";
 
 interface Category { id?: string; name: string; icon?: string }
 interface BlogPost {
@@ -85,13 +86,14 @@ export default function BlogPage() {
                   const category = postCategories(post)[0]?.name;
                   return (
                     <article key={slug || `${post.title}-${index}`} className="surface-card surface-card--hover overflow-hidden">
-                      {post.image ? (
-                        <div className="aspect-[16/9] overflow-hidden border-b border-white/[0.06] bg-slate-900">
-                          {/* CMS images may originate from the configured object-storage host. */}
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src={post.image} alt="" loading={index < 3 ? "eager" : "lazy"} decoding="async" className="h-full w-full object-cover" />
-                        </div>
-                      ) : null}
+                      {/* Immer ein Titelbild: resolveBlogImageUrl liefert einen
+                          Ersatz, wenn die CMS-URL fehlt oder unbrauchbar ist -
+                          sonst haetten manche Karten eines und andere nicht. */}
+                      <div className="aspect-[16/9] overflow-hidden border-b border-white/[0.06] bg-slate-900">
+                        {/* Bildquelle kann aus dem CMS von beliebigen Hosts kommen. */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={resolveBlogImageUrl(post.image)} alt="" loading={index < 3 ? "eager" : "lazy"} decoding="async" className="h-full w-full object-cover" />
+                      </div>
                       <div className="p-6">
                         <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-slate-500">{category ? <span className="font-semibold uppercase tracking-wider text-sky-300">{category}</span> : null}</div>
                         <h2 className="mt-4 text-xl font-semibold leading-snug"><Link href={slug ? `/blog/${slug}` : "/blog"} className="focus-ring rounded-sm hover:text-sky-300">{post.title}</Link></h2>

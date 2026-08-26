@@ -8,6 +8,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { blogPosts as fallbackPosts } from "../../data/blogPosts";
 import { fetchBlogPosts } from "@/lib/api";
+import { resolveBlogImageUrl } from "@/lib/resolveBlogImageUrl";
 
 interface Category { id?: string; name: string }
 interface BlogPost {
@@ -111,7 +112,7 @@ export default function BlogDetailPage() {
                 </div>
               </header>
 
-              {blog.image ? <div className="section-container pt-10 sm:pt-14"><div className="aspect-[16/7] overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-900"><img src={blog.image} alt="" className="h-full w-full object-cover" decoding="async" /></div></div> : null}
+              <div className="section-container pt-10 sm:pt-14"><div className="aspect-[16/7] overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-900"><img src={resolveBlogImageUrl(blog.image)} alt="" className="h-full w-full object-cover" fetchPriority="high" decoding="async" /></div></div>
 
               <div className="section-container grid gap-12 py-14 lg:grid-cols-[minmax(0,1fr)_18rem] lg:py-20">
                 <div className="article-copy max-w-3xl text-base leading-8 text-slate-300 sm:text-lg"><ArticleBody content={blog.content || blog.description || "Weitere Informationen folgen."} /></div>

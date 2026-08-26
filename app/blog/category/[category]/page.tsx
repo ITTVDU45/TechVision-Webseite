@@ -8,6 +8,7 @@ import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import { blogPosts as fallbackPosts } from "../../../data/blogPosts";
 import { fetchBlogPosts } from "@/lib/api";
+import { resolveBlogImageUrl } from "@/lib/resolveBlogImageUrl";
 
 interface Category { id?: string; name: string }
 interface BlogPost {
@@ -86,7 +87,7 @@ export default function BlogCategoryPage() {
                   const slug = post.slug || post.id || post._id;
                   return (
                     <article key={slug || `${post.title}-${index}`} className="surface-card surface-card--hover overflow-hidden">
-                      {post.image ? <div className="aspect-[16/9] overflow-hidden border-b border-white/[0.06] bg-slate-900"><img src={post.image} alt="" loading={index < 2 ? "eager" : "lazy"} decoding="async" className="h-full w-full object-cover" /></div> : null}
+                      <div className="aspect-[16/9] overflow-hidden border-b border-white/[0.06] bg-slate-900"><img src={resolveBlogImageUrl(post.image)} alt="" loading={index < 2 ? "eager" : "lazy"} decoding="async" className="h-full w-full object-cover" /></div>
                       <div className="p-6">
                         <p className="text-xs font-semibold uppercase tracking-wider text-sky-300">{post.readTime || "Artikel"}</p>
                         <h2 className="mt-4 text-xl font-semibold leading-snug"><Link href={slug ? `/blog/${slug}` : "/blog"} className="focus-ring rounded-sm hover:text-sky-300">{post.title}</Link></h2>
