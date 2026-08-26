@@ -27,7 +27,7 @@ const SPACING = 1.35;
  */
 const RUHE = {
   /** Deckkraft der Linien. Höher = präsenter. */
-  opacity: 0.13,
+  opacity: 0.08,
   /** Tempo der beiden Wellen. Höher = schneller. */
   tempoA: 0.11,
   tempoB: 0.08,
