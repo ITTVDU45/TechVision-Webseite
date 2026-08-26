@@ -92,6 +92,9 @@ export default function ImageUpload({
 
       {preview ? (
         <div className="relative">
+          {/* Vorschau einer lokal gewaehlten Datei (blob:-URL). next/image
+              kann solche URLs nicht verarbeiten. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={preview}
             alt="Vorschau"

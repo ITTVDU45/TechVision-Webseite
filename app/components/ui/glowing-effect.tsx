@@ -4,7 +4,6 @@ import React, { memo, useCallback, useEffect, useRef } from 'react';
 type Props = {
   blur?: number;
   glow?: boolean;
-  borderWidth?: number;
   spread?: number;
   disabled?: boolean;
   proximity?: number;
@@ -13,7 +12,7 @@ type Props = {
   children?: React.ReactNode;
 };
 
-const GlowingEffect = memo(({ blur = 0, glow = true, borderWidth = 1, spread = 20, disabled = false, proximity = 64, inactiveZone = 0.01, className, children }: Props) => {
+const GlowingEffect = memo(({ blur = 0, glow = true, spread = 20, disabled = false, proximity = 64, inactiveZone = 0.01, className, children }: Props) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const glowRef = useRef<HTMLDivElement | null>(null);
 

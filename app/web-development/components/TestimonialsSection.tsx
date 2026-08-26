@@ -22,7 +22,6 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
   }, []);
 
   const testimonialsPerPage = isMobile ? 1 : 3;
-  const totalPages = Math.ceil(testimonials.length / testimonialsPerPage);
 
   const visibleTestimonials = useMemo(() => {
     const start = currentIndex;
@@ -114,7 +113,7 @@ export default function TestimonialsSection({ testimonials }: TestimonialsSectio
                         <p className="text-sm text-gray-400">{testimonial.company}</p>
                       </div>
                     </div>
-                    <p className="text-gray-300 leading-relaxed">"{testimonial.quote}"</p>
+                    <p className="text-gray-300 leading-relaxed">&bdquo;{testimonial.quote}&ldquo;</p>
                   </div>
                 </motion.div>
               ))}

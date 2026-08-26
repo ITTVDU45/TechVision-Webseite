@@ -1,4 +1,3 @@
-import { Icon } from "@tabler/icons-react";
 
 // BlogPost, BlogCategory und FAQ kommen aus dem gemeinsamen Modell.
 // Vorher war jeder dieser Typen hier neu definiert - mit abweichenden Formen.

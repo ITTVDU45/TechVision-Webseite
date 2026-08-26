@@ -35,9 +35,13 @@ export default function CaseStudiesSection({
               <Link href={study.link || "#"} className="block">
                 {study.image && (
                   <div className="aspect-video overflow-hidden">
+                    {/* Bildquelle kann aus dem CMS stammen (beliebiger Host). */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={study.image}
                       alt={study.company}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>

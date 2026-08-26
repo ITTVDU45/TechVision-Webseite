@@ -4,7 +4,7 @@ import BlogCategory from '@/lib/models/BlogCategory';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const defaultCategories = [
     { id: 'ki', name: 'KI', icon: '🤖', order: 0 },
     { id: 'software', name: 'Software', icon: '💻', order: 1 },

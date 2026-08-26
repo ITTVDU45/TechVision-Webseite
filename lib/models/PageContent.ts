@@ -1,6 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { storedImageMetaSchema } from '@/lib/models/storedImageMetaSchema';
-import type { StoredImageMeta } from '@/lib/stored-image';
 
 export interface IPageContent extends Document {
   page: string; // z.B. 'home', 'ki-transformation', etc.

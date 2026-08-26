@@ -4,7 +4,7 @@ import CaseStudyCategory from '@/lib/models/CaseStudyCategory';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const defaultCategories = [
     { id: 'beratung', name: 'Beratung', order: 0 },
     { id: 'webseiten', name: 'Webseiten', order: 1 },

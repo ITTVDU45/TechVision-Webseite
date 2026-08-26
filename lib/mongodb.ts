@@ -1,4 +1,4 @@
-import mongoose, { ConnectOptions } from 'mongoose';
+import mongoose from 'mongoose';
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -9,7 +9,7 @@ declare global {
   var mongoose: MongooseCache | undefined;
 }
 
-let cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
 
 if (!global.mongoose) {
   global.mongoose = cached;
@@ -29,7 +29,7 @@ async function connectDB() {
   // Prüfe, ob das Passwort leer ist (z.B. durch Leerzeichen oder falsches Parsing)
   const uriMatch = MONGODB_URI.match(/^mongodb(\+srv)?:\/\/([^:]+):([^@]+)@(.+)$/);
   if (uriMatch) {
-    const [, , username, password, rest] = uriMatch;
+    const password = uriMatch[3];
     if (!password || password.trim() === '') {
       console.error('⚠️  MongoDB-URI hat ein leeres Passwort!');
       console.error('   Bitte überprüfen Sie die MONGODB_URI in .env.local');

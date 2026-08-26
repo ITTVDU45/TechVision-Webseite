@@ -163,7 +163,10 @@ export default function CaseStudyTemplate({
       <div className={gridClass}>
         {imgs.map((src, i) => (
           <div key={i} className="w-full aspect-[4/3] relative rounded-lg overflow-hidden">
-            <img src={src} alt={`${data.title} ${i}`} className="h-full w-full object-cover" />
+            {/* Galeriebilder koennen aus dem CMS von beliebigen Hosts kommen;
+                next/image wuerde dort mit 400 antworten. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={src} alt={`${data.title} ${i}`} loading="lazy" decoding="async" className="h-full w-full object-cover" />
           </div>
         ))}
       </div>
@@ -203,9 +206,15 @@ export default function CaseStudyTemplate({
             {(data.heroImage || data.image) && (
               <div className="w-full h-80 relative rounded-2xl overflow-hidden mb-8 glass">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-700/10 via-indigo-700/6 to-transparent" />
+                {/* Kann aus dem CMS von beliebigen Hosts kommen; next/image
+                    wuerde dort mit 400 antworten. Bewusst nicht lazy: Das Bild
+                    steht oberhalb der Falz und ist das LCP-Element. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={data.heroImage || data.image || ""}
                   alt={data.title}
+                  fetchPriority="high"
+                  decoding="async"
                   className="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-105"
                 />
               </div>
@@ -390,9 +399,13 @@ export default function CaseStudyTemplate({
                   >
                     <div className="relative w-full h-40 mb-4 rounded-lg overflow-hidden">
                       {(o.heroImage || o.image) && (
+                        // Bildquelle kann aus dem CMS stammen (beliebiger Host).
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={o.heroImage || o.image || ""}
                           alt={o.title}
+                          loading="lazy"
+                          decoding="async"
                           className="h-full w-full object-cover"
                         />
                       )}
