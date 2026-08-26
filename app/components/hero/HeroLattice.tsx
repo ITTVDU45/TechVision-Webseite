@@ -18,6 +18,31 @@ import * as THREE from "three";
 const SEGMENTS = 34;
 const SPACING = 1.35;
 
+/**
+ * Stellschrauben der Bewegung.
+ *
+ * Der Hintergrund liegt hinter Fließtext. Er darf Tiefe geben, aber nicht um
+ * Aufmerksamkeit konkurrieren - beim Lesen soll man ihn nicht bemerken.
+ * Wer nachjustiert, ändert nur diese Werte.
+ */
+const RUHE = {
+  /** Deckkraft der Linien. Höher = präsenter. */
+  opacity: 0.13,
+  /** Tempo der beiden Wellen. Höher = schneller. */
+  tempoA: 0.11,
+  tempoB: 0.08,
+  /** Ausschlag der Wellen in Welteinheiten. Höher = welliger. */
+  hubA: 0.42,
+  hubB: 0.3,
+  /** Wie stark die Kamera dem Zeiger folgt. */
+  parallaxeX: 1.2,
+  parallaxeY: 0.55,
+  /** Nachlauf der Kamera. Kleiner = träger. */
+  traegheit: 0.018,
+  /** Nebeldichte. Höher = entfernte Linien verschwinden früher. */
+  nebel: 0.07,
+} as const;
+
 export default function HeroLattice({ paused = false }: { paused?: boolean }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const pausedRef = useRef(paused);
@@ -42,7 +67,7 @@ export default function HeroLattice({ paused = false }: { paused?: boolean }) {
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x050a12, 0.055);
+    scene.fog = new THREE.FogExp2(0x050a12, RUHE.nebel);
 
     const camera = new THREE.PerspectiveCamera(52, host.clientWidth / host.clientHeight, 0.1, 120);
     camera.position.set(0, 6.5, 20);
@@ -72,7 +97,7 @@ export default function HeroLattice({ paused = false }: { paused?: boolean }) {
     const material = new THREE.LineBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.22,
+      opacity: RUHE.opacity,
     });
 
     const lattice = new THREE.LineSegments(geometry, material);
@@ -116,14 +141,15 @@ export default function HeroLattice({ paused = false }: { paused?: boolean }) {
         const x = base[i];
         const z = base[i + 2];
         array[i + 1] =
-          Math.sin(x * 0.16 + t * 0.32) * 0.9 + Math.cos(z * 0.19 - t * 0.24) * 0.7;
+          Math.sin(x * 0.16 + t * RUHE.tempoA) * RUHE.hubA +
+          Math.cos(z * 0.19 - t * RUHE.tempoB) * RUHE.hubB;
       }
       attribute.needsUpdate = true;
 
-      eased.x += (pointer.x - eased.x) * 0.03;
-      eased.y += (pointer.y - eased.y) * 0.03;
-      camera.position.x = eased.x * 2.2;
-      camera.position.y = 6.5 - eased.y * 1.1;
+      eased.x += (pointer.x - eased.x) * RUHE.traegheit;
+      eased.y += (pointer.y - eased.y) * RUHE.traegheit;
+      camera.position.x = eased.x * RUHE.parallaxeX;
+      camera.position.y = 6.5 - eased.y * RUHE.parallaxeY;
       camera.lookAt(0, 0, -6);
 
       renderer.render(scene, camera);
